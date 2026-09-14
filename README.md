@@ -1,4 +1,4 @@
-# dailwindstudio.com
+# dailwind.com
 
 Website for Dailwind Studio™. Static HTML and CSS — no build step, no framework, no dependencies.
 
