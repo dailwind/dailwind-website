@@ -1,0 +1,742 @@
+<!doctype html><html lang="en" data-theme="dark" class="apptheme-amber"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#000000"><meta name="robots" content="index, follow"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://dailwind.com; style-src 'self' https://dailwind.com 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"><title>LinguaX Arc — Sample-only showcase</title><link rel="stylesheet" href="preview.css"><script src="preview.js" defer></script></head><body>
+<div id="splashScreen" aria-hidden="true">
+  <!-- Interactive, high-tech academic linguistics Canvas background -->
+  <canvas id="splashCanvas" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;"></canvas>
+  
+  <div class="splash-ambient-glow"></div>
+  
+  <div class="splash-portrait-wrap">
+    <!-- Top badge -->
+    <div class="splash-header-tag">
+      <span class="tech-badge">SECURE ON-DEVICE COGNITIVE NLP</span>
+    </div>
+    
+    <!-- Center Block with Floating Supplied LX Logo and Shimmering Branding -->
+    <div class="splash-center-block">
+      <div class="splash-logo-container">
+        <svg viewBox="0 0 100 100" class="logo-svg">
+          <rect width="100" height="100" rx="50" fill="#000000" stroke="rgba(212,175,55,0.4)" stroke-width="1.2" />
+          <path d="M 24 24 V 62 A 12 12 0 0 0 36 74 L 76 24" fill="none" stroke="#ffffff" stroke-width="10.5" stroke-linecap="butt" stroke-linejoin="miter" />
+          <path d="M 44 24 L 76 74" fill="none" stroke="#ffffff" stroke-width="10.5" stroke-linecap="butt" />
+        </svg>
+      </div>
+      
+      <div class="splash-brand-title"><span class="brand-fixed">LinguaX</span> <span class="splash-arc">Arc</span></div>
+      <div class="splash-brand-subtitle">AI-Powered Corpus Analysis &amp; Linguistics Toolkit</div>
+    </div>
+    
+    <!-- Loading Block (Positioned elegantly at 82% viewport height) -->
+    <div class="splash-loading-block">
+      <div class="splash-progress-meta">
+        <span class="splash-progress-status" id="splashProgressLabel">Initializing Corpus Engine...</span>
+        <span class="splash-progress-percent" id="splashProgressText">0%</span>
+      </div>
+      
+      <!-- Modern Capsule Progress Bar with rounded corners, glass effect, animated blue gradient, glowing progress indicator, smooth light sweep, soft shadow, tiny pulse -->
+      <div class="premium-progress-capsule">
+        <div class="premium-progress-fill" id="splashProgressBar">
+          <div class="premium-progress-sweep"></div>
+        </div>
+      </div>
+      
+      <div class="splash-academic-sub">100% PRIVATE NLP RESEARCH ENVIRONMENT</div>
+    </div>
+    
+    <!-- Footer at the very bottom -->
+    <div class="splash-footer-block">
+      <p class="dev-by">Developed by <span>Arslan Tahir</span></p>
+      <p class="phd-title">PhD English Linguistics</p>
+    </div>
+  </div>
+</div>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div>
+<div class="statusbar-gradient-shade" aria-hidden="true"></div>
+<div id="app">
+
+  <header class="appbar glass">
+    <div class="logo">
+      <div class="logo-mark-wrap">
+        <div class="logo-glow-aura"></div>
+        <div class="logo-mark">
+          <svg viewBox="0 0 100 100" class="logo-svg" style="width:100%; height:100%;">
+            <rect width="100" height="100" rx="50" fill="#121212" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+            <path d="M 24 24 V 62 A 12 12 0 0 0 36 74 L 76 24" fill="none" stroke="#ffffff" stroke-width="10.5" stroke-linecap="butt" stroke-linejoin="miter" />
+            <path d="M 44 24 L 76 74" fill="none" stroke="#ffffff" stroke-width="10.5" stroke-linecap="butt" />
+          </svg>
+        </div>
+      </div>
+      <div class="logo-title-wrap">
+        <h1 id="appbar-title"><span class="brand-fixed">LinguaX</span> <span class="arc-animated">Arc</span></h1>
+        <div class="marquee-container">
+          <small id="logo-subtitle">Corpus Toolkit</small>
+        </div>
+      </div>
+    </div>
+    
+    <div class="appbar-search-trigger" id="appbarSearchPill" title="Word Count Search">
+      <span class="appbar-search-icon" id="appbarSearchPillIcon" style="display:inline-flex; width:16px; height:16px;"></span>
+      <span class="appbar-search-text">Search word count...</span>
+      <span class="appbar-search-kbd" style="display:inline-flex; align-items:center; width:12px; height:12px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+    </div>
+    <button class="iconbtn" id="appbarSearchBtn" title="Word Count Search" aria-label="Word Count Search"></button>
+    <button class="iconbtn" id="themeBtn" title="Toggle theme" aria-label="Toggle light and dark theme"></button>
+    <button class="iconbtn" id="helpBtn" title="Tutorial Guide" aria-label="App Tutorial Guide"></button>
+    <button class="iconbtn" id="aboutBtn" title="About" aria-label="About LinguaX Arc"></button>
+  </header>
+
+  <main id="view"></main>
+</div>
+
+<nav class="dock glass" id="dock" aria-label="Tools"></nav>
+<div id="toast" class="glass"></div><div class="modal-bg" id="helpModal">
+  <div class="modal glass" style="max-width:620px; border: 1px solid var(--stroke); box-shadow: 0 16px 48px rgba(0,0,0,0.2);">
+    <h3 style="display:flex; align-items:center; gap:10px; font-family:'Sora'; font-weight:800; font-size:20px; margin-bottom:6px; color:var(--ink)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px; color:var(--a1);"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+      Features Guide &amp; Study Notes
+    </h3>
+    <p style="margin-top:-2px; margin-bottom:18px; color:var(--ink); font-size:13px; opacity:0.85; line-height:1.4">
+      Welcome to your comprehensive on-device linguistic companion. Learn how to leverage all advanced analysis modules and review complete study notes explaining every term below.
+    </p>
+    
+
+    
+    <div class="modal-scroll-area" style="display:flex; flex-direction:column; gap:14px; max-height:54vh; overflow-y:auto; padding-right:6px">
+      <!-- Tutorial Note 1 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">1</span>
+          Loading Corpora &amp; App Sharing (Corpus Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          Tap <b>"Add files"</b> or the dropzone to load <code>.txt</code>, <code>.docx</code>, or <code>.pdf</code> files from your device, or tap <b>"Load sample corpus"</b> for presets. <b>External App Sharing:</b> You can also share documents directly from WhatsApp, Telegram, Google Drive, or your device file manager into LinguaX Arc via the Android share sheet! The app cleans tokens, displays combined stats, word count (Tokens), unique vocabulary types, and rule-based Part-Of-Speech tagging estimates.
+        </p>
+      </div>
+
+      <!-- Tutorial Note 2 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">2</span>
+          KWIC Concordance (KWIC Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          Enter any term (with wildcard <code>*</code>, <code>?</code>, regex, and case options). Concordance lines align with the search word cleanly locked in the center column.
+          <br>• <b>Automatic 5-Second Center Alignment:</b> Every concordance line is smoothly centered across all search results. Even when you swipe horizontally to read flanking context, all rows automatically snap back to perfect center alignment after 5 seconds.
+          <br>• <b>Instant Peek &amp; Center Toolbar:</b> Use <code>◀ Left</code>, <code>Right ▶</code>, or the target <code>Center</code> button in the top banner to inspect surrounding words across all lines.
+          <br>• <b>KPF (Positional Pattern Frequency) Folding:</b> Group identical grammatical sequences and rank patterns by frequency.
+          <br>• <b>Direct Document Jump:</b> Tap <b>"Open File ↗"</b> on any concordance hit to immediately open that exact paragraph in the Book Reader File View reader.
+        </p>
+      </div>
+
+      <!-- Tutorial Note 3 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">3</span>
+          Concordance Dispersion Plot (Plot Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          High-contrast <b>Black &amp; White Barcode Plot</b> rendering solid black strikes for your search words on a pure white channel. Features horizontal scroll for full-length high-resolution document inspection and percentage milestone markers (0%, 25%, 50%, 75%, 100%).
+        </p>
+      </div>
+
+      <!-- Tutorial Note 4 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">4</span>
+          Book E-Reader &amp; Full Screen (File View Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          Read loaded files in high-contrast, page-chunked sections (280 tokens per section) ensuring zero lag on large corpora.
+          <br>• <b>Corner Arrow Navigation:</b> Use the corner accent arrow keys (<code>◀</code> and <code>▶</code>) at the far left and right edges, or the central page dropdown selector to jump between pages.
+          <br>• <b>Quick Percentage Jumps:</b> Use the quick chips (<code>Top 0%</code>, <code>25%</code>, <code>50%</code>, <code>75%</code>, <code>End 100%</code>) to jump through the text.
+          <br>• <b>Match Highlights:</b> Navigate occurrences with <code>◀ Prev Match</code> and <code>Next Match ▶</code> with live match counters and pulsing glowing highlights.
+        </p>
+      </div>
+
+      <!-- Tutorial Note 5 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">5</span>
+          Collocational Clusters &amp; Lexical Bundles (Clusters Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          <b>Clusters</b> search for multi-word recurrent frames surrounding a specific search word (sizes 2 to 5 words). Filter by minimum co-occurrence frequency to detect fixed idioms, formulaic constructions, and syntactic phrase patterns.
+        </p>
+      </div>
+
+      <!-- Tutorial Note 6 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">6</span>
+          Contiguous N-Grams Sequences (N-Grams Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          <b>N-Grams</b> extract the most frequent contiguous sequences of words (lengths 2, 3, 4, and 5) across your entire loaded corpus without requiring a seed word. Configure minimum frequency thresholds to isolate recurrent stylistic sequences.
+        </p>
+      </div>
+
+      <!-- Tutorial Note 7 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">7</span>
+          Collocation Association Statistics (Collocates Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          Measure statistical association (word attraction) between a node word and surrounding context words within a window of L5 to R5. Supports 5 association algorithms: Co-occurrence Frequency, Mutual Information (MI), Log-Likelihood (LL), T-Score, and Dice Coefficient to distinguish true linguistic partnerships from random chance.
+        </p>
+      </div>
+
+      <!-- Tutorial Note 8 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">8</span>
+          Vocabulary Frequency Word Lists (Word List Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          Generate full frequency word lists of your corpus. Sortable by frequency or range (the number of separate files in which the word appears). Displays the absolute count and relative frequency normalized to per 1,000 words. Fully exportable to CSV.
+        </p>
+      </div>
+
+      <!-- Tutorial Note 9 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">9</span>
+          Comparative Keyword Keyness (Keyword List Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          Compare your main corpus vocabulary with a <b>Reference Corpus</b> to extract unique statistically significant words. Employs Log-Likelihood (LL) for Keyness strength, and Log-Ratio for effect size. Discovers both Positive Keywords (overused) and Negative Keywords (underused).
+        </p>
+      </div>
+
+      <!-- Tutorial Note 10 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">10</span>
+          Interactive Native Word Clouds (Word Cloud Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          Generates an interactive, zero-overlapping offline word canvas rendered natively on-device. <b>Click on any word to instantly launch a KWIC concordance search!</b> Save high-resolution PNG images directly to your device Gallery or share with colleagues.
+        </p>
+      </div>
+
+      <!-- Tutorial Note 11 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">11</span>
+          Intelligent Sentiment &amp; Tone Analyzer (Sentiment Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          Analyze sentiment polarity, emotive tone distribution, and compute scalar valence scores (-1.0 to 1.0) entirely on-device. Input your custom text or select loaded files from your corpus list to visualize the sentence-by-sentence emotive arc. Filter sentences by Positive/Negative polarity, and explore emotional categories (Joy, Sadness, Anger, Fear) shown via dynamic progress bars.
+        </p>
+      </div>
+
+      <!-- Tutorial Note 12 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">12</span>
+          Academic Summarizer (AI Summarize Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          Generate deep, context-aware abstractive summaries, outline major research findings, isolate key arguments, and extract research methodologies from any file in your corpus. Powered by Gemini API to provide highly professional academic analysis.
+        </p>
+      </div>
+
+      <!-- Tutorial Note 13 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">13</span>
+          Corpus Preprocessing &amp; Conversion (Toolkit Tab)
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          Clean and normalize corpora, merge multiple text files into a single master document, and convert multi-format documents (including docx and pdf files) directly into plain txt formats for immediate downstream analysis.
+        </p>
+      </div>
+
+      <!-- Tutorial Note 14 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">14</span>
+          Word Count &amp; Quick Navigation Search
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          Tap the search pill or magnifying glass in the application header to search word counts across your corpus in real time, or type tool names to jump directly to any module. Press Enter to instantly go to the top matching tool!
+        </p>
+      </div>
+
+      <!-- Tutorial Note 15 -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px; transition: background 0.2s; cursor: pointer;">
+        <h4 style="margin:0 0 6px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:10px; font-weight:700">
+          <span style="background:linear-gradient(135deg, var(--a1), var(--a2)); color:var(--btn-ink); width:24px; height:24px; min-width:24px; min-height:24px; max-width:24px; max-height:24px; border-radius:50%; aspect-ratio:1/1; flex-shrink:0; display:grid; place-items:center; font-size:11px; font-weight:800; box-shadow:0 2px 6px var(--glow-shadow)">15</span>
+          Offline Research Workspace &amp; Academic Citation
+        </h4>
+        <p style="margin:0; font-size:12.5px; line-height:1.6; color:var(--ink)">
+          All analysis sessions are logged in your local Workspace History with instant parameter restore and full data exports (CSV, TSV, JSON, Markdown). Open the Citation modal to copy official APA 7th, MLA 9th, or Chicago 17th format references with Zenodo DOI records.
+        </p>
+      </div>
+
+      <!-- Divider: Comprehensive Study Notes & Terms Glossary -->
+      <div style="margin: 14px 0 6px 0; padding: 14px 16px; background: linear-gradient(135deg, rgba(var(--a1-rgb, 14, 165, 233), 0.12), var(--row-alt)); border-radius: 16px; border: 1.5px solid var(--a1); display: flex; align-items: center; gap: 12px;">
+        <span style="background: linear-gradient(135deg, var(--a1), var(--a2)); color: #fff; width: 34px; height: 34px; border-radius: 10px; display: inline-grid; place-items: center; flex-shrink: 0; box-shadow: 0 2px 8px var(--glow-shadow); font-size: 16px;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+        <div style="flex: 1;">
+          <h4 style="margin: 0 0 2px 0; font-family: 'Sora'; font-size: 14px; font-weight: 800; color: var(--ink);">Corpus Linguistics Study Notes &amp; Glossary</h4>
+          <p style="margin: 0; font-size: 11.8px; color: var(--ink-soft); line-height: 1.45;">Easy study notes explaining every corpus setting, parameter, formula, and table column in clear bullets with real-world examples.</p>
+        </div>
+      </div>
+
+      <!-- Study Note 1: Search & Pattern Controls -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px;">
+        <h4 style="margin:0 0 8px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:8px; font-weight:700">
+          <span style="color:var(--a1); display:inline-flex; width:16px; height:16px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span> Search &amp; Pattern Settings
+        </h4>
+        <ul style="margin:0; padding-left:18px; font-size:12.5px; line-height:1.65; color:var(--ink);">
+          <li style="margin-bottom:6px;">
+            <b>Case Sensitive:</b> Controls whether uppercase and lowercase letters are treated as different words.
+            <br>• <i>Case OFF (Default):</i> Searching <code>apple</code> matches <code>apple</code>, <code>Apple</code>, and <code>APPLE</code>.
+            <br>• <i>Case ON:</i> Searching <code>apple</code> matches ONLY small letters. Use this to separate proper nouns (like <i>Brown</i> the surname, <i>Bush</i> the politician) from regular nouns (<i>brown</i> color, <i>bush</i> plant).
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Regex (Regular Expressions):</b> Pattern-matching formulas for searching grammatical variations and morphological affixes.
+            <br>• <code>play(ed|ing|s)?</code> matches <code>play</code>, <code>plays</code>, <code>played</code>, and <code>playing</code> in one search.
+            <br>• <code>\bpre\w+</code> finds all words starting with the prefix "pre-" (e.g. <code>predict</code>, <code>prevent</code>).
+            <br>• <code>colou?r</code> matches both British <code>colour</code> and American <code>color</code>.
+          </li>
+          <li>
+            <b>Wildcards (* and ?):</b> Easy letter placeholders.
+            <br>• <b>Asterisk (*):</b> Zero or more letters (e.g. <code>teach*</code> matches <code>teach</code>, <code>teacher</code>, <code>teaching</code>).
+            <br>• <b>Question Mark (?):</b> Exactly one character (e.g. <code>w?man</code> matches <code>woman</code> and <code>women</code>).
+          </li>
+        </ul>
+      </div>
+
+      <!-- Study Note 2: KWIC Concordance & Context Rules -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px;">
+        <h4 style="margin:0 0 8px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:8px; font-weight:700">
+          <span style="color:var(--a1); display:inline-flex; width:16px; height:16px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span> KWIC Concordance, Spans &amp; Context
+        </h4>
+        <ul style="margin:0; padding-left:18px; font-size:12.5px; line-height:1.65; color:var(--ink);">
+          <li style="margin-bottom:6px;">
+            <b>KWIC (Key Word In Context) &amp; Node Word:</b> Foundational corpus linguistics view aligning all occurrences of your searched term (the <i>Node Word</i>) in a vertical center column with flanking context words. In LinguaX Arc, rows automatically re-center after 5 seconds so the searched node word remains the visual anchor.
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Context Size / Window:</b> The number of words gathered to the left and right (±5 to ±25 words). 5 words isolates immediate grammar; 15–25 words displays full sentences.
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Left Span (L1–L5) &amp; Right Span (R1–R5):</b> Exact position relative to the search word.
+            <br><i>Sentence:</i> "She drank a glass of cold [WATER] from the tap"
+            <br>• <b>L1 (1 word left):</b> <code>cold</code> (Adjective modifying water)
+            <br>• <b>L2 (2 words left):</b> <code>of</code> | <b>L3 (3 words left):</b> <code>glass</code>
+            <br>• <b>R1 (1 word right):</b> <code>from</code> (Preposition governing water) | <b>R2:</b> <code>the</code> | <b>R3:</b> <code>tap</code>
+          </li>
+          <li>
+            <b>Sort by Context:</b> Organizes concordance lines alphabetically based on words in a specific position (e.g. sorting by <b>R1</b> groups all instances of <code>interested in</code>, <code>interested to</code>, <code>interested by</code> into clean consecutive blocks).
+          </li>
+        </ul>
+      </div>
+
+      <!-- Study Note 3: Frequency, Thresholds & Filtering -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px;">
+        <h4 style="margin:0 0 8px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:8px; font-weight:700">
+          <span style="color:var(--a1); display:inline-flex; width:16px; height:16px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span> Frequency, Thresholds &amp; Diversity
+        </h4>
+        <ul style="margin:0; padding-left:18px; font-size:12.5px; line-height:1.65; color:var(--ink);">
+          <li style="margin-bottom:6px;">
+            <b>Tokens vs. Types vs. TTR %:</b>
+            <br>• <b>Tokens (Running Words):</b> Total word count in text, including every repetition.
+            <br>• <b>Types (Unique Words):</b> Distinct vocabulary words with duplicates removed.
+            <br>• <b>TTR % (Type-Token Ratio):</b> <code>(Types / Tokens) × 100</code>. High TTR (70%+) indicates rich, diverse vocabulary; low TTR (under 30%) indicates repetitive language.
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Minimum Frequency (Min Freq / Min F):</b> Cutoff threshold that hides any word, phrase, or collocate appearing fewer times than this number. Setting Min Freq = 3 excludes typos and one-off accidental words (hapax legomena).
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Sort by Minimum (Threshold Sorting &amp; Ordering):</b> Organizes table results based on the qualifying minimum frequency boundary. Allows researchers to rank results starting from the lowest qualifying threshold upward (ascending order) to inspect rare, borderline lexical bundles that would otherwise be hidden under high-frequency words.
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Core Frequency:</b> The baseline total frequency a word must achieve across the entire corpus before being evaluated as an association collocate or keyword candidate. Prevents rare typos from receiving false 100% association scores.
+          </li>
+          <li>
+            <b>Range &amp; Range %:</b>
+            <br>• <b>Range:</b> Number of separate corpus files containing the item.
+            <br>• <b>Range %:</b> <code>(Range / Total Files) × 100</code>. If Range is 90%, the word is used across the whole corpus; if Range is 1 file, it is an idiosyncratic habit of that single author.
+          </li>
+        </ul>
+      </div>
+
+      <!-- Study Note 4: Phraseology, Clusters & Collocations -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px;">
+        <h4 style="margin:0 0 8px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:8px; font-weight:700">
+          <span style="color:var(--a1); display:inline-flex; width:16px; height:16px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7L12.5 18.5"/></svg></span> Clusters, N-Grams &amp; Collocations
+        </h4>
+        <ul style="margin:0; padding-left:18px; font-size:12.5px; line-height:1.65; color:var(--ink);">
+          <li style="margin-bottom:6px;">
+            <b>Size &amp; Side (Clusters / Lexical Bundles):</b>
+            <br>• <b>Size:</b> Phrase length (2-word, 3-word, 4-word, or 5-word phrases).
+            <br>• <b>Side:</b> Where adjoining words are gathered relative to the seed word: <b>Left</b> (before), <b>Right</b> (after), or <b>Both</b> (flanking).
+            <br>• <i>Example for "conclusion":</i> Size 3 Left = <code>in the conclusion</code>; Size 3 Right = <code>conclusion of the</code>.
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Function Words vs. Content Words (&amp; Stopwords):</b>
+            <br>• <b>Function Words (Grammar):</b> Articles (<code>the</code>, <code>a</code>), prepositions (<code>in</code>, <code>of</code>), pronouns (<code>he</code>, <code>it</code>), conjunctions (<code>and</code>, <code>but</code>). Filtered out via Stopwords in Word Lists to focus on content words.
+            <br>• <b>Content Words (Lexical):</b> Nouns (<code>climate</code>, <code>treaty</code>), main verbs (<code>negotiate</code>), adjectives (<code>crucial</code>), adverbs (<code>rapidly</code>). Carry the topical message.
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Clusters vs. N-Grams:</b> Clusters are multi-word frames anchored to a <b>specific search word</b> (e.g. <i>"as a matter of fact"</i> around <i>"matter"</i>); N-Grams are all frequent contiguous sequences across the <b>entire corpus</b> without needing any starting seed word.
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Collocations &amp; Co-occurrence Frequency (O11):</b> The habitual attraction between words (e.g. <i>heavy rain</i> vs <i>strong rain</i>). Co-occurrence (O11) is the count of times the collocate appears in the ±5 word span of the node word.
+          </li>
+          <li>
+            <b>Association Statistics (MI, T-Score, Dice):</b>
+            <br>• <b>Mutual Information (MI ≥ 3.0):</b> Measures exclusivity and bond strength. Highlights idioms and specialized partnerships.
+            <br>• <b>T-Score (≥ 2.0):</b> Measures statistical certainty and confidence, favoring frequent grammatical partnerships.
+            <br>• <b>Dice Coefficient (0.0 to 1.0):</b> Harmonic exclusivity score, immune to corpus length differences.
+          </li>
+        </ul>
+      </div>
+
+      <!-- Study Note 5: Comparative Keyness & Significance -->
+      <div style="background:var(--row); border:1px solid var(--stroke-2); padding:14px; border-radius:16px;">
+        <h4 style="margin:0 0 8px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:8px; font-weight:700">
+          <span style="color:var(--a1); display:inline-flex; width:16px; height:16px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="15" r="4.5"/><path d="m11.5 11.5 8-8M17 6l2.5 2.5M14 9l2 2"/></svg></span> Comparative Keyness &amp; Significance
+        </h4>
+        <ul style="margin:0; padding-left:18px; font-size:12.5px; line-height:1.65; color:var(--ink);">
+          <li style="margin-bottom:6px;">
+            <b>Positive Keywords (Statistically Overused):</b> Words whose frequency in your target study corpus is <b>statistically far higher</b> than in the reference corpus (Log Ratio &gt; 0). They reveal the core genre, topic, and style (e.g. in a medical corpus: <i>patient, clinical, dosage</i>).
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Negative Keywords (Statistically Underused):</b> Words whose frequency in your target corpus is <b>statistically far lower</b> than in the reference corpus (Log Ratio &lt; 0), or completely absent! They reveal stylistic taboos or features systematically avoided (e.g. academic articles avoid casual pronouns like <i>I, you, me, wanna</i>). "Negative" means mathematical underuse, NOT negative sentiment!
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Log-Likelihood (LL / G²):</b> Gold-standard significance test in corpus linguistics. Accurately handles non-normal, skewed textual distributions where rare words are common (Zipf's law).
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Chi-Square (χ²):</b> Classical contingency table test comparing observed vs. expected counts. Overestimates significance on words with low expected counts (&lt; 5).
+          </li>
+          <li style="margin-bottom:6px;">
+            <b>Log Ratio (Effect Size &amp; Magnitude):</b> Measures <i>how big</i> the proportional difference is:
+            <br>• <b>+1.0:</b> Word is <b>2 times (200%)</b> more frequent in target corpus.
+            <br>• <b>+2.0:</b> Word is <b>4 times (400%)</b> more frequent in target corpus.
+            <br>• <b>+3.0:</b> Word is <b>8 times (800%)</b> more frequent in target corpus.
+            <br>• <b>-1.0:</b> Word is <b>half as frequent (50%)</b> in target corpus.
+          </li>
+          <li>
+            <b>Significance Cutoff &amp; p-values (Critical Values Table):</b>
+            <br>• <b>LL / χ² ≥ 3.84:</b> Significant at <b>p &lt; 0.05</b> (95% confidence).
+            <br>• <b>LL / χ² ≥ 6.63:</b> Highly significant at <b>p &lt; 0.01</b> (99% confidence).
+            <br>• <b>LL / χ² ≥ 10.83:</b> Very highly significant at <b>p &lt; 0.001</b> (99.9% confidence).
+            <br>• <b>LL / χ² ≥ 15.13:</b> Overwhelmingly significant at <b>p &lt; 0.0001</b> (99.99% confidence).
+          </li>
+        </ul>
+      </div>
+
+      <!-- Study Note 6: Master Table Columns Legend -->
+      <div style="background:var(--row); border:1.5px solid var(--a1); padding:14px; border-radius:16px;">
+        <h4 style="margin:0 0 8px 0; color:var(--ink); font-family:'Sora'; font-size:13.5px; display:flex; align-items:center; gap:8px; font-weight:700">
+          <span style="color:var(--a1); display:inline-flex; width:16px; height:16px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></span> Master Table Columns Legend (All Tables Explained)
+        </h4>
+        <ul style="margin:0; padding-left:18px; font-size:12.5px; line-height:1.65; color:var(--ink);">
+          <li style="margin-bottom:4px;"><b>Hit #:</b> The sequential concordance match index (Hit 1, Hit 2...).</li>
+          <li style="margin-bottom:4px;"><b>File / Source:</b> Specific document in your loaded corpus where the occurrence was found.</li>
+          <li style="margin-bottom:4px;"><b>Left / Node / Right:</b> In KWIC: <b>Node</b> is your keyword; <b>Left</b> is preceding sentence context; <b>Right</b> is following sentence context.</li>
+          <li style="margin-bottom:4px;"><b>Rank:</b> Table position in the sorted list (Rank 1 = most frequent word or top statistical score).</li>
+          <li style="margin-bottom:4px;"><b>Freq (Raw Freq):</b> Raw count of how many times the word or phrase occurred.</li>
+          <li style="margin-bottom:4px;"><b>TGT Frequency:</b> Raw count of the word in your main Study / Target Corpus.</li>
+          <li style="margin-bottom:4px;"><b>TGT 1k (Per 1k):</b> Normalized frequency per 1,000 words in Target Corpus: <code>(TGT Freq / Total Words) × 1,000</code>. Standardizes counts across texts of different lengths!</li>
+          <li style="margin-bottom:4px;"><b>REF Frequency:</b> Raw count in your comparison Reference Corpus.</li>
+          <li style="margin-bottom:4px;"><b>REF 1k:</b> Normalized frequency per 1,000 words in Reference Corpus: <code>(REF Freq / Total Reference Words) × 1,000</code>.</li>
+          <li style="margin-bottom:4px;"><b>Keyness (LL):</b> Log-Likelihood score. Values above 3.84, 6.63, and 10.83 represent 95%, 99%, and 99.9% statistical significance.</li>
+          <li style="margin-bottom:4px;"><b>Chi-Square (χ²):</b> Classical keyness score comparing observed vs expected frequencies.</li>
+          <li style="margin-bottom:4px;"><b>Log Ratio:</b> Effect size (+1.0 = twice as frequent; +2.0 = 4x; -1.0 = half as frequent).</li>
+          <li style="margin-bottom:4px;"><b>Keyword Status:</b> <b>Positive (Overused)</b> or <b>Negative (Underused)</b> in the study corpus.</li>
+          <li style="margin-bottom:4px;"><b>Range &amp; Range %:</b> Number and percentage of separate corpus files containing the word.</li>
+          <li style="margin-bottom:4px;"><b>Co-occur (O11):</b> In Collocates: Observed co-occurrences in the ±5 word span of the node word.</li>
+          <li style="margin-bottom:4px;"><b>Stat Score:</b> Mathematical score of the selected association formula (MI, T-Score, LL, or Dice).</li>
+          <li style="margin-bottom:4px;"><b>Span (L5..L1, R1..R5):</b> Exact count of occurrences at each individual position around the node.</li>
+          <li style="margin-bottom:4px;"><b>Tokens &amp; Types:</b> Running words count (Tokens) vs unique distinct vocabulary words (Types).</li>
+          <li style="margin-bottom:4px;"><b>TTR %:</b> Type-Token Ratio <code>(Types / Tokens) × 100</code> measuring lexical diversity.</li>
+          <li style="margin-bottom:4px;"><b>Page # &amp; Doc %:</b> In File View and Dispersion Plots: 280-token chunk page and 0–100% position in text.</li>
+          <li><b>Valence, Polarity &amp; Emotion:</b> Sentiment score (-1.00 to +1.00), category (Positive/Negative/Neutral), and Joy/Sadness/Anger/Fear breakdown.</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div style="margin-top:24px; text-align:right">
+      <button class="btn">Got It</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="searchNavModal" style="z-index:9998; align-items:center;">
+  <div class="modal glass corpus-search-modal" style="max-width: 480px; width: 94%; padding: 22px; border-radius: 24px; border: 1px solid var(--stroke); box-shadow: 0 20px 50px rgba(0,0,0,0.35); display:flex; flex-direction:column; max-height: 82vh; margin:auto;">
+    <!-- Modal Header -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <div>
+        <h3 style="display:flex; align-items:center; gap:8px; font-family:'Sora'; font-weight:800; font-size:18px; margin:0 0 2px 0; color:var(--ink)">
+          <span id="searchModalIcon" style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; color:var(--a1);"></span>
+          Word Count Search
+        </h3>
+        <p style="margin:0; color:var(--ink-soft); font-size:12px;">
+          Search any word to find its total occurrences in the corpus
+        </p>
+      </div>
+      <button class="iconbtn" aria-label="Close search" style="width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; margin-top:-2px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    
+    <!-- Search Form with Input, Clear Button, and Submit Button -->
+    <form id="quickSearchForm" style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
+      <div style="position: relative; flex:1;">
+        <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); pointer-events: none; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center;" id="searchModalInputIcon"></span>
+        <input type="search" id="quickSearchInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" placeholder="Type a word to count (e.g. language)..." style="padding: 11px 36px 11px 38px; font-size: 14.5px; border-radius: 8px; border: 1px solid var(--stroke); background: var(--glass-2); color: var(--ink); width: 100%; height: 42px; font-family: inherit; outline: none; transition: all 0.2s;">
+        <button type="button" id="quickSearchClearBtn" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--ink-soft); cursor: pointer; padding: 6px; border-radius: 50%; display: none; line-height: 1; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+      <button type="submit" id="quickSearchSubmitBtn" class="btn" style="height:42px; padding:0 18px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; flex-shrink:0;">
+        <span>Count</span>
+      </button>
+    </form>
+
+    <!-- Results Area -->
+    <div style="display: flex; flex-direction: column; gap: 10px; max-height: 52vh; overflow-y: auto; padding-right: 4px; flex: 1;" id="quickSearchSuggestions"></div>
+
+    <!-- Modal Footer -->
+    <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--stroke-2); display: flex; justify-content: flex-end; align-items: center;">
+      <button class="btn ghost">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="aboutModal">
+  <div class="modal glass" style="max-width:620px">
+    <h3>LinguaX Arc</h3>
+    <p>A comprehensive, highly advanced corpus analysis, text linguistics, and secure on-device NLP toolkit for Android, crafted by <b>Dailwind Studios</b>. Load and analyze your .txt, .docx, or .pdf corpora locally with professional tools including KWIC concordancing, dispersion plots, full document file views, collocational clusters, n-grams sequence tracking, association metric collocate stats, vocabulary word lists, comparative keyword keyness, dynamic tag clouds, AI-powered academic summarization, and sentiment &amp; emotional tone analysis. Navigate instantly between all features using the unified Appbar Quick Search Modal. Everything runs entirely offline on your device, ensuring total research privacy.</p>
+    <p><b style="color:var(--ink)">Tools &amp; Features:</b> Corpus · KWIC · Plot · File View · Clusters · N-Grams · Collocates · Word List · Keywords · Word Cloud · Summarizer · Sentiment · Preferences &amp; Theme · Quick Navigation Search</p>
+    
+    <div class="profile-section-title">About the Developer</div>
+    <div class="profile-card">
+      <div class="profile-avatar">
+        AT
+        
+      </div>
+      <div class="profile-info">
+        <h4>Arslan Tahir</h4>
+        <div class="subtitle">Founder of LinguaX Arc and Dailwind Studios</div>
+        <p>Arslan Tahir is a PhD Scholar in English Linguistics at Emerson University Multan, working on corpus-based Multi-Dimensional Analysis of register variation. He also serves as a Visiting Lecturer at Emerson University Multan. He is the founder of Dailwind Studio™, a software studio building offline-first research tools and mobile applications, including LinguaX Arc a fully offline corpus analysis toolkit for Android.</p>
+        <div class="profile-contact">
+          <span>Email: arslan@dailwind.com</span>
+          <span>Affiliation: Emerson University Multan</span>
+        </div>
+        <div style="margin-top:10px;">
+          <a target="_blank" rel="noopener noreferrer" class="btn ghost small" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; color:inherit; font-size:12px; height:32px; border-radius:10px; font-weight:600;">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px; height:14px; color:var(--a1);"><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/></svg>
+            Google Scholar Profile
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-section-title">Dedication</div>
+    <div class="profile-card">
+      <div class="profile-avatar alt">
+        DT
+        
+      </div>
+      <div class="profile-info">
+        <h4>Dr. Adnan Tahir</h4>
+        <div class="subtitle">Professor of English</div>
+        <p>This application is dedicated with deep gratitude to Dr. Adnan Tahir (Professor of English, Emerson University, Multan, Pakistan). A distinguished doctoral mentor with extensive expertise in Applied Linguistics and Corpus Studies, his academic leadership is truly inspiring. Above all, his unwavering support and guidance have profoundly shaped my life and career.</p>
+        <div style="margin-top:10px;">
+          <a target="_blank" rel="noopener noreferrer" class="btn ghost small" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; color:inherit; font-size:12px; height:32px; border-radius:10px; font-weight:600;">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px; height:14px; color:var(--a1);"><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/></svg>
+            Google Scholar Profile
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:11px; opacity:.7; margin: 16px 4px 8px; line-height: 1.5;">
+      Dailwind Studios · LinguaX Arc <span id="aboutVersion"></span>
+    </div>
+    <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <button class="btn ghost small" style="display:inline-flex; align-items:center; gap:6px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; color:var(--a1);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h2"/></svg>
+          Cite Software
+        </button>
+        <a target="_blank" rel="noopener noreferrer" class="btn ghost small" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; color:inherit;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; color:var(--a1);"><circle cx="12" cy="12" r="10"/><path d="M7 17l10-10M7 7h10v10"/></svg>
+          Zenodo Record
+        </a>
+        <a target="_blank" rel="noopener noreferrer" class="btn ghost small" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; color:inherit;">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px; height:14px; color:var(--a1);"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </a>
+        <a target="_blank" rel="noopener noreferrer" class="btn ghost small" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; color:inherit;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; color:var(--a1);"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Website
+        </a>
+      </div>
+      <button class="btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rate Our App Modal (Triggered on 5th Task or via Settings/About) -->
+<div class="modal-bg" id="rateAppModal">
+  <div class="modal glass" style="max-width:440px; text-align:center; padding:24px; border:1px solid var(--stroke); box-shadow:0 20px 50px rgba(0,0,0,0.35);">
+    <div style="width:58px; height:58px; margin:0 auto 14px; border-radius:50%; background:linear-gradient(135deg, var(--a1), var(--a2)); display:grid; place-items:center; color:#fff; box-shadow:0 8px 24px var(--glow-shadow);">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" style="width:30px; height:30px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <h3 style="margin:0 0 8px 0; font-family:'Sora', sans-serif; font-size:19px; color:var(--ink); font-weight:800;">Enjoying LinguaX Arc?</h3>
+    <p style="margin:0 0 16px 0; font-size:13.5px; color:var(--ink-soft); line-height:1.5;">
+      You have successfully performed <b style="color:var(--ink);" id="rateTaskCountText">5 analyses</b>! Your feedback and ratings help us continue developing 100% private, on-device corpus linguistics and NLP tools for researchers worldwide.
+    </p>
+    <div style="display:flex; justify-content:center; gap:8px; margin-bottom:20px; align-items:center;" class="star-glow">
+      <svg viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1.5" style="width:26px; height:26px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <svg viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1.5" style="width:26px; height:26px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <svg viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1.5" style="width:26px; height:26px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <svg viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1.5" style="width:26px; height:26px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <svg viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1.5" style="width:26px; height:26px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button class="btn run" style="width:100%; height:38px; display:flex; align-items:center; justify-content:center; gap:8px;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px; height:16px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Rate on Google Play
+      </button>
+      <button class="btn ghost" style="width:100%; height:36px;">
+        Maybe Later
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Workspace Analysis Inspection Modal -->
+<div class="modal-bg" id="workspaceDetailModal">
+  <div class="modal glass" style="max-width:680px; max-height:85vh; display:flex; flex-direction:column; border:1px solid var(--stroke);">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+      <div>
+        <h3 id="wsDetailTitle" style="margin:0 0 4px 0; font-family:'Sora'; font-size:18px; color:var(--ink);">Analysis Details</h3>
+        <div id="wsDetailMeta" style="font-size:11.5px; color:var(--ink-soft);"></div>
+      </div>
+      <button class="iconbtn" aria-label="Close" style="width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div id="wsDetailBody" style="overflow-y:auto; flex:1; padding-right:6px; display:flex; flex-direction:column; gap:12px;"></div>
+    <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--stroke-2); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <div id="wsDetailActions" style="display:flex; gap:8px;"></div>
+      <button class="btn ghost">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Action Modal -->
+<div class="modal-bg" id="confirmActionModal" style="z-index:9999; align-items:center;">
+  <div class="modal glass" style="max-width:440px; padding:22px; border:1px solid var(--stroke); box-shadow:0 20px 50px rgba(0,0,0,0.35); text-align:center; margin:auto;">
+    <div id="confirmActionIcon" style="width:52px; height:52px; border-radius:18px; background:rgba(239, 68, 68, 0.12); color:var(--danger, #ef4444); display:flex; align-items:center; justify-content:center; margin:0 auto 14px auto;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:26px; height:26px;"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
+    </div>
+    <h3 id="confirmActionTitle" style="margin:0 0 8px 0; font-family:'Sora', sans-serif; font-size:18px; font-weight:800; color:var(--ink);">Confirm Action</h3>
+    <p id="confirmActionMessage" style="margin:0 0 20px 0; font-size:13.5px; line-height:1.55; color:var(--ink-soft);">Are you sure you want to proceed? This action cannot be undone.</p>
+    <div style="display:flex; gap:10px; justify-content:center;">
+      <button type="button" class="btn ghost" style="flex:1; height:36px;">Cancel</button>
+      <button type="button" id="confirmActionBtn" class="btn danger-btn" style="flex:1; height:36px;">Clear</button>
+    </div>
+  </div>
+</div>
+
+<!-- Academic Citation Modal -->
+<div class="modal-bg" id="citationModal">
+  <div class="modal glass" style="max-width:620px; max-height:88vh; display:flex; flex-direction:column; border:1px solid var(--stroke); box-shadow:0 20px 50px rgba(0,0,0,0.35);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg, var(--a1), #6366f1); display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:0 4px 14px var(--glow-shadow);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px; height:20px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <div>
+          <h3 style="margin:0; font-family:'Sora', sans-serif; font-size:17px; font-weight:800; color:var(--ink);">Cite LinguaX Arc</h3>
+          <div style="font-size:11.5px; color:var(--ink-soft); margin-top:2px;">
+            Official Academic Citation Formats for Research &amp; Theses
+          </div>
+        </div>
+      </div>
+      <button class="iconbtn" aria-label="Close" style="width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+
+    <!-- User Inquiry Prompt Card -->
+    <div style="padding:12px 14px; border-radius:12px; background:var(--row); border:1px solid var(--stroke-2); margin-bottom:12px; line-height:1.5; font-size:12px; color:var(--ink);">
+      <div style="font-weight:700; color:var(--a1); display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Would you like to cite LinguaX Arc in your research paper, thesis, or dissertation?
+      </div>
+      <div style="color:var(--ink-soft);">
+        Official citation formats for LinguaX Arc. If you need APA 7th Edition, MLA 9th Edition, or Chicago 17th Edition formats for your bibliography, publication, or thesis, copy them below:
+      </div>
+    </div>
+
+    <div style="overflow-y:auto; flex:1; padding-right:4px; display:flex; flex-direction:column; gap:10px;">
+      
+      <!-- APA 7th Edition -->
+      <div class="card glass" style="margin:0; padding:12px 14px; border:1px solid var(--stroke-2); background:var(--row);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="font-family:'Sora'; font-weight:700; font-size:13px; color:var(--ink); display:flex; align-items:center; gap:6px;">
+            APA 7th Edition
+          </div>
+          <button class="btn ghost small" id="copyApaBtn" style="display:inline-flex; align-items:center; gap:5px; font-size:11px; padding:3px 10px; border-radius:8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px; height:13px;"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            Copy APA
+          </button>
+        </div>
+        <div style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink); line-height:1.5; background:var(--row-alt); padding:8px 10px; border-radius:8px; border:1px solid var(--stroke-2); user-select:all; word-break:break-word;" id="citationTextApa">Tahir, A. (2026). LinguaX Arc: A Fully Offline Mobile Corpus Analysis Toolkit (Version v6.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22706552</div>
+      </div>
+
+      <!-- MLA 9th Edition -->
+      <div class="card glass" style="margin:0; padding:12px 14px; border:1px solid var(--stroke-2); background:var(--row);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="font-family:'Sora'; font-weight:700; font-size:13px; color:var(--ink);">
+            MLA 9th Edition
+          </div>
+          <button class="btn ghost small" id="copyMlaBtn" style="display:inline-flex; align-items:center; gap:5px; font-size:11px; padding:3px 10px; border-radius:8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px; height:13px;"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            Copy MLA
+          </button>
+        </div>
+        <div style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink); line-height:1.5; background:var(--row-alt); padding:8px 10px; border-radius:8px; border:1px solid var(--stroke-2); user-select:all; word-break:break-word;" id="citationTextMla">Tahir, Arslan. LinguaX Arc: A Fully Offline Mobile Corpus Analysis Toolkit. Version v6.0, 2026, Zenodo, doi.org/10.5281/zenodo.22706552.</div>
+      </div>
+
+      <!-- Chicago 17th Edition -->
+      <div class="card glass" style="margin:0; padding:12px 14px; border:1px solid var(--stroke-2); background:var(--row);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="font-family:'Sora'; font-weight:700; font-size:13px; color:var(--ink);">
+            Chicago (17th Edition)
+          </div>
+          <button class="btn ghost small" id="copyChicagoBtn" style="display:inline-flex; align-items:center; gap:5px; font-size:11px; padding:3px 10px; border-radius:8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px; height:13px;"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            Copy Chicago
+          </button>
+        </div>
+        <div style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink); line-height:1.5; background:var(--row-alt); padding:8px 10px; border-radius:8px; border:1px solid var(--stroke-2); user-select:all; word-break:break-word;" id="citationTextChicago">Tahir, Arslan. 2026. LinguaX Arc: A Fully Offline Mobile Corpus Analysis Toolkit. Version v6.0. Computer software. Zenodo. https://doi.org/10.5281/zenodo.22706552.</div>
+      </div>
+
+    </div>
+
+    <div style="padding-top:12px; border-top:1px solid var(--stroke-2); display:flex; justify-content:space-between; align-items:center; margin-top:8px; gap:8px; flex-wrap:wrap;">
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <button class="btn ghost small" style="display:inline-flex; align-items:center; gap:6px; font-size:12px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          Copy All Formats
+        </button>
+        <a target="_blank" rel="noopener noreferrer" class="btn ghost small" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; text-decoration:none; color:inherit;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px; height:14px; color:var(--a1);"><circle cx="12" cy="12" r="10"/><path d="M7 17l10-10M7 7h10v10"/></svg>
+          Zenodo Record
+        </a>
+      </div>
+      <button class="btn run small">Close</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+<input type="button" data-file-blocked disabled id="filePick" accept=".txt,.text,.md,.csv,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple hidden>
+<input type="button" data-file-blocked disabled id="refPick" accept=".txt,.text,.md,.csv,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple hidden>
+
+
+
+</body></html>
