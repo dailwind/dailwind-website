@@ -7,3 +7,6 @@
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 
 @media(min-width:761px) and (prefers-reduced-motion:no-preference){.app-window{animation:workspace-open .65s ease-out both}}@keyframes workspace-open{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+/* Reserve a separate rail for the dock: no window/dock overlap. */
+@media(min-width:761px){:root{--dock-rail:104px;--window-gap:28px}.app-window{height:calc(100dvh - 38px - 24px - var(--dock-rail) - var(--window-gap))}.app-window.maximized{height:calc(100dvh - 38px - 6px - var(--dock-rail) - var(--window-gap))}.desk-dock{bottom:18px;padding:12px 14px 10px;min-height:78px}.desk-dock button{min-height:60px}}
+@media(max-width:760px){main{padding-bottom:calc(154px + env(safe-area-inset-bottom))}.desk-dock{bottom:calc(18px + env(safe-area-inset-bottom));box-shadow:0 10px 26px #5e472f2b}footer{padding-bottom:25px}section.panel{scroll-margin-top:110px}}

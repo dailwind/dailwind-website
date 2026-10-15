@@ -3,16 +3,19 @@
 (function(root){
 const STOP=new Set('a an the and or but of in on at to from for with by is are was were be been being this that these those it its as not have has had do does did'.split(' '));
 const lower=s=>String(s).toLowerCase(),bump=(m,k,n=1)=>m.set(k,(m.get(k)||0)+n);
-const words=text=>[...String(text).matchAll(/[\p{L}\p{M}\p{N}]+(?:['’\-][\p{L}\p{M}\p{N}]+)*/gu)].map(m=>({w:m[0],l:lower(m[0]),lemma:null,tag:null,p:m.index,end:m.index+m[0].length}));
-function parseFile(file){
- if(!/\.conllu?$/i.test(file.name))return {...file,tokens:words(file.text),annotated:false};
+const LIMITS=Object.freeze({fileChars:10000000,workspaceChars:20000000,tokens:1000000,files:50,fileBytes:20*1024*1024});
+function words(text,maxTokens=LIMITS.tokens){const out=[];for(const m of String(text).matchAll(/[\p{L}\p{M}\p{N}]+(?:['’\-][\p{L}\p{M}\p{N}]+)*/gu)){if(out.length>=maxTokens)throw Error('Workspace limit: 1,000,000 tokens across target and reference corpora. Remove some files or use a smaller subcorpus.');out.push({w:m[0],l:lower(m[0]),lemma:null,tag:null,p:m.index,end:m.index+m[0].length});}return out;}
+function validateSources(files){if(!Array.isArray(files)||files.length>LIMITS.files)throw Error('Maximum 50 files per corpus.');let chars=0;for(const f of files){if(typeof f.name!=='string'||typeof f.text!=='string')throw Error('Invalid workspace document.');if(f.text.length>LIMITS.fileChars)throw Error(f.name+' exceeds 10,000,000 characters. Split this file into smaller texts.');chars+=f.text.length;}if(chars>LIMITS.workspaceChars)throw Error('Workspace limit: 20,000,000 characters across target and reference corpora. Remove some files or use a smaller subcorpus.');return chars;}
+function parseFile(file,maxTokens=LIMITS.tokens){
+ if(!/\.conllu?$/i.test(file.name))return {...file,tokens:words(file.text,maxTokens),annotated:false};
  let text='',tokens=[],sentence=[];
- function flush(){if(!sentence.length)return;const map=new Map();for(const row of sentence){const t={w:row[1],l:lower(row[1]),lemma:row[2]==='_'?lower(row[1]):lower(row[2]),tag:row[3],p:text.length,end:text.length+row[1].length,udId:+row[0],head:+row[6],rel:row[7]};text+=row[1]+' ';map.set(t.udId,t);tokens.push(t);}for(const t of map.values())t.parent=map.get(t.head)?.p??null;text+='\n';sentence=[];}
+ function flush(){if(!sentence.length)return;const map=new Map();for(const row of sentence){const t={w:row[1],l:lower(row[1]),lemma:row[2]==='_'?lower(row[1]):lower(row[2]),tag:row[3],p:text.length,end:text.length+row[1].length,udId:+row[0],head:+row[6],rel:row[7]};text+=row[1]+' ';map.set(t.udId,t);if(tokens.length>=maxTokens)throw Error('Workspace limit: 1,000,000 tokens across target and reference corpora. Remove some files or use a smaller subcorpus.');tokens.push(t);}for(const t of map.values())t.parent=map.get(t.head)?.p??null;text+='\n';sentence=[];}
  for(const line of file.text.split(/\r?\n/)){if(!line.trim()){flush();continue;}if(line.startsWith('#'))continue;const r=line.split('\t');if(!/^\d+$/.test(r[0]))continue;if(r.length<8||!/^\d+$/.test(r[6]))throw Error('Invalid CoNLL-U row in '+file.name);sentence.push(r);}flush();
  if(!tokens.length)throw Error('No annotated tokens found in '+file.name);
- return {...file,text,tokens,annotated:true};
+ return {...file,text,sourceChars:file.text.length,tokens,annotated:true};
 }
-function prepare(files){if(files.length>50)throw Error('Maximum 50 files per workspace.');const docs=files.map(parseFile);const chars=docs.reduce((n,d)=>n+d.text.length,0),tokens=docs.reduce((n,d)=>n+d.tokens.length,0);if(chars>2000000||tokens>200000)throw Error('Workspace limit: 2 million characters or 200,000 tokens.');return docs;}
+function prepare(files,maxTokens=LIMITS.tokens){validateSources(files);const docs=[];let count=0;for(const f of files){const d=parseFile(f,maxTokens-count);count+=d.tokens.length;docs.push(d);}return docs;}
+function prepareWorkspace(target,reference){if(validateSources(target)+validateSources(reference)>LIMITS.workspaceChars)throw Error('Workspace limit: 20,000,000 characters across target and reference corpora. Remove some files or use a smaller subcorpus.');const docs=prepare(target),remaining=LIMITS.tokens-docs.reduce((n,d)=>n+d.tokens.length,0);const ref=prepare(reference,remaining);return {docs,reference:ref};}
 function freq(docs,field='l',tag=''){const m=new Map();for(const d of docs)for(const t of d.tokens)if(!tag||t.tag===tag)bump(m,field==='lemma'?(t.lemma||t.l):t.l);return m;}
 const size=docs=>docs.reduce((n,d)=>n+d.tokens.length,0),round=x=>Number(x.toFixed(4));
 const csvCell=v=>{const s=String(v??''),safe=typeof v==='string'&&/^\s*[=+@-]/.test(s)?"'"+s:s;return '"'+safe.replace(/"/g,'""')+'"';};
@@ -68,6 +71,6 @@ function analyze(input){const {tool,q='',q2='',options={}}=input,docs=input.docs
  }
  const total=rows.length;return {columns,rows:rows.slice(0,5000),total,note,plot,tokens:n};
 }
-const api={words,parseFile,prepare,analyze,parsePairs,profiles,keywords,collocations,csv:result=>[result.columns,...result.rows].map(r=>r.map(csvCell).join(',')).join('\r\n')};
+const api={LIMITS,validateSources,prepareWorkspace,words,parseFile,prepare,analyze,parsePairs,profiles,keywords,collocations,csv:result=>[result.columns,...result.rows].map(r=>r.map(csvCell).join(',')).join('\r\n')};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;root.ArcEngine=api;
 })(typeof self!=='undefined'?self:globalThis);
