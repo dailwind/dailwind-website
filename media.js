@@ -1,0 +1,22 @@
+'use strict';
+(()=>{const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ document.querySelectorAll('[data-phone-showcase]').forEach(box=>{const slides=[...box.querySelectorAll('[data-phone-slide]')],toggle=box.querySelector('[data-tour-toggle]'),label=box.querySelector('[data-scene-description]'),count=box.querySelector('[data-slide-counter]');let index=0,paused=reduced.matches,visible=false,timer;
+ const captions=['Corpus workspace','Parts of speech','Punctuation pyramid','KWIC concordance','Dispersion plot','File view','Full-screen reading','Word cloud','Sentiment & tone','Analysis history'];
+ function load(i){const img=slides[i];if(!img.src&&img.dataset.src)img.src=img.dataset.src;}
+ function select(i){index=(i+slides.length)%slides.length;load(index);slides.forEach((s,n)=>s.classList.toggle('is-active',index===n));label.textContent=captions[index];count.textContent=String(index+1).padStart(2,'0')+' / '+slides.length;load((index+1)%slides.length);}
+ function sync(){clearInterval(timer);toggle.textContent=paused?'Play tour':'Pause tour';if(visible&&!paused&&!document.hidden)timer=setInterval(()=>select(index+1),5000);}
+ box.querySelector('[data-slide-prev]').addEventListener('click',()=>{paused=true;select(index-1);sync();});box.querySelector('[data-slide-next]').addEventListener('click',()=>{paused=true;select(index+1);sync();});toggle.addEventListener('click',()=>{paused=!paused;sync();});document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',e=>{if(e.matches)paused=true;sync();});
+ if('IntersectionObserver'in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)load((index+1)%slides.length);sync();},{threshold:.1}).observe(box);else visible=true;sync();
+ });
+ document.querySelectorAll('[data-autoplay-player]').forEach(box=>{
+  const video=box.querySelector('video'),toggle=box.querySelector('[data-video-toggle]'),sound=box.querySelector('[data-sound-toggle]'),status=box.querySelector('[data-video-status]');let visible=true,userPaused=reduced.matches,automaticPause=false;
+  video.muted=true;video.defaultMuted=true;video.playsInline=true;video.autoplay=!userPaused;
+  function labels(){toggle.textContent=video.paused?'Play video':'Pause video';sound.textContent=video.muted?'Sound off':'Sound on';sound.setAttribute('aria-label',video.muted?'Turn video sound on':'Mute video sound');}
+  function pause(){if(!video.paused){automaticPause=true;video.pause();}}
+  async function play(){if(userPaused||!visible||document.hidden){pause();return;}try{await video.play();status.textContent='';}catch{if(visible&&!document.hidden&&!userPaused)status.textContent='Tap Play to watch the video.';}labels();}
+  video.addEventListener('loadedmetadata',play);video.addEventListener('canplay',play);video.addEventListener('play',()=>{userPaused=false;automaticPause=false;status.textContent='';labels();});video.addEventListener('pause',()=>{if(!automaticPause&&visible&&!document.hidden)userPaused=true;automaticPause=false;labels();});video.addEventListener('volumechange',labels);video.addEventListener('error',()=>{status.textContent='Video could not load. Tap Play to retry.';labels();});
+  toggle.addEventListener('click',()=>{if(video.paused){userPaused=false;visible=true;if(video.error)video.load();play();}else{userPaused=true;video.pause();}labels();});sound.addEventListener('click',()=>{video.muted=!video.muted;labels();});document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else play();});reduced.addEventListener('change',e=>{if(e.matches){userPaused=true;pause();}labels();});
+  if('IntersectionObserver'in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)play();else pause();},{threshold:.1}).observe(box);labels();play();
+ });
+ const dialog=document.getElementById('screenshot-dialog');if(!dialog)return;const enlarged=document.getElementById('enlarged-screenshot'),caption=document.getElementById('screenshot-caption');let opener;
+ document.querySelectorAll('[data-open-screenshot]').forEach(b=>b.addEventListener('click',()=>{opener=b;enlarged.src=b.dataset.openScreenshot;enlarged.alt=b.querySelector('img').alt;caption.textContent=b.dataset.caption;dialog.showModal();}));document.querySelector('[data-close-screenshot]').addEventListener('click',()=>dialog.close());dialog.addEventListener('close',()=>opener?.focus());})();
