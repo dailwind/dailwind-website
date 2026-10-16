@@ -1,5 +1,5 @@
  'use strict';
-importScripts('engine.js?v=20261015');
+importScripts('engine.js?v=20261017');
 let docs=[],reference=[],pairs=[];
 function summary(){return {files:docs.map(d=>({id:d.id,name:d.name,tokens:d.tokens.length,annotated:d.annotated})),tokens:docs.reduce((n,d)=>n+d.tokens.length,0)};}
 self.onmessage=event=>{const {id,type,payload}=event.data;try{let result;if(type==='load'){const next=ArcEngine.prepareWorkspace(payload.docs,payload.reference),aligned=ArcEngine.parsePairs(payload.parallel||'');docs=next.docs;reference=next.reference;pairs=aligned;result=summary();}else if(type==='append'){

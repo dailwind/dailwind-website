@@ -1,0 +1,49 @@
+DAILWIND ARTICLES — ASAN GUIDE
+
+EK DAFA WEBSITE SETUP
+1. Final ZIP extract karo. website folder ke ANDAR ke tamam contents apni existing GitHub website repository ke root mein upload karo. ZIP ya outer website folder upload nahi karna.
+2. publishing folder aur .github/workflows/dailwind-pages.yml bhi upload hone chahiye. Windows mein .github nazar na aaye to View > Show > Hidden items dekho.
+3. Agar .github folder upload nahi hua: GitHub > Add file > Create new file. Filename: .github/workflows/dailwind-pages.yml. publishing/dailwind-pages.yml ki poori text copy karke is file mein paste karo aur Commit changes dabao.
+4. Settings > Pages > Build and deployment > Source: GitHub Actions select karo. Purane 'Deploy from a branch' option ki jagah ye choose karna hai.
+5. Custom domain dailwind.com aur Enforce HTTPS settings preserve karo. Working DNS records change nahi karne. Actions deployments ke liye custom domain repository ke Pages settings mein bhi set rehna chahiye.
+6. Actions > Publish Dailwind > Run workflow > main > Run workflow. Green hone par website aur Articles tab kholo.
+7. Agar koi purana custom website deployment workflow alag se old files publish karta ho to sirf us obsolete workflow ko disable karo; unrelated workflows preserve karo.
+
+HAR NAYA ARTICLE KAISE ADD KARNA HAI
+Sab se asan format: PDF.
+1. GitHub website repository mein articles > uploads folder kholo.
+2. Add file > Upload files par click karo. Apna PDF upload karo.
+3. Saaf naam rakho: 2026-10-16-Corpus-Research.pdf
+4. Commit changes dabao. Actions mein Publish Dailwind green hone ka wait karo.
+5. Website ke Articles tab mein article khud aa jayega. Manual list ya JSON catalog edit nahi karna.
+
+PDF ka title filename se banega. Date YYYY-MM-DD prefix se milegi. Author ka naam khud invent nahi hoga.
+Title, author, category aur short summary chahiye to PDF ke saath same-name JSON file optional hai:
+2026-10-16-Corpus-Research.pdf
+2026-10-16-Corpus-Research.json
+publishing/PDF-METADATA-EXAMPLE.json copy karke values replace karo. Metadata JSON bhi articles/uploads/ mein rakho. Dono files ke naam extension ke ilawa same hone chahiye.
+
+WEBSITE KE ANDAR READABLE ARTICLE CHAHIYE?
+Format: .md (Markdown), UTF-8.
+publishing/ARTICLE-TEMPLATE.md ki copy lo. Upar title, author, date, category aur summary replace karo. Neeche article ka text likho.
+Notepad ya VS Code mein Save As: article-name.md; Encoding: UTF-8; Save as type: All files.
+Is .md ko articles/uploads/ mein upload aur Commit karo. Website uski proper reading page khud bana degi.
+## Section heading, **bold**, bullet lists aur https source links supported hain. HTML paste mat karo; woh text ki tarah show hoga.
+
+TXT bhi supported hai: UTF-8 plain text, blank line se paragraphs separate karo. Metadata ke liye same-name .json optional hai.
+Word (.docx) directly supported nahi. Word > Save As / Export > PDF karo. Scanned PDF share ho sakta hai, lekin selectable/searchable text ke liye pehle OCR karna hoga.
+
+ARTICLE UPDATE / REMOVE
+Update: same filename wali file replace karke Commit karo. Generated reading link filename same rehne par same rehta hai.
+Remove: source file (aur optional JSON) articles/uploads/ se delete karke Commit karo. Next successful deployment mein list aur generated page remove ho jayenge.
+articles/read/ aur catalog.json ko manually edit mat karo — ye automatically bante hain.
+
+IMPORTANT
+Sirf published/shared articles is folder mein rakho; repository aur website public ho sakte hain. Author ko proper credit do aur share karne ki permission rakho.
+Is workflow ke liye aapko apne computer par Python ya npm install nahi karna. GitHub ye kaam karta hai.
+Large PDF ko compress karna readers ke liye behtar hai; mumkin ho to har PDF 20 MB se chhota rakho.
+Agar default branch main ke ilawa hai to workflow ki branches line mein apni branch ka naam likho.
+Preview deployment par aapke future GitHub uploads automatically sync nahi honge; ye updates aapki GitHub Pages wali dailwind.com website par publish honge.
+
+Official setup reference:
+https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages

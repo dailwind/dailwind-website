@@ -1,6 +1,47 @@
 'use strict';
 /* ArcToolkit: independent, bounded browser corpus algorithms. */
 (function(root){
+
+// Explicit, deterministic preparation rules. Originals are never modified.
+function smartClean(source,o={}){
+ let text=String(source).replace(/\r\n?/g,'\n'),audit=[];
+ const apply=(rule,fn)=>{const before=text;text=fn(text);if(text!==before)audit.push({rule,beforeChars:before.length,afterChars:text.length,removedChars:Math.max(0,before.length-text.length)});};
+ if(o.normalize)apply('Unicode NFKC',s=>s.normalize('NFKC'));
+ if(o.html)apply('HTML markup',s=>s.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,' ').replace(/<\/?(?:p|div|br|h[1-6]|li|ul|ol|article|section|span|a|b|i|strong|em|body|html|head|title|table|tr|td|th)\b[^>]*>/gi,'\n').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>'));
+ if(o.headers)apply('Repeated PDF page-edge lines',s=>{const pages=s.split('\f');if(pages.length<3)return s;const counts=new Map();for(const page of pages){const l=page.split('\n').map(x=>x.trim()).filter(Boolean);for(const x of new Set([...l.slice(0,2),...l.slice(-2)]))if(x.length<160)counts.set(x,(counts.get(x)||0)+1);}const repeated=new Set([...counts].filter(([,n])=>n>=Math.max(3,Math.ceil(pages.length*.6))).map(([x])=>x));return pages.map(page=>{const lines=page.split('\n'),non=lines.map((x,i)=>x.trim()?i:-1).filter(i=>i>=0),edges=new Set([...non.slice(0,2),...non.slice(-2)]);return lines.filter((x,i)=>!edges.has(i)||!repeated.has(x.trim())).join('\n');}).join('\f');});
+ if(o.pages)apply('Page-number-only lines',s=>s.replace(/^[ \t]*(?:page\s+)?\d{1,5}(?:\s+(?:of|\/)\s*\d{1,5})?[ \t]*$/gim,''));
+ if(o.hyphens)apply('Join line-break hyphens',s=>s.replace(/(\p{L})-[ \t]*\n[ \t]*(\p{Ll})/gu,'$1$2'));
+ if(o.references)apply('Trailing reference section (heuristic)',s=>{const re=/^[ \t]*(?:\d+(?:\.\d+)*[.)]?\s+)?(?:references|bibliography|works cited|literature cited)[ \t]*$/gim;let m;while((m=re.exec(s))){if(m.index<s.length*.25)continue;const tail=s.slice(m.index+m[0].length);if(!/(?:\b(?:19|20)\d{2}\b|https?:|doi\s*:|\[\d+\])/.test(tail))continue;const appendix=/\n[ \t]*(?:appendix|appendices|acknowledg[e]?ments)\b[^\n]*\n/i.exec(tail);return s.slice(0,m.index)+(appendix?'\n\n'+tail.slice(appendix.index):'');}return s;});
+ if(o.frontmatter)apply('Front matter before Abstract (heuristic)',s=>{const m=/^[ \t]*abstract[ \t]*$/im.exec(s);return m&&m.index<s.length*.3?s.slice(m.index):s;});
+ if(o.news)apply('Standalone news boilerplate',s=>s.split('\n').filter(l=>!/^\s*(?:subscribe(?:\s+now|\s+to\s+our\s+newsletter)?|sign in|sign up|advertisement|share this article|accept all cookies|all rights reserved)[.!\s]*$/i.test(l)).join('\n'));
+ if(o.citations)apply('In-text citations (heuristic)',s=>s.replace(/\[(?:\d+(?:\s*[-–,;]\s*\d+)*)\]/g,'').replace(/\((?:[\p{L}’'\-]+(?:\s+(?:et al\.|&|and)\s*[\p{L}’'\-]*)?,?\s*(?:19|20)\d{2}[a-z]?(?:,\s*p{1,2}\.\s*\d+(?:[-–]\d+)?)?(?:;\s*)?)+\)/gu,''));
+ if(o.urls)apply('URLs',s=>s.replace(/https?:\/\/[^\s]+/gi,' '));
+ if(o.emails)apply('Email addresses',s=>s.replace(/\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b/gi,' '));
+ if(o.digits)apply('Digits',s=>s.replace(/\p{N}+/gu,' '));
+ if(o.punct)apply('Punctuation and symbols',s=>s.replace(/[\p{P}\p{S}]+/gu,' '));
+ if(o.lowercase)apply('Lowercase',s=>s.toLowerCase());
+ if(o.find)apply('Literal find and replace',s=>s.split(String(o.find).slice(0,200)).join(String(o.replace||'').slice(0,200)));
+ if(o.duplicates)apply('Exact duplicate paragraphs',s=>{const seen=new Set();return s.split(/\n\s*\n/).filter(p=>{const key=p.trim().replace(/\s+/g,' ');if(!key)return false;if(seen.has(key))return false;seen.add(key);return true;}).join('\n\n');});
+ apply('Whitespace / paragraph normalization',s=>s.replace(/\f/g,'\n\n').split('\n').map(l=>l.replace(/[^\S\n]+/g,' ').trim()).join('\n').replace(/\n{3,}/g,'\n\n').trim());
+ return {text,audit,originalChars:source.length,cleanedChars:text.length};
+}
+function grammarReview(text){
+ const issues=[],categories={};let total=0;const lineStarts=[0];for(let i=0;i<text.length;i++)if(text[i]==='\n')lineStarts.push(i+1);
+ const lineAt=p=>{let l=0,r=lineStarts.length;while(l+1<r){const m=(l+r)>>1;if(lineStarts[m]<=p)l=m;else r=m;}return l+1;};
+ const add=(m,category,suggestion)=>{total++;categories[category]=(categories[category]||0)+1;if(issues.length<5000)issues.push({category,line:lineAt(m.index),offset:m.index,match:m[0],context:text.slice(Math.max(0,m.index-65),Math.min(text.length,m.index+m[0].length+85)).replace(/\s+/g,' '),suggestion});};
+ const scan=(re,category,fn)=>{for(const m of text.matchAll(re)){const advice=fn(m);if(advice)add(m,category,advice);}};
+ scan(/\b(he|she|it)\s+(are|have)\b/gi,'Agreement',m=>'Consider “'+m[1]+' '+({are:'is',have:'has'}[m[2].toLowerCase()])+'”; check quotation and context.');
+ scan(/\b(they|we|you)\s+(is|has)\b/gi,'Agreement',m=>'Consider “'+m[1]+' '+({is:'are',has:'have'}[m[2].toLowerCase()])+'”.');
+ scan(/\bI\s+(is|are|has)\b/g,'Agreement',m=>'Consider “I '+(m[1]==='has'?'have':'am')+'”.');
+ scan(/\b(a|an)\s+(apple|orange|idea|example|hour|honest|university|user|European|one)\b/gi,'Article',m=>{const want=/^(university|user|European|one)$/i.test(m[2])?'a':'an';return m[1].toLowerCase()!==want?'Consider “'+want+' '+m[2]+'”.':null;});
+ scan(/\b([a-z]+)([ \t]+)\1\b/gi,'Repeated word',m=>/^(had|that)$/.test(m[1].toLowerCase())?null:'Possible accidental repetition; check the intended sentence.');
+ scan(/\bi\b/g,'Capitalization',()=>'Capitalize the English first-person pronoun “I”; review symbols and quotations.');
+ scan(/[ \t]+[,.!?;]/g,'Punctuation spacing',()=>'Check the space before punctuation.');
+ scan(/[!?]{2,}|\.{4,}/g,'Repeated punctuation',()=>'Review repeated punctuation; it may be intentional.');
+ scan(/\b(?:many|a few)\s+(information|advice|research|equipment)\b/gi,'Countability',()=>'Usually uncountable in English; consider “much” or a unit such as “pieces of”.');
+ return {issues,total,categories};
+}
+
 const STOP=new Set('a an the and or but of in on at to from for with by is are was were be been being this that these those it its as not have has had do does did'.split(' '));
 const lower=s=>String(s).toLowerCase(),bump=(m,k,n=1)=>m.set(k,(m.get(k)||0)+n);
 const LIMITS=Object.freeze({fileChars:10000000,workspaceChars:20000000,tokens:1000000,files:50,fileBytes:20*1024*1024});
@@ -63,7 +104,10 @@ function analyze(input){const {tool,q='',q2='',options={}}=input,docs=input.docs
  case 'bilingual':columns=['Source candidate','Target candidate','Aligned co-occurrences','Dice'];rows=bilingual(pairs).map(x=>[x.a,x.b,x.count,x.score]);note='Unigram candidate pairs from segment co-occurrence. Human review is required; this is not full terminology extraction or automatic translation.';break;
  case 'senses':columns=['Cluster','Context labels','File','Left context','Match','Right context'];rows=contextClusters(docs,q);note='Experimental lexical-context groups using three fixed seed examples and Jaccard overlap. These are not validated word senses.';break;
  case 'reading':columns=['File','Part','Text'];for(const d of docs)for(let i=0;i<d.text.length;i+=2000)rows.push([d.name,Math.floor(i/2000)+1,d.text.slice(i,i+2000)]);note='Local corpus text in 2,000-character reading sections. Workspace backups preserve the original imported source.';break;
- case 'cleaner':columns=['File','Cleaned text'];rows=docs.map(d=>{let text=d.text;if(options.urls)text=text.replace(/https?:\/\/[^\s]+/gi,' ');if(options.digits)text=text.replace(/\p{N}+/gu,' ');if(options.punct)text=text.replace(/[\p{P}\p{S}]+/gu,' ');if(options.lowercase)text=text.toLowerCase();return [d.name,text.replace(/\s+/g,' ').trim()];});note='Outputs are separate from the source corpus. Whitespace is normalized; optional removals follow the selected rules.';break;
+ case 'cleaner':{const outputs=docs.map(d=>({name:d.name,...smartClean(d.text,options)}));return {columns:['File','Original characters','Cleaned characters','Rules changed'],rows:outputs.map(d=>[d.name,d.originalChars,d.cleanedChars,d.audit.length]),total:outputs.length,note:'Original files are unchanged. Review the before/after preview and audit before downloading. Reference and citation removal are English-heading heuristics; they can remove useful text.',tokens:n,outputs};}
+ case 'grammar':{const reviews=docs.map(d=>({name:d.name,...grammarReview(d.text)}));columns=['File','Category','Line','Offset (0-based)','Evidence','Suggestion'];rows=reviews.flatMap(d=>d.issues.map(i=>[d.name,i.category,i.line,i.offset,i.context,i.suggestion]));const count=reviews.reduce((a,d)=>a+d.total,0);return {columns,rows:rows.slice(0,5000),total:count,tokens:n,note:'English rule-based review, not a full grammar checker or a validated proficiency score. Findings can be false positives. No spelling model, multilingual parsing or automatic correction. Review against the original; line/offset refer to extracted text.',plot:[...new Set(reviews.flatMap(d=>Object.keys(d.categories)))].map(label=>({label,value:reviews.reduce((n,d)=>n+(d.categories[label]||0),0)}))};}
+ case 'statistics':{columns=['File','Characters','Words','Sentences','Mean words / sentence','Types / tokens'];rows=docs.map(d=>{const sentences=d.text.split(/[.!?]+(?:\s|$)/u).filter(s=>/\p{L}/u.test(s)).length;return [d.name,d.text.length,d.tokens.length,sentences,round(d.tokens.length/Math.max(1,sentences)),round(new Set(d.tokens.map(t=>t.l)).size/Math.max(1,d.tokens.length))];});note='Sentence boundaries are punctuation-based estimates. Type/token ratio depends on corpus length; it is not a quality score.';break;}
+ case 'duplicates':{columns=['First file','Repeated in','Occurrences','Paragraph preview'];const found=new Map();for(const d of docs)for(const p of d.text.split(/\n\s*\n/)){const key=p.trim().replace(/\s+/g,' ');if(key.length<30)continue;if(!found.has(key))found.set(key,[]);found.get(key).push(d.name);}rows=[...found].filter(([,v])=>v.length>1).map(([p,v])=>[v[0],[...new Set(v)].join('; '),v.length,p.slice(0,400)]);note='Exact paragraph matches after whitespace normalization, case-sensitive, at least 30 characters. Repetition can be intentional. No source text is removed.';break;}
  case 'merger':case 'converter':columns=['Source','Plain text'];rows=tool==='merger'?[['Merged corpus',docs.map(d=>d.text).join('\n\n')]]:docs.map(d=>[d.name,d.text]);note='Import PDF/DOCX locally, then export extracted plain text. Formatting and binary originals are not converted or preserved in the text output.';break;
  case 'summary':{const text=docs.map(d=>d.text).join('\n'),f=freq(docs),sentences=text.split(/(?<=[.!?])\s+/).filter(s=>s.trim());columns=['Sentence','Relevance'];rows=sentences.map((s,i)=>({s,i,score:words(s).filter(t=>!STOP.has(t.l)).reduce((n,t)=>n+(f.get(t.l)||0),0)/Math.max(1,words(s).length)})).sort((a,b)=>b.score-a.score).slice(0,8).sort((a,b)=>a.i-b.i).map(x=>[x.s,round(x.score)]);note='Extractive frequency-based summary; no generative AI or external processing.';break;}
  case 'sentiment':{const pos=new Set('good great excellent happy love wonderful brilliant success enjoyable'.split(' ')),neg=new Set('bad terrible awful hate sad poor broken frustrating dangerous'.split(' '));columns=['File','Positive lexical hits','Negative lexical hits','Polarity'];rows=docs.map(d=>{let a=0,b=0;for(const t of d.tokens){if(pos.has(t.l))a++;if(neg.has(t.l))b++;}return [d.name,a,b,round((a-b)/Math.max(1,a+b))];});note='Small English lexical baseline without negation or sarcasm handling. Not a validated sentiment model.';break;}
@@ -71,6 +115,6 @@ function analyze(input){const {tool,q='',q2='',options={}}=input,docs=input.docs
  }
  const total=rows.length;return {columns,rows:rows.slice(0,5000),total,note,plot,tokens:n};
 }
-const api={LIMITS,validateSources,prepareWorkspace,words,parseFile,prepare,analyze,parsePairs,profiles,keywords,collocations,csv:result=>[result.columns,...result.rows].map(r=>r.map(csvCell).join(',')).join('\r\n')};
+const api={smartClean,grammarReview,LIMITS,validateSources,prepareWorkspace,words,parseFile,prepare,analyze,parsePairs,profiles,keywords,collocations,csv:result=>[result.columns,...result.rows].map(r=>r.map(csvCell).join(',')).join('\r\n')};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;root.ArcEngine=api;
 })(typeof self!=='undefined'?self:globalThis);
