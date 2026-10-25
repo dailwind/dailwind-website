@@ -1,6 +1,5 @@
-LinguaX Arc video
-
-The existing owner-supplied 10-second clip is included as linguax-ad.mp4.
-Home and the app page attempt muted inline autoplay and loop. Play/Pause and sound buttons remain available; browser or reduced-motion settings may require Play.
-Replace linguax-ad.mp4 with your own H.264/yuv420p landscape MP4, ideally 14–20 seconds, and faststart metadata. linguax-ad-poster.webp is the poster image; replace it with a frame from your new clip if desired.
-No corpus data is sent to the video player.
+DAILWIND VIDEO ASSETS
+Replace assets/videos/linguax-ad.mp4 and assets/videos/linguax-ad-poster.webp using these exact names.
+Use an H.264 MP4 with yuv420p pixels and fast-start metadata. Landscape 16:9 is recommended. The included 20-second owner video has no audio track for more reliable silent autoplay.
+Both the homepage and LinguaX Arc page use the same files. No native controls or video overlay buttons are shown. Video loops while visible; it pauses in a hidden tab / offscreen to save resources, then resumes. Browser autoplay restrictions and power-saving modes can still prevent playback. A normal page interaction retries playback.
+Pause / resume automatic media is available in the website footer, outside the video. Screenshot tours automatically cycle every 3.5 seconds and resume after returning to the page.
