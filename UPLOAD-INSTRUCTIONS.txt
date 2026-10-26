@@ -1,10 +1,5 @@
-Dailwind header and articles update
+Extract this ZIP. Upload its files and folders into the GitHub repository root containing index.html, keeping the same folder paths. Replace matching files, then commit. Do not delete any existing files. Do not upload the ZIP itself.
 
-1. Extract this ZIP on your computer.
-2. Open the GitHub repository folder containing index.html.
-3. Upload the extracted files and folders into that same root, keeping their folder paths.
-4. Replace matching files and commit. Do not delete existing website files.
-5. Upload folders by dragging them into GitHub Add file > Upload files; do not upload this ZIP itself.
-6. Wait for GitHub Pages deployment, then refresh the website.
+Includes only this update: shared desktop header spacing across studio pages, logo-only social preview and updated metadata. Toolkits retain their own UI.
 
-Only changed/new files from the latest header + four articles update are included. Existing video, screenshots and toolkits remain in place.
+The new image is assets/dailwind-logo-preview.png. Existing WhatsApp previews may remain cached; test with a newly shared URL such as https://dailwind.com/?v=20261026 after deployment.
