@@ -1,0 +1,10 @@
+Dailwind header and articles update
+
+1. Extract this ZIP on your computer.
+2. Open the GitHub repository folder containing index.html.
+3. Upload the extracted files and folders into that same root, keeping their folder paths.
+4. Replace matching files and commit. Do not delete existing website files.
+5. Upload folders by dragging them into GitHub Add file > Upload files; do not upload this ZIP itself.
+6. Wait for GitHub Pages deployment, then refresh the website.
+
+Only changed/new files from the latest header + four articles update are included. Existing video, screenshots and toolkits remain in place.

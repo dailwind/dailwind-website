@@ -47,3 +47,7 @@ Preview deployment par aapke future GitHub uploads automatically sync nahi honge
 
 Official setup reference:
 https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
+
+POETRY / TRANSLATION
+Poem ki har line ke shuru mein > aur ek space lagao. Consecutive quoted lines ek stanza ki tarah line breaks ke saath dikhengi. Scene break ke liye alag line par --- likho.
+English translation ki same-name JSON mein optional fields: original_title, original_author, translation_note. Original Urdu titles/bylines readable direction ke saath dikhte hain. editorial_note field PDF review ya original edition ka context de sakti hai. In fields ke ilawa title, author, date, category aur summary pehle ki tarah kaam karte hain.

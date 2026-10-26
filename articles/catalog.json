@@ -1,1 +1,56 @@
-[]
+[
+  {
+    "title": "The Wheat-Hued Girl",
+    "author": "Mansoor Al-Salmi",
+    "date": "2026-10-25",
+    "summary": "A roadside cup of tea opens a passage into memory, love and an unfinished story. A short story translated from Urdu.",
+    "category": "Short fiction",
+    "format": "md",
+    "original_title": "گندمی رنگت والی",
+    "original_author": "منصور السالمی",
+    "translation_note": "English translation from Urdu, prepared with AI assistance. Authorship remains with the original writer.",
+    "slug": "the-wheat-hued-girl-add558ef",
+    "url": "read/the-wheat-hued-girl-add558ef.html",
+    "file": "uploads/the-wheat-hued-girl.md"
+  },
+  {
+    "title": "The Knock",
+    "author": "Mansoor Salmi",
+    "date": "2026-10-25",
+    "summary": "A late-night visitor turns an encounter with ageing into an unsettling dream. Short fiction translated from Urdu.",
+    "category": "Short fiction",
+    "format": "md",
+    "original_title": "دستک",
+    "original_author": "منصور سالمی",
+    "translation_note": "English translation from Urdu, prepared with AI assistance. Authorship remains with the original writer.",
+    "slug": "the-knock-36e38fb7",
+    "url": "read/the-knock-36e38fb7.html",
+    "file": "uploads/the-knock.md"
+  },
+  {
+    "title": "Old Age",
+    "author": "Salmi",
+    "date": "2026-10-25",
+    "summary": "A brief portrait of ageing finds something that time has not diminished. Short fiction translated from Urdu.",
+    "category": "Short fiction",
+    "format": "md",
+    "original_title": "بڑھاپا",
+    "original_author": "سالمی",
+    "translation_note": "English translation from Urdu, prepared with AI assistance. Authorship remains with the original writer.",
+    "slug": "old-age-a01ef19f",
+    "url": "read/old-age-a01ef19f.html",
+    "file": "uploads/old-age.md"
+  },
+  {
+    "title": "LinguaX Arc: A Corpus Linguistics Toolkit in Your Pocket",
+    "author": "Dr. Adnan Tahir",
+    "date": "2026-10-25",
+    "summary": "Dr. Adnan Tahir explores offline corpus analysis on Android, proposes five classroom activities and discusses responsible use of a new research tool.",
+    "category": "App review & teaching",
+    "format": "pdf",
+    "editorial_note": "The original English PDF is reproduced unchanged. It discusses version 5.0 and records the author’s assessment as of October 2026; release details and plans are retained as written. The author’s relationship to the developer is disclosed in the PDF.",
+    "slug": "linguax-arc-a-corpus-linguistics-toolkit-in-your-pocket-8b04e361",
+    "url": "read/linguax-arc-a-corpus-linguistics-toolkit-in-your-pocket-8b04e361.html",
+    "file": "uploads/linguax-arc-a-corpus-linguistics-toolkit-in-your-pocket.pdf"
+  }
+]
