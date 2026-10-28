@@ -1,0 +1,3 @@
+Tesseract.js 7.0.0 and tesseract.js-core 7.0.0: https://github.com/naptha/tesseract.js — Apache-2.0.
+English trained model: @tesseract.js-data/eng 1.0.0, 4.0.0_best_int — https://github.com/naptha/tessdata and https://github.com/tesseract-ocr/tessdata_best — Apache-2.0.
+Only English LSTM OCR is enabled. Assets are hosted with this site.

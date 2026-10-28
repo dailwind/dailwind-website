@@ -1,5 +1,5 @@
 'use strict';
-importScripts('../corpus-toolkit/engine.js?v=20261017');
+importScripts('../corpus-toolkit/engine.js?v=20261017','cleaning-engine.js?v=20261028');
 self.onmessage=({data})=>{
  const {id,kind,docs,options={}}=data;
  try{
@@ -7,7 +7,7 @@ self.onmessage=({data})=>{
   let total=0;for(const d of docs){if(typeof d.name!=='string'||typeof d.text!=='string'||d.text.length>10000000)throw Error('Invalid or oversized document.');total+=d.text.length;}
   if(total>20000000)throw Error('Use at most 20,000,000 characters per workspace.');
   let outputs=[],duplicates=[];
-  if(kind==='cleaner')outputs=docs.map(d=>({name:d.name,original:d.text,...ArcEngine.smartClean(d.text,options)}));
+  if(kind==='cleaner')outputs=docs.map(d=>({name:d.name,original:d.text,...AdvancedCleaner.clean(d.text,options)}));
   else if(kind==='converter')outputs=docs.map(d=>({name:d.name,text:d.text,original:d.text,audit:[]}));
   else if(kind==='merger'){
    const separator=options.separator==='headings'?'headings':options.separator==='lines'?'\n\n---\n\n':'\n\n';
