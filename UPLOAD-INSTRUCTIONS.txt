@@ -1,5 +1,0 @@
-Extract this ZIP. Upload its files and folders into the GitHub repository root containing index.html, keeping the same folder paths. Replace matching files, then commit. Do not delete any existing files. Do not upload the ZIP itself.
-
-Includes only this update: shared desktop header spacing across studio pages, logo-only social preview and updated metadata. Toolkits retain their own UI.
-
-The new image is assets/dailwind-logo-preview.png. Existing WhatsApp previews may remain cached; test with a newly shared URL such as https://dailwind.com/?v=20261026 after deployment.
