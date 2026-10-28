@@ -1,5 +1,6 @@
 [
   ".nojekyll",
+  ".well-known",
   "404.html",
   "CNAME",
   "about.html",
@@ -21,6 +22,7 @@
   "linguax-arc",
   "linguax-arc.html",
   "media.js",
+  "pdf-tools",
   "privacy.html",
   "robots.txt",
   "sitemap.xml",

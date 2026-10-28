@@ -10,25 +10,29 @@ This README describes the latest website update packages. Features become live o
 
 ## Website sections
 
-- **Studio:** LinguaX Arc promotion, looping silent video, phone screenshot slideshow and founder introduction.
-- **LinguaX Arc:** a separate showcase for **LinguaX Arc: Corpus Toolkit**, Android version 6.
-- **Toolkits:** six separate browser workspaces, listed below.
+- **Home:** LinguaX Arc promotion, looping silent video, phone screenshot slideshow and founder introduction.
+- **App:** a separate showcase for **LinguaX Arc: Corpus Toolkit**, Android version 6.
+- **Toolkits:** seven separate browser workspaces, listed below.
 - **Articles:** research, reviews and creative writing with individual reading pages.
-- **Arslan Tahir:** portfolio and supplied academic information.
+- **About:** Arslan Tahir’s portfolio and supplied academic information.
 - **Contact, Privacy and Terms.**
 
 The studio logo stays at the top-left on desktop pages, with space between the brand and navigation. The social preview image uses the Dailwind **D** logo.
 
-## Toolkits
+## LinguaX Arc Toolkits
+
+Navigation is organized as **Home / App / Toolkits / Articles / About / Contact**. Existing page URLs and saved workspace identifiers remain unchanged. The Android product remains **LinguaX Arc: Corpus Toolkit**.
 
 | Workspace | URL | Main features |
 | --- | --- | --- |
-| Corpus Toolkit | `/corpus-toolkit/` | KWIC, dispersion, frequencies, n-grams, collocations, keywords, statistics, charts, annotated-data analysis and rule-based English grammar review |
-| Stylistic Toolkit | `/stylistic-toolkit/` | Evidence-based foregrounding candidates across eight linguistic levels, reference comparison, notes and exports |
-| Corpus Cleaner | `/corpus-cleaner/` | Books, theses, articles, newspapers and OCR presets; keyword removal; case sensitivity; damage cleanup; previews and audit |
-| File Converter | `/file-converter/` | Extract selectable PDF/DOCX text; export TXT or text-only Word; batch ZIP |
-| Corpus Merger | `/corpus-merger/` | Reorder/select files, choose separators and merge text; optional exact paragraph deduplication |
-| English OCR | `/english-ocr/` | Printed English recognition from scanned PDFs/images; enhancement, page ranges, editable results and exports |
+| Arc Corpus Toolkit | `/corpus-toolkit/` | KWIC, dispersion, frequencies, n-grams, collocations, keywords, statistics, charts, annotated-data analysis and rule-based English grammar review |
+| Arc Stylistic Toolkit | `/stylistic-toolkit/` | Evidence-based foregrounding candidates across eight linguistic levels, reference comparison, notes and exports |
+| Arc Corpus Cleaner | `/corpus-cleaner/` | Books, theses, articles, newspapers and OCR presets; keyword removal; case sensitivity; damage cleanup; previews and audit |
+| Arc File Converter | `/file-converter/` | Extract selectable PDF/DOCX text; export TXT or text-only Word; batch ZIP |
+| Arc Corpus Merger | `/corpus-merger/` | Reorder/select files, choose separators and merge text; optional exact paragraph deduplication |
+| Arc English OCR | `/english-ocr/` | Printed English recognition from scanned PDFs/images; enhancement, page ranges, editable results and exports |
+
+| Arc PDF Tools | `/pdf-tools/` | Split PDFs into a chosen number of parts, pages per part or custom ranges; structural optimization or scan compression; numbered PDFs and ZIP |
 
 Workspaces fill the browser area without an outer simulated desktop frame. Corpus and Stylistic Toolkit retain desktop **Auto-hide / Always show** dock controls. The preparation tools have their own focused interfaces.
 
@@ -54,9 +58,23 @@ Rules are explicit heuristics. Review changes before research use. Removing digi
 - Editable page text and engine confidence scores. Scores are **not verified accuracy percentages**.
 - Combined TXT, text-only Word, separate-page ZIP and page-report JSON exports.
 - Stop preserves completed pages for download. Previously reviewed edits can be replaced when rerunning their pages.
-- A professional paid OCR-services advertisement links to an email enquiry; it sends no message automatically.
+- A professional paid OCR-services advertisement highlights **Sindhi, Balochi, Pashto, Urdu, Punjabi, Saraiki and other regional languages**, alongside English. These are separately assessed paid services, not additional languages in the free English browser recognizer. The email enquiry sends no message automatically.
 
 Limits: PDFs up to **100 MB / 2,000 pages**, images up to **40 MB / 40 megapixels**, and **50 pages per run**. Use page ranges for large books. Rendered images are capped to manage browser memory. Difficult print, handwriting, faded scans, tables and unusual historical typefaces require careful review or specialist work.
+
+### Arc PDF Tools
+
+- Open a PDF locally or try the bundled 24-page sample.
+- Divide by **number of parts**, **pages per part**, or ordered, non-overlapping **custom page ranges**. A first/last page range can restrict the source selection.
+- A 1,000-page book divided into 20 parts produces 50 pages per part. Uneven totals are balanced; the last pages-per-part chunk may be shorter. Equal page counts do not imply equal file sizes.
+- Output names include the source name, part number and source page range, such as `Book-Part-01-pages-1-50.pdf`.
+- Download individual PDFs or an all-parts ZIP. Stop preserves completed results.
+- **Keep page content / optimize structure** uses PDF object streams. Already optimized PDFs may not become smaller; the original is offered when structural rewriting does not reduce its size.
+- **Smaller scan / image-based PDF** provides resolution and JPEG-quality controls. It requires explicit acknowledgment: output pages become images, losing searchable text, links, annotations and interactive forms. Review small text after compression. No fixed compression percentage is promised.
+- Splitting can affect document-level bookmarks, forms and signatures. Keep the original document.
+- Password-protected/encrypted PDFs are not supported. Session-only results must be downloaded before leaving.
+
+Limits: desktop input up to **200 MB**, mobile input up to **60 MB**, **10,000 pages** and **1,000 parts**, subject to available device memory. Generated output is capped at 300 MB desktop / 100 MB mobile. All-parts ZIP creation is capped at 100 MB desktop / 25 MB mobile; individual PDFs remain downloadable. Very large scans may require smaller source files. PDF processing runs in a browser worker; scan rendering proceeds one page at a time.
 
 ## Privacy and storage
 
@@ -81,6 +99,8 @@ Optional analytics remain unconfigured unless the owner supplies a measurement I
 7. Refresh the website. Link-preview services may retain an older cached image.
 
 For the initial workflow setup, use **Settings → Pages → Source → GitHub Actions**. Preserve the working custom domain and DNS configuration. Verify **Enforce HTTPS** in Pages settings.
+
+**This update also includes `pdf-tools/`, `toolkit/pdf-lib/` and new PDF assets. Upload the supplied `publishing/site-files.json` so the deployment includes the new route. Preserve the existing PDF.js files in `toolkit/lib/`.**
 
 **OCR needs the complete `toolkit/ocr/` folder.** Keep `toolkit/lib/` too: it contains the PDF and Word readers. Uploading only the OCR HTML page will not install its engine/model.
 
@@ -141,8 +161,8 @@ The security-update ZIP includes `SECURITY-REVIEW-AND-UPLOAD.txt` with the compl
 
 ## Validation and limitations
 
-Source checks cover internal links, labels, metadata, article sanitization, workers, corpus/stylistic algorithms, cleaning rules, image preprocessing, export safeguards, publishing boundaries and script integrity. Browser checks exercised Cleaner and real OCR under the page security policy. Desktop Chrome and narrow browser layouts were tested; this is not certification for every browser or physical phone.
+Source checks cover internal links, labels, metadata, article sanitization, workers, corpus/stylistic algorithms, cleaning rules, image preprocessing, export safeguards, publishing boundaries and script integrity. Browser checks exercised Cleaner and real OCR under the page security policy. PDF checks generated a real 1,000-page document and verified 20 valid 50-page outputs, structural rewriting, scan-image PDF creation, custom ranges and filenames. Browser checks exercised sample splitting, ZIP creation, scan compression and narrow layouts. Desktop Chrome and narrow browser layouts were tested; this is not certification for every browser or physical phone.
 
 ## Credits
 
-PDF.js, Mammoth and Tesseract components retain their bundled licenses/notices. OCR credits are in `toolkit/ocr/THIRD-PARTY-NOTICES.txt`. Article authors retain their authorship and receive individual bylines. Third-party component licenses do not determine ownership of submitted articles or corpora.
+PDF.js, pdf-lib 1.17.1 (MIT), Mammoth and Tesseract components retain their bundled licenses/notices. pdf-lib credits are in `toolkit/pdf-lib/`. OCR credits are in `toolkit/ocr/THIRD-PARTY-NOTICES.txt`. Article authors retain their authorship and receive individual bylines. Third-party component licenses do not determine ownership of submitted articles or corpora.
