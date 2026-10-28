@@ -1,0 +1,34 @@
+DAILWIND SECURITY HARDENING — 28 OCTOBER 2026
+
+Scope: review of the supplied static website source, article publishing, local file-processing interfaces and selected dependency advisories. This is not a full penetration test, certification or promise that compromise is impossible.
+
+APPLIED
+- Content Security Policy embedded in every HTML page, including redirect and toolkit pages. Inline JavaScript, plugins/objects, native form submission, foreign base URLs and unexpected network/script origins are restricted. Only local JavaScript is initially loaded. Optional consent-based analytics remains restricted to its existing studio-page origins. WebAssembly is explicitly retained for local PDF/OCR features; JavaScript unsafe-eval is not enabled.
+- SHA-384 integrity hashes on 59 initial script references. Content-based script URL revisions avoid stale-cache integrity failures. Local dynamic imports/workers remain same-origin dependencies; they are not all covered by initial-script SRI.
+- Hardened page regeneration and GitHub staging so future article rebuilds retain these policies and correct script hashes.
+- Reject publishing-root traversal, private key/build/hidden directories, nested symlinks, metadata symlinks and oversized article inputs. Checkout credentials are not persisted. The four official GitHub Actions are pinned to verified commit SHAs; build timeout is bounded.
+- Neutralized spreadsheet-formula payloads, including leading-whitespace payloads, in preparation duplicate reports and stylistic exports.
+- Referrer restrictions and a security-reporting contact. HTTP security-header configuration is strengthened for compatible hosts. GitHub Pages does not apply the _headers format; no claim is made that these HTTP-only protections are enabled on the public domain.
+
+VALIDATION
+- Security suite: every HTML policy, 59 script hashes, unsafe URL/event-handler checks, symlink/path traversal/key-file rejection, Actions pinning and credential persistence settings.
+- Article sanitization/escaping and publishing tests; corpus UI/worker tests; advanced cleaning and image-processing tests; stylistic engine tests; exact CSV formula payload tests; internal links, metadata and layout-related validation.
+- Browser: real English OCR sample completed under the new page policy; Cleaner completed its sample workflow. No application security-policy/resource errors were observed in that test.
+- Targeted OSV lookup for pdfjs-dist 6.4.299, mammoth 1.13.0, tesseract.js 7.0.0 and tesseract.js-core 7.0.0 returned no matching advisories. This does not audit every bundled transitive component or exclude undisclosed/new vulnerabilities.
+- Passive public-domain requests reached HTTPS successfully. The response view available to this audit did not expose CSP/HSTS/XFO/nosniff response headers. Provider/proxy behavior may affect observations; verify the final public deployment independently.
+
+OWNER SETTINGS STILL REQUIRED — NOT CHANGED HERE
+1. GitHub account: enable a passkey or two-factor authentication, keep recovery codes safely, review existing access tokens, collaborators and installed apps, and remove unneeded access.
+2. Repository: protect the main branch (or use a ruleset where available), require reviews for unfamiliar contributors, and enable available secret-scanning/dependency-security features. Never commit passwords, private keys or cloud service-role credentials. Publishing a client script makes its contents public.
+3. Repository Settings > Pages: verify the custom domain and enable Enforce HTTPS. Keep domain verification enabled; remove stale DNS records when retiring a hosted site.
+4. Domain registrar/DNS account: enable two-factor authentication and registrar lock, and keep account recovery details current.
+5. For HTTP-only security headers, configure a host/CDN that supports them while keeping the current site origin protected. Recommended directives include HSTS (start with a short max-age before increasing; do not preload/include all subdomains blindly), CSP frame-ancestors, nosniff, Permissions-Policy and a suitable referrer policy. A meta tag cannot enforce frame-ancestors. Do not rely on an _headers file on GitHub Pages. DNS/CDN changes were not made.
+6. Keep browser-facing reader/OCR dependencies maintained, retain repository backups and treat contributor PDFs and user-selected files as untrusted. Local processing reduces cloud-data exposure but does not make a browser immune to malicious documents.
+
+REFERENCES
+https://docs.github.com/en/pages/getting-started-with-github-pages/securing-your-github-pages-site-with-https
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors
+
+UPLOAD THIS UPDATE
+Extract the ZIP. Upload files/folders into the repository root containing index.html and replace matching paths. Keep all folders, including publishing/ and .github/workflows/. The latter is a hidden folder on some file managers: ensure the pinned workflow is uploaded. Do not delete existing files or upload the ZIP itself. Commit and wait for Pages deployment. The included publishing/site-files.json deploys the new .well-known directory. The website stays static; no user accounts, passwords or cloud corpus uploads are introduced.

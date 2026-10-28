@@ -1,5 +1,6 @@
 [
   ".nojekyll",
+  ".well-known",
   "404.html",
   "CNAME",
   "about.html",

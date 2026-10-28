@@ -67,7 +67,9 @@ def metadata(path):
                 if ':' not in line or not line.strip() or line.lstrip().startswith('#'):continue
                 key,val=line.split(':',1);data[key.strip()]=val.strip().strip('"\'')
     side=path.with_suffix('.json')
+    if side.is_symlink():raise ValueError('Article metadata must not be a symlink.')
     if side.exists():
+        if side.stat().st_size>1024*1024:raise ValueError('Article metadata exceeds 1 MB.')
         extra=json.loads(side.read_text(encoding='utf-8-sig'))
         if not isinstance(extra,dict):raise ValueError(f'{side.name}: metadata must be a JSON object.')
         data.update(extra)
@@ -98,6 +100,7 @@ def build(site,template):
     for path in sorted(source.iterdir()):
         if path.is_symlink():raise ValueError('Article sources must be ordinary files, not links.')
         if not path.is_file() or path.name.startswith('.') or path.suffix.lower() not in {'.md','.txt','.pdf'}:continue
+        if path.stat().st_size>(50*1024*1024 if path.suffix.lower()=='.pdf' else 5*1024*1024):raise ValueError('Article exceeds publishing size limit: '+path.name)
         meta,text=metadata(path);slug=slug_for(path);meta['slug']=slug;meta['url']='read/'+slug+'.html';meta['file']='uploads/'+quote(path.name)
         if path.suffix.lower()=='.pdf':
             with path.open('rb') as f:
