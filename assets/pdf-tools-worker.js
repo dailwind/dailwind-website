@@ -6,7 +6,7 @@ self.onmessage=async({data:{id,type,payload={}}})=>{
   let result;
   if(type==='load'){
    source=await PDFLib.PDFDocument.load(payload.buffer,{updateMetadata:false,throwOnInvalidObject:true});
-   const pages=source.getPageCount();if(pages<1||pages>10000){source=null;throw Error('PDF limit: 10,000 pages.');}result={pages};
+   const pages=source.getPageCount();if(pages<1||pages>20000){source=null;throw Error('PDF limit: 20,000 pages.');}result={pages};
   }else if(type==='part'){
    if(!source)throw Error('Open a PDF first.');const {from,to}=payload;if(!Number.isInteger(from)||!Number.isInteger(to)||from<1||to<from||to>source.getPageCount())throw Error('Invalid page range.');
    const out=await PDFLib.PDFDocument.create();for(const p of await out.copyPages(source,Array.from({length:to-from+1},(_,i)=>from-1+i)))out.addPage(p);

@@ -5,6 +5,7 @@ Website, research tools and text-preparation workspaces by **Arslan Tahir**.
 - Website: https://dailwind.com
 - Contact: arslan@dailwind.com
 - Last updated: 28 October 2026
+- Update package: **v8.1** (follows your v8.0 release)
 
 This README describes the latest website update packages. Features become live on your GitHub Pages website after you upload their files and successfully deploy them.
 
@@ -12,7 +13,7 @@ This README describes the latest website update packages. Features become live o
 
 - **Home:** LinguaX Arc promotion, looping silent video, phone screenshot slideshow and founder introduction.
 - **App:** a separate showcase for **LinguaX Arc: Corpus Toolkit**, Android version 6.
-- **Toolkits:** seven separate browser workspaces, listed below.
+- **Toolkits:** nine separate browser workspaces, listed below.
 - **Articles:** research, reviews and creative writing with individual reading pages.
 - **About:** Arslan Tahir’s portfolio and supplied academic information.
 - **Contact, Privacy and Terms.**
@@ -33,6 +34,9 @@ Navigation is organized as **Home / App / Toolkits / Articles / About / Contact*
 | Arc English OCR | `/english-ocr/` | Printed English recognition from scanned PDFs/images; enhancement, page ranges, editable results and exports |
 
 | Arc PDF Tools | `/pdf-tools/` | Split PDFs into a chosen number of parts, pages per part or custom ranges; structural optimization or scan compression; numbered PDFs and ZIP |
+
+| Arc Metadata Studio | `/metadata-studio/` | Bulk corpus catalogues; 28 genre labels; editable source fields, custom columns, counts, charts and XLSX / CSV / JSON |
+| Arc Image Studio | `/image-tools/` | PDF pages to numbered image ZIPs; images to one PDF; resize/compress JPEG, PNG or WebP |
 
 Workspaces fill the browser area without an outer simulated desktop frame. Corpus and Stylistic Toolkit retain desktop **Auto-hide / Always show** dock controls. The preparation tools have their own focused interfaces.
 
@@ -60,7 +64,7 @@ Rules are explicit heuristics. Review changes before research use. Removing digi
 - Stop preserves completed pages for download. Previously reviewed edits can be replaced when rerunning their pages.
 - A professional paid OCR-services advertisement highlights **Sindhi, Balochi, Pashto, Urdu, Punjabi, Saraiki and other regional languages**, alongside English. These are separately assessed paid services, not additional languages in the free English browser recognizer. The email enquiry sends no message automatically.
 
-Limits: PDFs up to **100 MB / 2,000 pages**, images up to **40 MB / 40 megapixels**, and **50 pages per run**. Use page ranges for large books. Rendered images are capped to manage browser memory. Difficult print, handwriting, faded scans, tables and unusual historical typefaces require careful review or specialist work.
+Limits: PDFs up to **500 MB desktop / 80 MB mobile or low-memory**, **20,000 source pages**; images up to **40 MB / 40 megapixels**. The former 50-page batch stop is removed. The whole selected range runs sequentially; Stop preserves completed pages and Continue remaining pages starts after the last retained page. This continues the current tab session, not a saved cross-device job. Long scan recognition can take hours. Download completed results before leaving. Text retention is capped at 100 million characters desktop / 20 million mobile. Rendered images are capped to manage browser memory. Difficult print, handwriting, faded scans, tables and unusual historical typefaces require careful review or specialist work.
 
 ### Arc PDF Tools
 
@@ -74,7 +78,47 @@ Limits: PDFs up to **100 MB / 2,000 pages**, images up to **40 MB / 40 megapixel
 - Splitting can affect document-level bookmarks, forms and signatures. Keep the original document.
 - Password-protected/encrypted PDFs are not supported. Session-only results must be downloaded before leaving.
 
-Limits: desktop input up to **200 MB**, mobile input up to **60 MB**, **10,000 pages** and **1,000 parts**, subject to available device memory. Generated output is capped at 300 MB desktop / 100 MB mobile. All-parts ZIP creation is capped at 100 MB desktop / 25 MB mobile; individual PDFs remain downloadable. Very large scans may require smaller source files. PDF processing runs in a browser worker; scan rendering proceeds one page at a time.
+Limits: desktop input up to **500 MB**, mobile/low-memory input up to **80 MB**, **20,000 pages** and **2,000 parts**, subject to available device memory. Generated output is capped at 700 MB desktop / 150 MB mobile. All-parts ZIP creation is capped at 250 MB desktop / 60 MB mobile; individual PDFs remain downloadable. Very large scans may require smaller source files. PDF processing runs in a browser worker; scan rendering proceeds one page at a time.
+
+### Arc Metadata Studio
+
+1. Choose a collection name, default genre and optional source details, then add your files together.
+2. Supported inputs: TXT/TEXT, Markdown, CSV, SRT/VTT subtitles, DOCX, selectable-text PDF and CoNLL files as raw text. For CoNLL-U linguistic token counts, use Corpus Toolkit instead. CSV is measured as raw text, not as a structured data table. Scans need OCR first.
+3. Choose among research articles, theses, fiction/nonfiction books, chapters, news/newspapers, poetry, stories, plays, scripts, speeches, interviews, conversations, essays, blogs, web/social corpora, letters/diaries, legal/historical text, YouTube/movie/TV/drama subtitles and other or mixed corpora.
+4. Every file has an editable title, corpus, genre/subgenre, author, year, source/book/channel, publication, URL, language, region, rights, DOI, ISBN, volume/issue, chapter/episode, source page range, keywords and notes. Use **Edit details** to change a specific record. Defaults can fill blanks across included records; overwrite is an explicit option.
+5. Add up to 20 custom fields, with optional default values and per-file edits. Choose an output preset or individual columns. Include/exclude files, search records and filter by genre.
+6. Counts include word tokens, within-file unique words, type/token ratio, hapax, sentence estimates, paragraphs, nonempty lines, Unicode characters, numeric/punctuation characters and an illustrative 200-wpm reading time. SRT/VTT timing and markup can be excluded; cue counts, duration span and word/minute estimates are available.
+7. Choose case-sensitive unique-word counts, number-only token inclusion, UTF-8/UTF-16 or Windows-1252 text decoding, filename/first-line suggested titles, and optional SHA-256 source fingerprints (HTTPS required).
+8. Charts show word totals by genre and the largest texts. Summary totals count successful included files; error rows retain an explanation with counts blank.
+9. **Excel (.xlsx)** has Summary, Files, Genres and Methods sheets, styled headers, frozen first rows, numeric count cells and text-only metadata cells. CSV has a UTF-8 BOM, quoted values and formula-injection protection. JSON exports the chosen fields and settings. These exports are catalogues, not restorable source-text workspaces.
+
+Limits: **2,000 records**, up to **250 MB / 100 million characters per file desktop**, or **60 MB / 20 million characters mobile/low-memory**. Selectable PDF extraction supports 10,000 pages. Files are read one at a time; raw source text is discarded after measurement. Unique-vocabulary tracking stops at 1 million distinct tokens per file; unique/TTR/hapax are then blank, with a warning. Device RAM and browser resources can reduce practical capacity.
+
+Suggested titles are not verified publication metadata. Authors, provenance, genre, language and publication dates are user supplied. Local file modification dates are not publication dates. Sentence counts are punctuation estimates; Unicode word-token rules can differ from Word and do not segment unspaced languages linguistically. Corpus totals do not claim a combined unique vocabulary. Counting-method details are recorded per file because different import batches may use different options.
+
+### Arc Image Studio
+
+- **PDF → image ZIPs:** choose first/last page, JPEG/PNG/WebP, 96/150/200/300 DPI, quality and pages per ZIP part. Export names contain source page numbers. The complete selected range runs sequentially; ZIPs rotate by page count or size instead of stopping at 50 pages.
+- **Images → one PDF:** add still JPEG/PNG/WebP files, move them up/down or remove them, choose image-sized/A4/Letter paper, automatic/portrait/landscape orientation and margins. Keep original JPEG/PNG data when possible or use resize/compression settings. EXIF-oriented JPEGs are rendered when necessary. The PDF is image-only without recognized text.
+- **Compress images:** choose JPEG/WebP/PNG, quality, maximum edge and scale. Individual images and numbered ZIP batches are offered. The output-size change is displayed; smaller output is not guaranteed. JPEG uses a white background. PNG is lossless at the chosen dimensions; JPEG/WebP can lose detail. Browser exports do not preserve original EXIF metadata or an archival master.
+- Stop preserves completed downloads. Incomplete image-to-PDF jobs need a smaller/repeated run. **Release downloaded results** frees retained outputs after you have saved them. Source files remain available for another run.
+
+Limits: PDF **500 MB desktop / 80 MB mobile or low-memory**, up to **20,000 pages**. Up to **2,000 images**, **150 MB each / 750 MB combined desktop**, or **40 MB each / 150 MB combined mobile**. Decoded source images are limited to 80 megapixels desktop / 24 megapixels mobile; output canvases to 16 / 4 megapixels and 8,192 pixels per axis. ZIP batches rotate at 120 MB desktop / 30 MB mobile. Session outputs are capped at 700 MB desktop / 150 MB mobile, including individual and ZIP outputs. For larger work, download/release results and continue with later page ranges or another image batch. Actual capacity depends on RAM, scan complexity and browser support. Keep the tab open and review a sample first.
+
+### Larger local workspaces
+
+Preparation tools and Corpus Toolkit now share a device-aware capacity profile:
+
+| Capacity | Desktop | Mobile / low-memory |
+| --- | --- | --- |
+| Source file bytes | 250 MB | 60 MB |
+| Files per preparation workspace or corpus bucket | 500 | 250 |
+| Characters per file | 50 million | 10 million |
+| Characters across a workspace | 100 million | 20 million |
+| Indexed Corpus Toolkit tokens (target + reference) | 3 million | 1 million |
+| Selectable PDF pages for text extraction | 10,000 | 10,000 |
+
+DOCX expansion remains bounded at 100 MB to avoid decompression bombs. Stylistic Toolkit has a separate desktop budget of 5 million characters / 750,000 words / 100,000 nonempty lines per text, or 2 million / 300,000 / 40,000 mobile. It retains at most 5,000 findings and paginates close reading by 1,000 lines. Larger input limits do not remove algorithmic scope limits or guarantee that every device can handle the ceiling. Existing saved workspace identifiers and backup formats remain unchanged.
 
 ## Privacy and storage
 
@@ -100,7 +144,7 @@ Optional analytics remain unconfigured unless the owner supplies a measurement I
 
 For the initial workflow setup, use **Settings → Pages → Source → GitHub Actions**. Preserve the working custom domain and DNS configuration. Verify **Enforce HTTPS** in Pages settings.
 
-**This update also includes `pdf-tools/`, `toolkit/pdf-lib/` and new PDF assets. Upload the supplied `publishing/site-files.json` so the deployment includes the new route. Preserve the existing PDF.js files in `toolkit/lib/`.**
+**v8.1 adds `metadata-studio/`, `image-tools/` and their new assets. Upload the supplied `publishing/site-files.json` so deployment includes both routes. Preserve the existing `pdf-tools/`, `toolkit/pdf-lib/`, `toolkit/lib/` and `toolkit/ocr/` folders; this changed-files patch does not repeat all engine assets.**
 
 **OCR needs the complete `toolkit/ocr/` folder.** Keep `toolkit/lib/` too: it contains the PDF and Word readers. Uploading only the OCR HTML page will not install its engine/model.
 
@@ -160,6 +204,8 @@ Owner actions:
 The security-update ZIP includes `SECURITY-REVIEW-AND-UPLOAD.txt` with the completed checks, their limits and remaining owner setup. A successful GitHub Pages deployment is separate from any private preview publication.
 
 ## Validation and limitations
+
+v8.1 checks cover multilingual metadata, SRT/VTT timings, CSV injection protection, workbook XML/relationships, ZIP CRC/content, page/image geometry, real image-PDF generation, enlarged capacity guards (including real indexing of 1,100,002 tokens and conversion of 75 files), existing preparation/stylistic/PDF engines and page security policies. Browser checks include custom metadata fields, workbook generation, numbered PDF-image ZIPs, a real 3-image PDF, image compression, a real printed-English sample scan and 61-page sequential extraction using embedded PDF text; this last test validates the page flow beyond 50, not recognition accuracy on 61 scans.
 
 Source checks cover internal links, labels, metadata, article sanitization, workers, corpus/stylistic algorithms, cleaning rules, image preprocessing, export safeguards, publishing boundaries and script integrity. Browser checks exercised Cleaner and real OCR under the page security policy. PDF checks generated a real 1,000-page document and verified 20 valid 50-page outputs, structural rewriting, scan-image PDF creation, custom ranges and filenames. Browser checks exercised sample splitting, ZIP creation, scan compression and narrow layouts. Desktop Chrome and narrow browser layouts were tested; this is not certification for every browser or physical phone.
 

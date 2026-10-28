@@ -9,9 +9,9 @@
  function invalidate(){outputs=[];report=[];$('output-panel').hidden=true;if($('duplicates-panel'))$('duplicates-panel').hidden=true;$('empty-output').hidden=false;}
  function unique(name){let n=name,i=2;while(docs.some(d=>d.name===n))n=name.replace(/(\.[^.]*)?$/,m=>' ('+(i++)+')'+m);return n;}
  function add(name,text){
-  if(docs.length>=LIMITS.files)throw Error('Maximum 50 files.');
+  if(docs.length>=LIMITS.files)throw Error('Maximum file count reached for this device.');
   if(!text.trim())throw Error('This document has no readable text. Scanned PDFs need OCR first.');
-  if(text.length>LIMITS.fileChars||docs.reduce((n,d)=>n+d.text.length,0)+text.length>LIMITS.workspaceChars)throw Error('Limit: 10,000,000 characters per file; 20,000,000 across all files.');
+  if(text.length>LIMITS.fileChars||docs.reduce((n,d)=>n+d.text.length,0)+text.length>LIMITS.workspaceChars)throw Error('Character budget reached for this device. Download current results and use another batch.');
   docs.push({id:++serial,name:unique(name.slice(0,150)),text,selected:true});invalidate();renderFiles();
  }
  function renderFiles(){
@@ -35,8 +35,8 @@
  function settings(){return {...Object.fromEntries(keys.map(k=>[k,!!$('rule-'+k)?.checked])),find:$('prep-find')?.value||'',replace:$('prep-replace')?.value||'',keywords:$('prep-keywords')?.value||'',caseSensitive:$('keyword-case')?.getAttribute('aria-pressed')!=='false',wholeWords:$('keyword-whole')?.checked!==false,keywordLines:$('keyword-lines')?.checked===true,separator:$('merge-separator')?.value||'blank',duplicates:kind==='merger'?$('merge-duplicates').checked:!!$('rule-duplicates')?.checked};}
  function task(action,selected,options){
   return new Promise((resolve,reject)=>{
-   worker??=new Worker('../assets/preparation-worker.js?v=20261028');const id=++serial;
-   const timer=setTimeout(()=>{worker.terminate();worker=null;reject(Error('Processing timed out. Try fewer or smaller files. Your imported text remains available.'));},60000);
+   worker??=new Worker('../assets/preparation-worker.js?v=81');const id=++serial;
+   const timer=setTimeout(()=>{worker.terminate();worker=null;reject(Error('Processing timed out. Try fewer or smaller files. Your imported text remains available.'));},180000);
    worker.onmessage=({data})=>{if(data.id!==id)return;clearTimeout(timer);data.error?reject(Error(data.error)):resolve(data.result);};
    worker.onerror=()=>{clearTimeout(timer);worker.terminate();worker=null;reject(Error('The local worker could not run. Reload the hosted page; do not open HTML directly from a ZIP.'));};
    worker.postMessage({id,kind:action,docs:selected.map(({name,text})=>({name,text})),options});
@@ -63,7 +63,7 @@
  }
  $('prep-add').addEventListener('click',()=>$('prep-file-input').click());
  $('prep-file-input').addEventListener('change',async e=>{
-  if(busy)return;lock(true);const errors=[];try{if(e.target.files.length>50)throw Error('Choose at most 50 files.');for(const f of e.target.files){notice('Extracting '+f.name+' locally…');try{add(f.name,await readFile(f));}catch(err){errors.push(f.name+': '+err.message);}}notice(errors.length?errors.join(' | '):'Files ready. Review your settings and run the tool.');}catch(err){notice(err.message);}finally{e.target.value='';lock(false);renderFiles();}
+  if(busy)return;lock(true);const errors=[];try{if(e.target.files.length>LIMITS.files)throw Error('Selection exceeds this device’s file-count limit.');for(const f of e.target.files){notice('Extracting '+f.name+' locally…');try{add(f.name,await readFile(f));}catch(err){errors.push(f.name+': '+err.message);}}notice(errors.length?errors.join(' | '):'Files ready. Review your settings and run the tool.');}catch(err){notice(err.message);}finally{e.target.value='';lock(false);renderFiles();}
  });
  $('prep-paste').addEventListener('click',()=>$('paste-dialog').showModal());
  $('prep-paste-form').addEventListener('submit',e=>{e.preventDefault();try{add($('prep-paste-name').value,$('prep-paste-text').value);$('paste-dialog').close();$('prep-paste-text').value='';notice('Pasted text added locally.');}catch(err){$('paste-error').textContent=err.message;}});
@@ -72,7 +72,7 @@
  $('prep-run').addEventListener('click',()=>run());$('prep-check-duplicates')?.addEventListener('click',()=>run('duplicates'));
  $('prep-output').addEventListener('change',preview);$('prep-save').addEventListener('click',()=>save());$('prep-batch').addEventListener('click',()=>save(true));
  $('prep-save-audit')?.addEventListener('click',()=>download(JSON.stringify({method:'Local deterministic rules; review required',documents:outputs.map(({name,audit})=>({name,audit}))},null,2),'cleaning-audit.json','application/json'));
- $('duplicates-csv')?.addEventListener('click',()=>{const cell=x=>'"'+String(x).replace(/"/g,'""')+'"';const rows=[['Paragraph','Occurrences','Files'],...report.map(x=>[x.text,x.count,x.files.join('; ')])];download('\uFEFF'+rows.map(r=>r.map(cell).join(',')).join('\r\n'),'duplicate-paragraphs.csv','text/csv;charset=utf-8');});
+ $('duplicates-csv')?.addEventListener('click',()=>{const cell=x=>{const s=String(x),v=typeof x==='string'&&/^\s*[=+@-]/.test(s)?"'"+s:s;return '"'+v.replace(/"/g,'""')+'"';};const rows=[['Paragraph','Occurrences','Files'],...report.map(x=>[x.text,x.count,x.files.join('; ')])];download('\uFEFF'+rows.map(r=>r.map(cell).join(',')).join('\r\n'),'duplicate-paragraphs.csv','text/csv;charset=utf-8');});
  $('prep-preset')?.addEventListener('change',()=>{const preset=$('prep-preset').value;if(preset==='custom')return;const on=AdvancedCleaner.PRESETS[preset]||[];for(const k of keys)$('rule-'+k).checked=on.includes(k);$('prep-find').value='';$('prep-replace').value='';if($('ocr-rules'))$('ocr-rules').open=preset==='ocr';if($('book-rules'))$('book-rules').open=preset==='book';invalidate();});
  $('keyword-case')?.addEventListener('click',()=>{const on=$('keyword-case').getAttribute('aria-pressed')!=='true';$('keyword-case').setAttribute('aria-pressed',String(on));$('keyword-case').textContent='Case sensitive: '+(on?'On':'Off');invalidate();});
  $('prep-settings').addEventListener('change',invalidate);$('prep-settings').addEventListener('input',invalidate);

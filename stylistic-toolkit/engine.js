@@ -2,7 +2,7 @@
 /* Evidence-first, bounded stylistic exploration. This is not a trained literary model. */
 (function(root){
 const LEVELS=['Lexical','Semantic','Syntactic','Grammatical','Morphological','Phonological','Graphological','Pragmatic'];
-const LIMITS={characters:1000000,words:150000,lines:20000,findings:5000};
+const LIMITS=root.ArcCapacity?.style||{characters:5000000,words:750000,lines:100000,findings:5000};
 const words=s=>[...s.matchAll(/\p{L}[\p{L}\p{M}’'-]*/gu)].map(m=>({word:m[0],key:m[0].toLowerCase(),offset:m.index}));
 const count=list=>{const m=new Map();for(const x of list)m.set(x,(m.get(x)||0)+1);return m;};
 const STOP=new Set('the a an and or but in on at to for of from with by as is are was were be been being i you we they he she it this that these those my your his her our their not no'.split(' '));
@@ -13,16 +13,16 @@ const OPPOSITIONS=[['light','dark'],['life','death'],['love','hate'],['silence',
 const SOUNDS={night:['n','aɪt'],knight:['n','aɪt'],knife:['n','aɪf'],nice:['n','aɪs'],light:['l','aɪt'],right:['r','aɪt'],bright:['b','aɪt'],white:['w','aɪt'],sight:['s','aɪt'],tree:['t','iː'],free:['f','iː'],sea:['s','iː'],see:['s','iː'],me:['m','iː'],be:['b','iː'],bee:['b','iː'],blue:['b','uː'],blew:['b','uː'],true:['t','uː'],you:['j','uː'],day:['d','eɪ'],way:['w','eɪ'],say:['s','eɪ'],may:['m','eɪ'],rain:['r','eɪn'],pain:['p','eɪn'],plain:['p','eɪn'],sun:['s','ʌn'],son:['s','ʌn'],run:['r','ʌn'],one:['w','ʌn'],stone:['s','əʊn'],alone:['ə','əʊn'],home:['h','əʊm'],foam:['f','əʊm'],wind:['w','ɪnd'],cold:['k','əʊld'],gold:['g','əʊld'],told:['t','əʊld'],sea:['s','iː'],soft:['s','ɒft'],silent:['s','aɪlənt'],silver:['s','ɪlvə'],slow:['s','əʊ'],sweet:['s','iːt'],wild:['w','aɪld'],wide:['w','aɪd'],we:['w','iː'],walk:['w','ɔːk'],moon:['m','uːn'],morning:['m','ɔːnɪŋ'],murmur:['m','ɜːmə'],red:['r','ed'],rose:['r','əʊz'],river:['r','ɪvə'],black:['b','æk'],bird:['b','ɜːd'],broken:['b','əʊkən'],heart:['h','ɑːt'],art:['ɑ','ɑːt'],part:['p','ɑːt'],start:['s','ɑːt'],fire:['f','aɪə'],desire:['d','aɪə'],hour:['aʊ','aʊə'],honest:['ɒ','ɒnɪst']};
 function pronunciationMap(tsv){const map=Object.assign(Object.create(null),SOUNDS);if(!tsv)return map;const lines=tsv.split(/\r?\n/).filter(l=>l.trim()&&!l.startsWith('#'));if(lines.length>10000)throw Error('Pronunciation map limit: 10,000 rows.');for(const line of lines){const [word,onset,rime]=line.split('\t');if(!word||!onset||!rime||[word,onset,rime].some(v=>v.length>80))throw Error('Pronunciation TSV needs word, initial sound and rhyme key in three tab-separated columns.');map[word.toLowerCase()]=[onset,rime];}return map;}
 function prepare(raw,format='text'){
- if(typeof raw!=='string'||raw.length>LIMITS.characters)throw Error('Maximum 1,000,000 characters per text.');
+ if(typeof raw!=='string'||raw.length>LIMITS.characters)throw Error('Text exceeds the character budget for this device.');
  if(format!=='conllu')return {text:raw.replace(/\r\n?/g,'\n'),annotations:[]};
  const sentences=raw.trim().split(/\n\s*\n/),annotations=[],texts=[];
  for(const block of sentences){const tokens=[];for(const line of block.split('\n')){if(!line||line.startsWith('#'))continue;const c=line.split('\t');if(!/^\d+$/.test(c[0]))continue;if(c.length<10)throw Error('CoNLL-U tokens require 10 tab-separated columns.');tokens.push({word:c[1],tag:c[3],features:c[5],relation:c[7]});}if(tokens.length){texts.push(tokens.map(t=>t.word).join(' '));annotations.push({line:texts.length,tokens});}}
  if(!texts.length)throw Error('No CoNLL-U sentences found.');return {text:texts.join('\n'),annotations};
 }
 function analyze(input){
- const text=String(input.text||''),reference=input.referenceApproved?String(input.reference||''):'';if(!text.trim())throw Error('Add a literary text first.');if(text.length>LIMITS.characters||reference.length>LIMITS.characters)throw Error('Maximum 1,000,000 characters per text.');
- const W=words(text),RW=words(reference);if(W.length>LIMITS.words||RW.length>LIMITS.words)throw Error('Maximum 150,000 words per text.');
- const lines=[];let offset=0;text.split('\n').forEach((raw,i)=>{const ws=words(raw);if(ws.length)lines.push({raw,line:i+1,offset,words:ws});offset+=raw.length+1;});if(lines.length>LIMITS.lines)throw Error('Maximum 20,000 nonempty lines.');
+ const text=String(input.text||''),reference=input.referenceApproved?String(input.reference||''):'';if(!text.trim())throw Error('Add a literary text first.');if(text.length>LIMITS.characters||reference.length>LIMITS.characters)throw Error('Text exceeds the character budget for this device.');
+ const W=words(text),RW=words(reference);if(W.length>LIMITS.words||RW.length>LIMITS.words)throw Error('Text exceeds the word-token budget for this device.');
+ const lines=[];let offset=0;text.split('\n').forEach((raw,i)=>{const ws=words(raw);if(ws.length)lines.push({raw,line:i+1,offset,words:ws});offset+=raw.length+1;});if(lines.length>LIMITS.lines)throw Error('Text exceeds the line budget for this device.');
  // Lines preserve verse layout; prose is also segmented into sentences for repetition scans.
  const units=[];for(const line of lines){const parts=[...line.raw.matchAll(/[^.!?]+[.!?]*|[.!?]+/g)];for(const m of parts){const ws=words(m[0]);if(ws.length)units.push({raw:m[0],line:line.line,offset:line.offset+m.index,words:ws});}}
  const firstUnit=new Map(),lineMap=new Map(lines.map(l=>[l.line,l]));for(const u of units)for(const w of u.words)if(!firstUnit.has(w.key))firstUnit.set(w.key,u);
