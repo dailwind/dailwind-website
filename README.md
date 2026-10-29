@@ -5,9 +5,44 @@ Website, research tools and text-preparation workspaces by **Arslan Tahir**.
 - Website: https://dailwind.com
 - Contact: arslan@dailwind.com
 - Last updated: 30 October 2026
-- Update package: **v8.2** (apply after v8.1)
+- Update package: **v8.3** (apply after v8.2)
 
 This README describes the latest website update packages. Features become live on your GitHub Pages website after you upload their files and successfully deploy them.
+
+## v8.3 — what changed
+
+**Apply only `Dailwind-Update-v8.3.zip` to the website after v8.2.** Extract its contents into the repository root, replace matching files and preserve every unchanged folder. No deletion or full-site replacement is needed. The separate **`PMC-Private-Server-v0.1.zip` belongs on your computer/private server, not in GitHub Pages**.
+
+- Ten workspaces now use **Dailwind** branding. Existing URLs, engine identifiers, browser saves and backup formats stay compatible. The Android app remains **LinguaX Arc: Corpus Toolkit**.
+- The Toolkits hub has four categories: **Analyze language / Prepare text / PDF & images / Catalogue & report**.
+- A central task finder ranks tools from English, Roman Urdu and common Hindi/Urdu task words. Try “remove references from my thesis”, “pdf ko chota karna hai”, “MAT division by zero”, “scanned book to text” or “metadata in Excel”. This is local keyword/intent matching, not an AI model or arbitrary-language understanding; unsupported tasks get a clear no-match state. Visitors can also browse categories.
+- Home monitor now runs a lightweight shuffled **ten-workspace feature tour**, with previous/next, direct slide selection and pause. It stops offscreen/when the tab is hidden, respects reduced motion, and follows the existing footer media toggle. The slides are labelled illustrations, not fabricated analysis results. The founder picture and “person behind” section are retained.
+- Every workspace has a **Start here** guide, three concrete steps, links that find/highlight the appropriate control and a **Use recommended settings** button. Defaults are a starting point, never “perfect” AI settings. They preserve file selections, typed text and the chosen tool/mode. They never run a job or download automatically. The cleaner inspects a small local text sample and applies only safe invisible-noise cleanup; reference, number and punctuation removal remain opt-in. Tool-specific feedback explains all applied settings and limitations.
+- Corpus Cleaner has separate word chips and sentence/phrase inputs, clear case/whole-word explanations and advanced rules collapsed initially. Case ON/OFF applies to both lists and find/replace. A sentence is matched literally, including its punctuation and spaces; one sentence/phrase per line. Sentence matching does not infer paraphrases or join sentences split over PDF line breaks. Your original files remain unchanged.
+- PMC now includes the supplied project description and credits: project leads **Dr. Muhammad Afzaal & Dr. Adnan Tahir**, technical developer **Arslan Tahir**. “Hundreds of millions” is explicitly a project-team report, not the size of the sample or an independently audited count. The real collection remains coming soon.
+- The supplied galaxy D is compact in the studio header/footer. The logo-only social preview uses a new `assets/dailwind-preview-v83.png` URL to help refresh stale chat-app previews. Third-party caches can still take time to update.
+- Aqeel sahib's writing was not present in the accessible uploads during this update. No placeholder article or invented text was published. Reattach the actual file and confirm its title/byline for publication.
+
+### PMC: the private collection is a separate deployment
+
+The public website contains only the existing original synthetic demonstration. **Do not put your real TXT files into `assets`, `pmc`, `articles/uploads`, the website patch or a public GitHub repository.** Browser-delivered encryption keys cannot prevent a visitor from extracting browser-delivered data.
+
+The separate PMC server package includes a `private-input/` folder, importer, encrypted text chunks, keyed search index, preview/full collection policies, bounded concordance/collocates/distribution, server-side Google sign-in integration, saved queries and account quotas. It has no real corpus or secrets in it. See that package's README for local setup, safe backups, production deployment and operator limits.
+
+**Still needs operator setup:** a private HTTPS server/domain, Google Cloud OAuth client configuration, deployment secrets and your permitted corpus files. Google login is not active on the current website. The source integration was tested with synthetic local sessions; a real Google callback and large-corpus performance were not tested. The package has manual paid-role assignment, not a working billing/subscription checkout. Apple sign-in is not included.
+
+After the real service has been deployed and verified, set `researchOrigin` in the website's `assets/pmc-access-config.js` to its HTTPS origin. The PMC page then shows an entry link to that independent research workspace. It remains empty by default so visitors are not sent to a nonexistent login.
+
+This architecture reduces unauthorized bulk access, but no service is impossible to hack, and visible excerpts can still be copied. Do not rely on disabled right-click, browser obfuscation or static encrypted bundles as corpus protection.
+
+### v8.3 validation
+
+- Local finder queries, no-match behavior, case/word boundaries and comma-containing sentence removal tested.
+- Ten workspace guide/brand references checked; saved engine/storage IDs left unchanged.
+- Browser checks: cleaner word/sentence removal and audit; task recommendation; recommended-settings buttons in all ten workspaces; responsive hub, cleaner and PMC at 375px (no document overflow); home monitor tour and controls.
+- Existing MAT/Python parity, corpus/sample checks, website link/meta checks, CSP/script integrity checks and public export checks run.
+- Private PMC synthetic tests: auth/CSRF/origin rejection, preview/full isolation, private-path rejection, encrypted data at rest, boundary-phrase deduplication, quotas, per-account saved searches, logout and fail-closed production settings.
+- No user corpus, live Google credentials, production load test or independent penetration test was available. Native Python MAT GUI is unchanged from v8.2.
 
 ## Website sections
 
@@ -22,35 +57,36 @@ This README describes the latest website update packages. Features become live o
 
 The studio logo stays at the top-left on desktop pages, with space between the brand and navigation. The header/footer and social preview use your supplied galaxy **D / DAILWIND.COM** logo, optimized for display. The favicon and touch icon use the same artwork. Link-preview services may retain an older cached image.
 
-## LinguaX Arc Toolkits
+## Dailwind Toolkits
 
 Navigation is organized as **Home / App / Toolkits / PMC / Articles / About / Contact**. Existing page URLs and saved workspace identifiers remain unchanged. The Android product remains **LinguaX Arc: Corpus Toolkit**.
 
 | Workspace | URL | Main features |
 | --- | --- | --- |
-| Arc Corpus Toolkit | `/corpus-toolkit/` | KWIC, dispersion, frequencies, n-grams, collocations, keywords, statistics, charts, annotated-data analysis and rule-based English grammar review |
-| Arc Stylistic Toolkit | `/stylistic-toolkit/` | Evidence-based foregrounding candidates across eight linguistic levels, reference comparison, notes and exports |
-| Arc Corpus Cleaner | `/corpus-cleaner/` | Books, theses, articles, newspapers and OCR presets; keyword removal; case sensitivity; damage cleanup; previews and audit |
-| Arc File Converter | `/file-converter/` | Extract selectable PDF/DOCX text; export TXT or text-only Word; batch ZIP |
-| Arc Corpus Merger | `/corpus-merger/` | Reorder/select files, choose separators and merge text; optional exact paragraph deduplication |
-| Arc English OCR | `/english-ocr/` | Printed English recognition from scanned PDFs/images; enhancement, page ranges, editable results and exports |
+| Dailwind Corpus Toolkit | `/corpus-toolkit/` | KWIC, dispersion, frequencies, n-grams, collocations, keywords, statistics, charts, annotated-data analysis and rule-based English grammar review |
+| Dailwind Stylistic Toolkit | `/stylistic-toolkit/` | Evidence-based foregrounding candidates across eight linguistic levels, reference comparison, notes and exports |
+| Dailwind Corpus Cleaner | `/corpus-cleaner/` | Books, theses, articles, newspapers and OCR presets; keyword removal; case sensitivity; damage cleanup; previews and audit |
+| Dailwind File Converter | `/file-converter/` | Extract selectable PDF/DOCX text; export TXT or text-only Word; batch ZIP |
+| Dailwind Corpus Merger | `/corpus-merger/` | Reorder/select files, choose separators and merge text; optional exact paragraph deduplication |
+| Dailwind English OCR | `/english-ocr/` | Printed English recognition from scanned PDFs/images; enhancement, page ranges, editable results and exports |
 
-| Arc PDF Tools | `/pdf-tools/` | Split PDFs into a chosen number of parts, pages per part or custom ranges; structural optimization or scan compression; numbered PDFs and ZIP |
+| Dailwind PDF Tools | `/pdf-tools/` | Split PDFs into a chosen number of parts, pages per part or custom ranges; structural optimization or scan compression; numbered PDFs and ZIP |
 
-| Arc Metadata Studio | `/metadata-studio/` | Bulk corpus catalogues; 28 genre labels; editable source fields, custom columns, counts, charts and XLSX / CSV / JSON |
-| Arc Image Studio | `/image-tools/` | PDF pages to numbered image ZIPs; images to one PDF; resize/compress JPEG, PNG or WebP |
+| Dailwind Metadata Studio | `/metadata-studio/` | Bulk corpus catalogues; 28 genre labels; editable source fields, custom columns, counts, charts and XLSX / CSV / JSON |
+| Dailwind Image Studio | `/image-tools/` | PDF pages to numbered image ZIPs; images to one PDF; resize/compress JPEG, PNG or WebP |
 
-| Arc MAT Cleaner | `/mat-cleaner/` | Plain-text preparation, already-tagged syntax/baseline preflight, review isolation, audits and Python desktop download |
+| Dailwind MAT Cleaner | `/mat-cleaner/` | Plain-text preparation, already-tagged syntax/baseline preflight, review isolation, audits and Python desktop download |
 
 Workspaces fill the browser area without an outer simulated desktop frame. Corpus and Stylistic Toolkit retain desktop **Auto-hide / Always show** dock controls. The preparation tools have their own focused interfaces.
 
 ### Advanced Corpus Cleaner
 
 - Presets for gentle cleaning, books, papers, journal articles, newspapers, theses, OCR text and poetry.
-- Remove custom keywords or phrases, **one entry per line**.
+- Add removal words as chips using **commas or Enter**; remove an item from the list with ×.
+- Put full sentences/phrases in the **separate sentence box, one per line**. Commas inside sentences are preserved.
 - **Case sensitive: On/Off** applies to keyword removal and literal find/replace.
 - Choose whole-word/phrase matching or substring matching; optionally remove entire matching lines.
-- Up to 200 entries, each up to 200 characters.
+- Up to 200 total removal entries: words ≤200 characters and sentences ≤1,000 characters.
 - Optional cleanup for references, citations, repeated page edges, page numbers, contents entries, numbered headings, bylines, wrapped prose and repeated words.
 - Optional repairs for known broken punctuation encodings, ligatures/long s, soft hyphens, invisible controls and placeholder boxes.
 - Before/after previews, individual/batch downloads, duplicate reports and cleaning-audit JSON.
@@ -70,7 +106,7 @@ Rules are explicit heuristics. Review changes before research use. Removing digi
 
 Limits: PDFs up to **500 MB desktop / 80 MB mobile or low-memory**, **20,000 source pages**; images up to **40 MB / 40 megapixels**. The former 50-page batch stop is removed. The whole selected range runs sequentially; Stop preserves completed pages and Continue remaining pages starts after the last retained page. This continues the current tab session, not a saved cross-device job. Long scan recognition can take hours. Download completed results before leaving. Text retention is capped at 100 million characters desktop / 20 million mobile. Rendered images are capped to manage browser memory. Difficult print, handwriting, faded scans, tables and unusual historical typefaces require careful review or specialist work.
 
-### Arc PDF Tools
+### Dailwind PDF Tools
 
 - Open a PDF locally or try the bundled 24-page sample.
 - Divide by **number of parts**, **pages per part**, or ordered, non-overlapping **custom page ranges**. A first/last page range can restrict the source selection.
@@ -84,7 +120,7 @@ Limits: PDFs up to **500 MB desktop / 80 MB mobile or low-memory**, **20,000 sou
 
 Limits: desktop input up to **500 MB**, mobile/low-memory input up to **80 MB**, **20,000 pages** and **2,000 parts**, subject to available device memory. Generated output is capped at 700 MB desktop / 150 MB mobile. All-parts ZIP creation is capped at 250 MB desktop / 60 MB mobile; individual PDFs remain downloadable. Very large scans may require smaller source files. PDF processing runs in a browser worker; scan rendering proceeds one page at a time.
 
-### Arc Metadata Studio
+### Dailwind Metadata Studio
 
 1. Choose a collection name, default genre and optional source details, then add your files together.
 2. Supported inputs: TXT/TEXT, Markdown, CSV, SRT/VTT subtitles, DOCX, selectable-text PDF and CoNLL files as raw text. For CoNLL-U linguistic token counts, use Corpus Toolkit instead. CSV is measured as raw text, not as a structured data table. Scans need OCR first.
@@ -100,7 +136,7 @@ Limits: **2,000 records**, up to **250 MB / 100 million characters per file desk
 
 Suggested titles are not verified publication metadata. Authors, provenance, genre, language and publication dates are user supplied. Local file modification dates are not publication dates. Sentence counts are punctuation estimates; Unicode word-token rules can differ from Word and do not segment unspaced languages linguistically. Corpus totals do not claim a combined unique vocabulary. Counting-method details are recorded per file because different import batches may use different options.
 
-### Arc Image Studio
+### Dailwind Image Studio
 
 - **PDF → image ZIPs:** choose first/last page, JPEG/PNG/WebP, 96/150/200/300 DPI, quality and pages per ZIP part. Export names contain source page numbers. The complete selected range runs sequentially; ZIPs rotate by page count or size instead of stopping at 50 pages.
 - **Images → one PDF:** add still JPEG/PNG/WebP files, move them up/down or remove them, choose image-sized/A4/Letter paper, automatic/portrait/landscape orientation and margins. Keep original JPEG/PNG data when possible or use resize/compression settings. EXIF-oriented JPEGs are rendered when necessary. The PDF is image-only without recognized text.
@@ -126,7 +162,7 @@ DOCX expansion remains bounded at 100 MB to avoid decompression bombs. Stylistic
 
 ## v8.2 — MAT preparation, PMC preview and galaxy identity
 
-### Arc MAT Cleaner (web)
+### Dailwind MAT Cleaner (web)
 
 - Use **Plain text → prepare, then tag in MAT** for untagged `.txt` files. Apply selected control, whitespace, soft-hyphen and punctuation transformations. Optional ligature/long-s expansion, line-end dehyphenation and OCR placeholder removal are raw-mode-only and require review.
 - Use **Already MAT-tagged → preflight for counting** for final MAT output. It normalizes selected Unicode whitespace into ASCII token separators (when spacing normalization is enabled), preserves annotation spelling, checks `word_TAG` syntax and filename conventions, counts the examined counter's baseline, and flags empty/zero-token, malformed and `ST_` intermediate files.

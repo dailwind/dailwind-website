@@ -2,6 +2,7 @@
 (()=>{
  const $=id=>document.getElementById(id),make=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);return n;};
  const kind=document.body.dataset.preparation,{readFile,LIMITS}=PreparationFiles;
+ let removalWords=[];
  let docs=[],outputs=[],report=[],busy=false,worker=null,serial=0,url=null;
  const keys=['normalize','hyphens','pages','headers','references','citations','frontmatter','news','html','duplicates','emails','lowercase','urls','digits','punct','softHyphens','ligatures','boxes','controls','zeroWidth','privateUse','mojibake','contents','chapterHeadings','lineNumbers','byline','noiseLines','reflow','repeatedWords'];
  const notice=text=>{$('prep-status').textContent=text;};
@@ -32,10 +33,10 @@
   $('prep-clear').hidden=!docs.length;
   $('prep-count').textContent=docs.filter(d=>d.selected).length+' selected · '+docs.length+' files';
  }
- function settings(){return {...Object.fromEntries(keys.map(k=>[k,!!$('rule-'+k)?.checked])),find:$('prep-find')?.value||'',replace:$('prep-replace')?.value||'',keywords:$('prep-keywords')?.value||'',caseSensitive:$('keyword-case')?.getAttribute('aria-pressed')!=='false',wholeWords:$('keyword-whole')?.checked!==false,keywordLines:$('keyword-lines')?.checked===true,separator:$('merge-separator')?.value||'blank',duplicates:kind==='merger'?$('merge-duplicates').checked:!!$('rule-duplicates')?.checked};}
+ function settings(){if(kind==='cleaner')commitWords();return {...Object.fromEntries(keys.map(k=>[k,!!$('rule-'+k)?.checked])),find:$('prep-find')?.value||'',replace:$('prep-replace')?.value||'',keywords:$('prep-keywords')?.value||'',words:removalWords,sentences:$('prep-sentences')?.value||'',caseSensitive:$('keyword-case')?.getAttribute('aria-pressed')!=='false',wholeWords:$('keyword-whole')?.checked!==false,keywordLines:$('keyword-lines')?.checked===true,separator:$('merge-separator')?.value||'blank',duplicates:kind==='merger'?$('merge-duplicates').checked:!!$('rule-duplicates')?.checked};}
  function task(action,selected,options){
   return new Promise((resolve,reject)=>{
-   worker??=new Worker('../assets/preparation-worker.js?v=81');const id=++serial;
+   worker??=new Worker('../assets/preparation-worker.js?v=83');const id=++serial;
    const timer=setTimeout(()=>{worker.terminate();worker=null;reject(Error('Processing timed out. Try fewer or smaller files. Your imported text remains available.'));},180000);
    worker.onmessage=({data})=>{if(data.id!==id)return;clearTimeout(timer);data.error?reject(Error(data.error)):resolve(data.result);};
    worker.onerror=()=>{clearTimeout(timer);worker.terminate();worker=null;reject(Error('The local worker could not run. Reload the hosted page; do not open HTML directly from a ZIP.'));};
@@ -44,9 +45,9 @@
  }
  async function run(action=kind){
   if(busy)return;const selected=docs.filter(d=>d.selected);if(!selected.length)return notice('Add or paste some text, then select at least one file.');
-  lock(true);notice('Processing '+selected.length+' file(s) locally…');
+  let chosen;try{chosen=settings();}catch(e){return notice(e.message);}lock(true);notice('Processing '+selected.length+' file(s) locally…');
   try{
-   const result=await task(action,selected,settings());outputs=result.outputs;report=result.duplicates;
+   const result=await task(action,selected,chosen);outputs=result.outputs;report=result.duplicates;
    $('empty-output').hidden=true;$('output-panel').hidden=!outputs.length;if($('duplicates-panel'))$('duplicates-panel').hidden=action!=='duplicates';
    if(action==='duplicates')renderDuplicates();
    if(outputs.length){$('prep-output').replaceChildren();outputs.forEach((d,i)=>{const o=make('option',d.name);o.value=i;$('prep-output').append(o);});$('prep-output').value='0';$('output-summary').textContent=result.inputFiles+' source file(s) → '+outputs.length+' output document(s) · '+outputs.reduce((n,d)=>n+d.text.length,0).toLocaleString()+' output characters';preview();}
@@ -74,6 +75,12 @@
  $('prep-save-audit')?.addEventListener('click',()=>download(JSON.stringify({method:'Local deterministic rules; review required',documents:outputs.map(({name,audit})=>({name,audit}))},null,2),'cleaning-audit.json','application/json'));
  $('duplicates-csv')?.addEventListener('click',()=>{const cell=x=>{const s=String(x),v=typeof x==='string'&&/^\s*[=+@-]/.test(s)?"'"+s:s;return '"'+v.replace(/"/g,'""')+'"';};const rows=[['Paragraph','Occurrences','Files'],...report.map(x=>[x.text,x.count,x.files.join('; ')])];download('\uFEFF'+rows.map(r=>r.map(cell).join(',')).join('\r\n'),'duplicate-paragraphs.csv','text/csv;charset=utf-8');});
  $('prep-preset')?.addEventListener('change',()=>{const preset=$('prep-preset').value;if(preset==='custom')return;const on=AdvancedCleaner.PRESETS[preset]||[];for(const k of keys)$('rule-'+k).checked=on.includes(k);$('prep-find').value='';$('prep-replace').value='';if($('ocr-rules'))$('ocr-rules').open=preset==='ocr';if($('book-rules'))$('book-rules').open=preset==='book';invalidate();});
+ function renderWords(){const box=$('prep-word-chips');if(!box)return;box.replaceChildren();for(const word of removalWords){const chip=make('span');chip.className='removal-chip';chip.append(make('span',word));const b=make('button','×');b.type='button';b.dataset.mutates='';b.disabled=busy;b.setAttribute('aria-label','Keep '+word+' (remove from removal list)');b.addEventListener('click',()=>{if(busy)return;removalWords=removalWords.filter(w=>w!==word);renderWords();invalidate();});chip.append(b);box.append(chip);}$('prep-word-count').textContent=removalWords.length?removalWords.length+' word(s) will be removed. Use × to keep a word.':'No words selected.';}
+ function commitWords(){if(!$('prep-word-input')||busy)return;const value=$('prep-word-input').value.trim();if(!value)return;const incoming=value.split(/[,\n\r]+/).map(w=>w.trim()).filter(Boolean);if(incoming.some(w=>w.length>200)||new Set([...removalWords,...incoming]).size>200)throw Error('Use up to 200 removal entries. Each word can have at most 200 characters.');removalWords=[...new Set([...removalWords,...incoming])];$('prep-word-input').value='';renderWords();invalidate();}
+ const commitSafe=()=>{try{commitWords();}catch(e){notice(e.message);}};
+ $('prep-word-add')?.addEventListener('click',commitSafe);$('prep-word-input')?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===','){e.preventDefault();commitSafe();}});$('prep-word-input')?.addEventListener('blur',commitSafe);
+ // Recommended settings inspect a small local sample; destructive rules remain opt-in.
+ window.DailwindPreparation={recommend(){if(busy)return false;const text=docs.filter(d=>d.selected).map(d=>d.text.slice(0,12000)).join('\n').slice(0,40000);const safe=['controls','zeroWidth','softHyphens'];for(const k of keys)$('rule-'+k)?.toggleAttribute('data-recommended',safe.includes(k));for(const k of keys)if($('rule-'+k))$('rule-'+k).checked=safe.includes(k);if($('prep-preset'))$('prep-preset').value='custom';invalidate();return text?'Safe cleanup selected after inspecting your local text. Invisible controls, BOM noise and soft hyphens only. References, digits, punctuation and your removal list are preserved unless you choose them.':'Safe cleanup selected. Add files first, then review and run. References, digits and punctuation remain untouched.';}};
  $('keyword-case')?.addEventListener('click',()=>{const on=$('keyword-case').getAttribute('aria-pressed')!=='true';$('keyword-case').setAttribute('aria-pressed',String(on));$('keyword-case').textContent='Case sensitive: '+(on?'On':'Off');invalidate();});
  $('prep-settings').addEventListener('change',invalidate);$('prep-settings').addEventListener('input',invalidate);
  document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));renderFiles();

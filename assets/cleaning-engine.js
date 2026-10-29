@@ -20,16 +20,17 @@ function clean(source,o={}){
  // Existing reference/page rules need line boundaries, so reflow follows them.
  const base=root.ArcEngine.smartClean(text,{...o,find:'',replace:'',normalize:o.normalize!==false});
  text=base.text;audit.push(...base.audit);
- const keywords=String(o.keywords||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
- if(keywords.length>200||keywords.some(k=>k.length>200))throw Error('Use at most 200 keywords/phrases, up to 200 characters per line.');
+ const words=[...(Array.isArray(o.words)?o.words:[]),...String(o.keywords||'').split(/\r?\n/) ].map(s=>String(s).trim()).filter(Boolean);
+ const sentences=String(o.sentences||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+ if(words.length+sentences.length>200||words.some(k=>k.length>200)||sentences.some(k=>k.length>1000))throw Error('Use at most 200 removal entries: words up to 200 characters; sentences up to 1,000.');
  const escape=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),flags=o.caseSensitive===false?'giu':'gu';
  const expression=term=>new RegExp((o.wholeWords===false?'':'(?<![\\p{L}\\p{N}_])')+escape(term)+(o.wholeWords===false?'':'(?![\\p{L}\\p{N}_])'),flags);
- if(keywords.length)apply('Custom keyword removal · '+(o.caseSensitive===false?'ignore case':'case sensitive')+' · '+(o.keywordLines?'matching lines':'matches'),s=>{
-  // Literal terms, never user-provided regular expressions. Longest phrases first.
-  const terms=[...new Set(keywords)].sort((a,b)=>b.length-a.length).map(expression);
+ function removeTerms(items,label){if(!items.length)return;apply(label+' · '+(o.caseSensitive===false?'ignore case':'case sensitive')+' · '+(o.keywordLines?'matching lines':'matches'),s=>{
+  const terms=[...new Set(items)].sort((a,b)=>b.length-a.length).map(expression);
   if(o.keywordLines)return s.split('\n').filter(line=>!terms.some(re=>{re.lastIndex=0;return re.test(line);})).join('\n');
   for(const re of terms)s=s.replace(re,' ');return s;
- });
+ });}
+ removeTerms(sentences,'Custom sentence / phrase removal');removeTerms(words,'Custom keyword removal');
  if(o.find){if(String(o.find).length>200)throw Error('Find text is limited to 200 characters.');apply('Literal find/replace · '+(o.caseSensitive===false?'ignore case':'case sensitive'),s=>s.replace(new RegExp(escape(String(o.find)),o.caseSensitive===false?'giu':'gu'),()=>String(o.replace||'').slice(0,200)));}
  if(o.reflow)apply('Reflow wrapped prose lines (paragraphs retained)',s=>s.split(/\n\s*\n/).map(p=>p.split('\n').reduce((out,l)=>{if(!out.length)return [l];const previous=out[out.length-1];const heading=x=>x.trim().length<75&&(/^[A-Z\d\W]+$/.test(x)||/^(?:chapter|part|section)\b/i.test(x));if(heading(previous)||heading(l)||/^\s*(?:[-•*]|\d+[.)])\s/.test(l))out.push(l);else out[out.length-1]+=' '+l.trim();return out;},[]).join('\n')).join('\n\n'));
  if(o.repeatedWords)apply('Collapse adjacent repeated English words',s=>s.replace(/\b([a-z]+)([ \t]+)\1\b/gi,(m,w,space)=>/^(had|that)$/i.test(w)?m:w));

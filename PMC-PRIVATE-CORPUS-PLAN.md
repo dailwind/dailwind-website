@@ -1,3 +1,7 @@
+# v8.3 implementation note
+
+A separate runnable server starter is now included as `PMC-Private-Server-v0.1.zip`. Its source is in `private-pmc/` in the development project, never in the public website export. It implements local encrypted indexing, bounded research APIs, Google OIDC setup, server-side account policies and saved queries. Real Google credentials, a private HTTPS host, corpus files and benchmark validation are still required. Its README supersedes the earlier planning-only directions below. The public PMC page remains synthetic/Coming Soon.
+
 # PMC research access — launch boundary
 
 The v8.2 release adds a Coming Soon project page and a working **original synthetic demonstration**. It does not host, import, index, secure or serve the actual Pakistan Medical Corpus. The real source files were not supplied. Current demo counts are computed from 12 short, original demonstration texts, not claimed PMC statistics.
