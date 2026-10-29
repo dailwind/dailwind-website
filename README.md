@@ -4,25 +4,27 @@ Website, research tools and text-preparation workspaces by **Arslan Tahir**.
 
 - Website: https://dailwind.com
 - Contact: arslan@dailwind.com
-- Last updated: 28 October 2026
-- Update package: **v8.1** (follows your v8.0 release)
+- Last updated: 30 October 2026
+- Update package: **v8.2** (apply after v8.1)
 
 This README describes the latest website update packages. Features become live on your GitHub Pages website after you upload their files and successfully deploy them.
 
 ## Website sections
 
+**PMC:** Coming Soon medical-corpus project and clearly labelled original sample analyzer.
+
 - **Home:** LinguaX Arc promotion, looping silent video, phone screenshot slideshow and founder introduction.
 - **App:** a separate showcase for **LinguaX Arc: Corpus Toolkit**, Android version 6.
-- **Toolkits:** nine separate browser workspaces, listed below.
+- **Toolkits:** ten separate browser workspaces, listed below.
 - **Articles:** research, reviews and creative writing with individual reading pages.
 - **About:** Arslan Tahir’s portfolio and supplied academic information.
 - **Contact, Privacy and Terms.**
 
-The studio logo stays at the top-left on desktop pages, with space between the brand and navigation. The social preview image uses the Dailwind **D** logo.
+The studio logo stays at the top-left on desktop pages, with space between the brand and navigation. The header/footer and social preview use your supplied galaxy **D / DAILWIND.COM** logo, optimized for display. The favicon and touch icon use the same artwork. Link-preview services may retain an older cached image.
 
 ## LinguaX Arc Toolkits
 
-Navigation is organized as **Home / App / Toolkits / Articles / About / Contact**. Existing page URLs and saved workspace identifiers remain unchanged. The Android product remains **LinguaX Arc: Corpus Toolkit**.
+Navigation is organized as **Home / App / Toolkits / PMC / Articles / About / Contact**. Existing page URLs and saved workspace identifiers remain unchanged. The Android product remains **LinguaX Arc: Corpus Toolkit**.
 
 | Workspace | URL | Main features |
 | --- | --- | --- |
@@ -37,6 +39,8 @@ Navigation is organized as **Home / App / Toolkits / Articles / About / Contact*
 
 | Arc Metadata Studio | `/metadata-studio/` | Bulk corpus catalogues; 28 genre labels; editable source fields, custom columns, counts, charts and XLSX / CSV / JSON |
 | Arc Image Studio | `/image-tools/` | PDF pages to numbered image ZIPs; images to one PDF; resize/compress JPEG, PNG or WebP |
+
+| Arc MAT Cleaner | `/mat-cleaner/` | Plain-text preparation, already-tagged syntax/baseline preflight, review isolation, audits and Python desktop download |
 
 Workspaces fill the browser area without an outer simulated desktop frame. Corpus and Stylistic Toolkit retain desktop **Auto-hide / Always show** dock controls. The preparation tools have their own focused interfaces.
 
@@ -120,6 +124,35 @@ Preparation tools and Corpus Toolkit now share a device-aware capacity profile:
 
 DOCX expansion remains bounded at 100 MB to avoid decompression bombs. Stylistic Toolkit has a separate desktop budget of 5 million characters / 750,000 words / 100,000 nonempty lines per text, or 2 million / 300,000 / 40,000 mobile. It retains at most 5,000 findings and paginates close reading by 1,000 lines. Larger input limits do not remove algorithmic scope limits or guarantee that every device can handle the ceiling. Existing saved workspace identifiers and backup formats remain unchanged.
 
+## v8.2 — MAT preparation, PMC preview and galaxy identity
+
+### Arc MAT Cleaner (web)
+
+- Use **Plain text → prepare, then tag in MAT** for untagged `.txt` files. Apply selected control, whitespace, soft-hyphen and punctuation transformations. Optional ligature/long-s expansion, line-end dehyphenation and OCR placeholder removal are raw-mode-only and require review.
+- Use **Already MAT-tagged → preflight for counting** for final MAT output. It normalizes selected Unicode whitespace into ASCII token separators (when spacing normalization is enabled), preserves annotation spelling, checks `word_TAG` syntax and filename conventions, counts the examined counter's baseline, and flags empty/zero-token, malformed and `ST_` intermediate files.
+- The source screenshot's `count_only.pl line 100` corresponds in the examined official source to average word length divided by counted tokens. A zero baseline is consistent with this error. The actual failing file and installed build were not supplied, so this is not a confirmed diagnosis of that file.
+- Prepared raw text is exported under `ready-for-tagging/`; it still needs MAT **Tag** or **Tag and Analyze**. Preflight-passed tagged files go under `count-input/`; ambiguous/blocked copies go under `review/`. JSON audits and instructions stay outside the MAT input folders. Never select the entire output root in MAT counting.
+- Download full TXT, a structured ZIP or the audit. UTF-8 without BOM output; strict UTF-8/UTF-16 source detection or explicit Windows-1252. No silent encoding replacement.
+- The TTR value is a warning threshold, not a setting sent to MAT. Default 400; consult the official manual before changing the actual MAT TTR setting. Short texts are flagged, never padded.
+- This independently written utility is not the MAT tagger, does not create linguistic tags, and cannot guarantee every feature/dimension/Z-score calculation or repair a MAT/Java/Stanford installation. It does not invent words or remove valid function words/numbers to change results.
+- Device limits follow the existing text-workspace profile. Structured ZIP export is capped at 60 MB desktop / 15 MB mobile; use individual downloads or smaller groups for larger results. All document processing is local.
+
+### Offline Python desktop app
+
+The website includes `assets/downloads/Arc-MAT-Cleaner-Python-v1.0.zip`, also supplied separately with this update. Extract the whole package, install **Python 3.10+ with Tkinter**, then use `Start-Windows.bat` or run `python app.py`. macOS/Linux: `python3 app.py`. No pip dependencies, network processing or Windows EXE are included.
+
+The app offers file/folder selection, optional subfolders, raw/tagged workflows, encoding settings, cleaning checkboxes, TTR warnings, progress, Stop, and CSV/JSON audits. Each run creates a fresh dated output folder and writes completed files atomically. Original files are not overwritten. CLI examples and detailed instructions are in the app's own README.
+
+Python core/CLI and cross-language fixture parity were tested, including direct Perl baseline comparison. The native Windows/macOS GUI was not exercised in this environment; its Python source was syntax checked. An end-to-end run of your installed MAT remains unverified.
+
+### Pakistan Medical Corpus (PMC)
+
+The new **PMC** navigation tab opens `/pmc/`: a Coming Soon project page with an original synthetic sample search workspace. Concordance, word frequencies, neighbouring collocate counts, document distribution and text-type filtering work on those sample texts. Counts are calculated from the sample, not claimed as real PMC statistics. The real source corpus is not bundled or connected.
+
+**Do not upload real PMC source texts to GitHub Pages, assets, article uploads or browser JavaScript.** A no-download button does not make browser-delivered data private. Real in-place analysis needs a private server-side index, access policy, bounded result excerpts and query/rate limits. Visible results can still be copied; absolute non-extraction cannot be promised. Keep master texts in your existing private storage until that service is configured. No real corpus ingestion path is included in this update.
+
+The supplied `PMC-PRIVATE-CORPUS-PLAN.md` explains the future launch boundary and preparation steps. No real corpus size, launch date, clinical validity, patient dataset or research access is invented.
+
 ## Privacy and storage
 
 Document processing runs in the visitor's browser. Files are not uploaded to an OCR or corpus-processing server. Code, fonts and the OCR model load from the website; initial use requires access to these assets. This is not an installed offline PWA.
@@ -144,7 +177,7 @@ Optional analytics remain unconfigured unless the owner supplies a measurement I
 
 For the initial workflow setup, use **Settings → Pages → Source → GitHub Actions**. Preserve the working custom domain and DNS configuration. Verify **Enforce HTTPS** in Pages settings.
 
-**v8.1 adds `metadata-studio/`, `image-tools/` and their new assets. Upload the supplied `publishing/site-files.json` so deployment includes both routes. Preserve the existing `pdf-tools/`, `toolkit/pdf-lib/`, `toolkit/lib/` and `toolkit/ocr/` folders; this changed-files patch does not repeat all engine assets.**
+**v8.2 adds `mat-cleaner/`, `pmc/`, new assets and the Python app ZIP under `assets/downloads/`. Upload the supplied `publishing/site-files.json` so both routes are deployed. Apply after v8.1 and preserve all existing tool engines, OCR models and other assets. This is a changed/new-files patch. The separate Python app ZIP is for your computer; the website patch already includes its downloadable copy.**
 
 **OCR needs the complete `toolkit/ocr/` folder.** Keep `toolkit/lib/` too: it contains the PDF and Word readers. Uploading only the OCR HTML page will not install its engine/model.
 
