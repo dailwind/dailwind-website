@@ -5,9 +5,34 @@ Website, research tools and text-preparation workspaces by **Arslan Tahir**.
 - Website: https://dailwind.com
 - Contact: arslan@dailwind.com
 - Last updated: 30 October 2026
-- Update package: **v8.4** (apply after v8.3.1)
+- Update package: **v8.5.1** (apply after v8.5)
 
 This README describes the latest website update packages. Features become live on your GitHub Pages website after you upload their files and successfully deploy them.
+
+## v8.5.1 — supplied transparent logo update
+
+Apply **Dailwind-Logo-Update-v8.5.1.zip after v8.5**. Extract its contents into the existing GitHub website repository root, preserving paths and replacing matching files. Keep all other files. Deploy through the existing Publish Dailwind GitHub Actions workflow.
+
+The latest supplied PNG (30 October 2026) replaces the Dailwind logo. Its transparent background is preserved in the optimized WebP and PNG icons. The existing small header/footer logo dimensions remain unchanged. Browser favicon, Apple touch icon and logo-only social preview are updated. New versioned asset URLs request fresh images; WhatsApp and other services can still retain their own cached previews temporarily.
+
+This patch changes branding assets and their page/template references. MAT preparation, other research engines, article text, navigation structure and signup settings remain unchanged. The supplied original is retained in source for reproducible builds. Validation checks links, metadata, security/SRI and image alpha/dimensions; visual QA checks the existing homepage.
+
+## v8.5 — existing MAT Tagger Cleaner upgrade
+
+Apply **Dailwind-MAT-Tagger-Cleaner-v8.5.zip after v8.4**. This contains only changed/new website files plus this README and preparation guide. Extract its contents into your existing website repository root, preserving `assets/` and `mat-cleaner/` paths. Replace matching files, keep all other website files, then deploy through the existing GitHub Actions workflow. Do not upload the ZIP itself. A refresh may be needed after deployment to load the v85 worker URL.
+
+The existing `/mat-cleaner/` workspace now offers **Select Files → Prepare Files → Download Prepared Corpus**. No extra tool, tab or route was added; the toolkit catalog, branding, homepage and other toolkits remain unchanged. The existing preparation shell and its visual language are retained. Earlier raw-cleaning/tagged-preflight options and Python download remain available inside a collapsed specialist section.
+
+- Add TXT files, folders, drag-and-drop selections and multiple named collections. The automatic engine exports UTF-8, preserves book order and organizes large books into numbered files without a visitor-facing part-size control.
+- A Web Worker reads each source in 256 KiB slices. The ZIP writer uses temporary browser-local disk storage when available, with a bounded memory fallback. Large batch capacity depends on the device; it is not unlimited. No corpus uploads, accounts, AI calls, databases or document telemetry are used.
+- Safe default changes normalize encoding and selected whitespace only. OCR notes/page markers are detected heuristically, reported and retained. Invalid/empty/unsafe sources are clearly excluded; no words are rewritten, translated, invented or padded. Intentional text-changing repairs remain optional in the earlier specialist workflow.
+- `MAT_Ready_Corpus.zip` contains mapped book folders, a separate TXT-only `MAT_input` folder, `corpus_manifest.csv` and `preparation_report.txt`. Independent collections keep separate folders. Book/MAT-input copies are identical: analyze only one set, not both.
+- Every part is checked for nonempty UTF-8 and word count. Concatenated output checksums/counts must match normalized input; late source failures roll back all partial entries for that source. Metadata includes original references, encodings, checksums, formatting counts and warnings. All-review batches offer a review-report ZIP without a false success message.
+- Internal default: approximately 3,000 whitespace tokens, natural boundaries preferred, fallback at 3,300. See **MAT-PREPARATION-GUIDE.txt** (also served at `assets/MAT-PREPARATION-GUIDE.txt`) for exact normalization, naming, segmentation, source checksums, resource budgets, temporary-storage cleanup and research-aggregation limitations.
+
+**Validation:** `node check-mat-preparation.cjs` passes streaming/boundary preservation, large text, 320-book/four-collection batches, UTF-8/UTF-16/Windows-1252, unusual Unicode, blank/unsupported/invalid sources, late-failure rollback, traceability/counts, ZIP extraction/reproducibility, simulated OPFS/memory parity, capacity failure and cancellation. Existing `python check-mat-pmc.py`, `python validate.py` and `python check-security.py` pass. Browser preparation completed with a real 360,000-word file plus a Unicode file; a blank file was correctly excluded. A browser QA fixture exercised 120 nested folder files plus two dropped files in a second collection (122 prepared). Layout checks at 375px and 1024px showed no horizontal overflow. The cloud file-chooser bridge did not populate a directory path directly, so folder-change handling was verified with synthetic FileList/relative-path fixtures; native folder selection should also be checked on your target browsers. The native browser-generated download link was checked and clicked, but the browser automation download event timed out; a browser-saved ZIP could not be captured for re-extraction. ZIP generation and re-extraction were verified independently through the actual worker/ZIP implementation. Real OPFS device quotas and all mobile browser download behaviors remain device-dependent.
+
+**MAT itself is not installed in this development environment. Full MAT compatibility remains unverified.** Prepared files still require tagging/analysis in MAT; this utility has not performed either. The earlier Python desktop package remains v1.0 and is not the new automatic browser engine.
 
 ## v8.4 — website email signup with Supabase
 
