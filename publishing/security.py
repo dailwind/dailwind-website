@@ -10,6 +10,8 @@ def harden_html(text,path,root):
     policy=POLICY
     if re.search(r'<script[^>]+src="(?:\.\./)*app\.js',text):
         policy=policy.replace("script-src 'self' 'wasm-unsafe-eval'", "script-src 'self' 'wasm-unsafe-eval' https://www.googletagmanager.com").replace("connect-src 'self'", "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com")
+    if path.relative_to(root).as_posix()=='pmc/account/index.html':
+        policy=policy.replace("connect-src 'self'", "connect-src 'self' https://*.supabase.co").replace("form-action 'none'", "form-action 'self' https://pmc.dailwind.com")
     text=re.sub(r'<meta\b[^>]*http-equiv=["\']Content-Security-Policy["\'][^>]*>','',text,flags=re.I)
     text=re.sub(r'<meta\b[^>]*name=["\']referrer["\'][^>]*>','',text,flags=re.I)
     text=re.sub(r'<head\b[^>]*>',lambda m:m[0]+'<meta http-equiv="Content-Security-Policy" content="'+policy+'"><meta name="referrer" content="strict-origin-when-cross-origin">',text,count=1,flags=re.I)
@@ -28,8 +30,24 @@ def harden_html(text,path,root):
         return tag[:-1]+' integrity="'+digest+'">'
     return re.sub(r'<script\b[^>]*>',script,text,flags=re.I)
 
+def validate_pmc_auth_config(root):
+    path=Path(root)/'assets/pmc-auth-config.js'
+    if not path.exists():return
+    text=path.read_text()
+    fields={}
+    for key in ['supabaseUrl','publishableKey','researchOrigin']:
+        match=re.search(r"\b"+key+r"\s*:\s*(['\"])([^'\"\n]*)\1",text)
+        if not match:raise ValueError('PMC config must contain literal string fields: '+key)
+        fields[key]=match[2]
+    url,key=fields['supabaseUrl'],fields['publishableKey']
+    if bool(url)!=bool(key):raise ValueError('Set the Supabase Project URL and publishable key together, or leave both empty.')
+    if key and not re.fullmatch(r'sb_publishable_[A-Za-z0-9_-]{12,300}',key):raise ValueError('PMC browser config accepts a publishable key only. Never publish a secret or service-role key.')
+    if url and not re.fullmatch(r'https://[a-z0-9-]+\.supabase\.co',url):raise ValueError('Use the hosted HTTPS Supabase Project URL without a trailing slash.')
+    if fields['researchOrigin'] not in {'','https://pmc.dailwind.com'}:raise ValueError('Public PMC account handoff supports https://pmc.dailwind.com only; leave empty before deployment.')
+
 def harden_site(root):
     root=Path(root).resolve()
+    validate_pmc_auth_config(root)
     for path in root.rglob('*.html'):
         if 'publishing' in path.relative_to(root).parts:continue
         path.write_text(harden_html(path.read_text(),path,root))

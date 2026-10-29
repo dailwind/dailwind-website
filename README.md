@@ -5,9 +5,40 @@ Website, research tools and text-preparation workspaces by **Arslan Tahir**.
 - Website: https://dailwind.com
 - Contact: arslan@dailwind.com
 - Last updated: 30 October 2026
-- Update package: **v8.3** (apply after v8.2)
+- Update package: **v8.4** (apply after v8.3.1)
 
 This README describes the latest website update packages. Features become live on your GitHub Pages website after you upload their files and successfully deploy them.
+
+## v8.4 — website email signup with Supabase
+
+Apply **Dailwind-Update-v8.4.zip after v8.3.1**. This is a changed/new-files website patch. The separate **PMC-Private-Server-v0.2.zip** is a private application package; keep it outside your public website/GitHub directory. Preserve its existing runtime/input folders and keys when upgrading v0.1.
+
+- New public account route: **`/pmc/account/`**, linked from PMC. Create account with name, optional institute and email; existing users select Sign in. Google sign-in has been replaced by a typed email verification code in the new server.
+- Supabase Auth verifies email; a RLS-protected `pmc_profiles` table stores each user's own name/institute. No corpus content is sent to Supabase by this implementation. Other local toolkits remain usable without an account.
+- A personal profile can be created/loaded/edited from the website without deploying Python. The actual private corpus, access quotas and saved research queries still require the separate server.
+- Account tokens stay in tab memory; no access/refresh token is stored in localStorage or a URL. Refreshing asks for a new email code; saved profiles remain. Once the separate private service is connected, a top-level HTTPS POST exchanges the verified identity for a short-lived HttpOnly research session.
+- Profile/client metadata cannot grant paid access. The private server validates the session with your Supabase project, checks email confirmation, enforces its own local role and encrypts its profile cache/saved queries. Old v0.1 login sessions are revoked during the auth upgrade; corpus data is preserved. Old Google and new email identities are not automatically merged.
+- Publishable-key-only configuration checks and restricted account-page CSP allow the required Supabase connection and the fixed PMC handoff, while other pages retain their prior restrictions. Updated privacy/terms describe optional account data and separate private sessions.
+- **Activation is still required:** no Supabase Project URL/key or mail provider was supplied. The current page therefore clearly says signup is being prepared, with sending disabled. Real registration becomes available after you create/configure your own Supabase project and deploy the public config. Real email delivery, SQL/RLS execution and production private-server integration have not been exercised in a live project.
+
+Read **SUPABASE-SETUP-GUIDE.md** for the numbered English/Roman Urdu setup. The SQL and email template are in the private-server ZIP's `supabase/` folder. Fill only **Project URL + `sb_publishable_...` key** in `assets/pmc-auth-config.js`. Never put secret/service-role keys, database passwords or SMTP passwords into that file or GitHub. Leave `researchOrigin` empty until the HTTPS private service at `pmc.dailwind.com` is ready.
+
+**SMTP matters:** Supabase's default sender is limited to eligible project-team addresses with very low testing limits. A public signup service needs custom SMTP/domain verification. Email sender costs/limits belong to the selected provider; this update does not purchase or activate a plan.
+
+Use the supplied **Publish Dailwind GitHub Actions** workflow after editing config; it validates config and refreshes script integrity hashes. Include the updated `publishing/security.py` and `publishing/site-files.json`. Bypassing that staging step can leave old hashes that block an edited config script.
+
+Validation uses synthetic/mocked auth requests for OTP, profiles, rejected secrets, private identity exchange, origin/CSRF checks, access isolation and expiry. Live account activation still needs your own project; the guide includes the final signup/profile test. No real verification emails were sent during development.
+
+## v8.3.1 — supplied logo and Muhammad Aqeel poem
+
+Apply **Dailwind-Update-v8.3.1.zip after v8.3**. This is a changed/new-files patch, not a full website. Upload the extracted contents into the website repository root and replace matching paths. Preserve all unchanged assets and tools. The v8.3 private PMC server package is unchanged and is not included again.
+
+- Replaced the earlier colour galaxy artwork with the supplied **black-and-white D / DAILWIND.COM logo**. The compact header size is retained; footer, corpus-workspace brand icon, favicon/touch icon and logo-only social previews use the new supplied artwork.
+- Social metadata uses a fresh **`assets/dailwind-preview-v831.png`** URL to help chat apps refresh their cached previews.
+- Added **I TOLD YOU IN THE START** by **Muhammad Aqeel** to Articles, category **Poetry**. The English poem's wording, punctuation, line breaks and stanza labels are reproduced as supplied. A short professional biography identifies the poet and his PhD affiliation. The source document's personal contact list and full CV are not published.
+- Publication metadata is dated **30 October 2026**. The uploaded source filename includes 27 October; no unsupported composition-date claim is added.
+- Article source for future edits: `articles/uploads/i-told-you-in-the-start.md` and matching `.json`. The existing publisher automatically rebuilds its reading page, catalogue and sitemap.
+- Existing tool settings, private PMC integration, data protection and account-setup requirements remain as described below.
 
 ## v8.3 — what changed
 
@@ -21,7 +52,7 @@ This README describes the latest website update packages. Features become live o
 - Corpus Cleaner has separate word chips and sentence/phrase inputs, clear case/whole-word explanations and advanced rules collapsed initially. Case ON/OFF applies to both lists and find/replace. A sentence is matched literally, including its punctuation and spaces; one sentence/phrase per line. Sentence matching does not infer paraphrases or join sentences split over PDF line breaks. Your original files remain unchanged.
 - PMC now includes the supplied project description and credits: project leads **Dr. Muhammad Afzaal & Dr. Adnan Tahir**, technical developer **Arslan Tahir**. “Hundreds of millions” is explicitly a project-team report, not the size of the sample or an independently audited count. The real collection remains coming soon.
 - The supplied galaxy D is compact in the studio header/footer. The logo-only social preview uses a new `assets/dailwind-preview-v83.png` URL to help refresh stale chat-app previews. Third-party caches can still take time to update.
-- Aqeel sahib's writing was not present in the accessible uploads during this update. No placeholder article or invented text was published. Reattach the actual file and confirm its title/byline for publication.
+- Muhammad Aqeel's subsequently supplied poem is published in v8.3.1; see that update note above.
 
 ### PMC: the private collection is a separate deployment
 
@@ -29,7 +60,7 @@ The public website contains only the existing original synthetic demonstration. 
 
 The separate PMC server package includes a `private-input/` folder, importer, encrypted text chunks, keyed search index, preview/full collection policies, bounded concordance/collocates/distribution, server-side Google sign-in integration, saved queries and account quotas. It has no real corpus or secrets in it. See that package's README for local setup, safe backups, production deployment and operator limits.
 
-**Still needs operator setup:** a private HTTPS server/domain, Google Cloud OAuth client configuration, deployment secrets and your permitted corpus files. Google login is not active on the current website. The source integration was tested with synthetic local sessions; a real Google callback and large-corpus performance were not tested. The package has manual paid-role assignment, not a working billing/subscription checkout. Apple sign-in is not included.
+**Older v8.3 setup note (superseded by v8.4):** private HTTPS hosting, provider configuration and your permitted corpus files are required for real corpus access. The Google setup described in older notes below is superseded by v8.4 Supabase email signup. The source integration was tested with synthetic local sessions; a real Google callback and large-corpus performance were not tested. The package has manual paid-role assignment, not a working billing/subscription checkout. Apple sign-in is not included.
 
 After the real service has been deployed and verified, set `researchOrigin` in the website's `assets/pmc-access-config.js` to its HTTPS origin. The PMC page then shows an entry link to that independent research workspace. It remains empty by default so visitors are not sent to a nonexistent login.
 

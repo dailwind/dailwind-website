@@ -1,0 +1,20 @@
+'use strict';
+(function(root){
+ function config(value={}){const url=String(value.supabaseUrl||'').replace(/\/$/,''),key=String(value.publishableKey||'');if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(url)||!/^sb_publishable_[A-Za-z0-9_-]{12,300}$/.test(key))throw Error('Email signup is awaiting setup. No code has been sent.');return {url,key};}
+ function profile(name,institute=''){name=String(name||'').trim();institute=String(institute||'').trim();if(name.length<2||name.length>120||institute.length>180||/[\u0000-\u001f\u007f]/.test(name+institute))throw Error('Enter your name (2–120 characters) and optional institute (up to 180 characters).');return {full_name:name,institute};}
+ function create(value,fetcher=root.fetch.bind(root)){const c=config(value);let session=null;
+  async function request(path,method='GET',data,token){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);try{const r=await fetcher(c.url+path,{method,headers:{apikey:c.key,...(data!==undefined?{'Content-Type':'application/json'}:{}),...(token?{Authorization:'Bearer '+token}:{})},...(data!==undefined?{body:JSON.stringify(data)}:{}),credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',signal:controller.signal});let result;try{result=await r.json();}catch{result={};}if(!r.ok){const err=Error(r.status===429?'Too many requests. Wait before trying again.':r.status>=500?'Email service is unavailable. Try again later.':'The request could not be completed. Check the details or contact the operator.');err.status=r.status;err.code=String(result.error_code||result.code||'');throw err;}return result;}catch(e){if(e.name==='AbortError')throw Error('The request timed out. Check your connection and try again.');throw e;}finally{clearTimeout(timer);}}
+  const active=()=>{if(!session||session.expires<=Date.now())throw Error('Your account-page session has expired. Request a new email code.');return session;};
+  return {
+   async send(email,signup,details){email=String(email||'').trim();if(email.length>254||!/^\S+@[^\s@]+\.[^\s@]+$/.test(email))throw Error('Enter a valid email address.');const p=signup?profile(details?.full_name,details?.institute):undefined;try{await request('/auth/v1/otp','POST',{email,create_user:!!signup,...(p?{data:p}:{})});}catch(e){if(!signup&&['user_not_found','signup_disabled'].includes(e.code))return;throw e;}},
+   async verify(email,code){if(!/^\d{6,10}$/.test(code))throw Error('Enter the numeric verification code from your email.');let data;try{data=await request('/auth/v1/verify','POST',{email,token:code,type:'email'});}catch(e){if(e.status===400||e.status===401||e.status===403||e.status===422)throw Error('The code is invalid or has expired. Request a new code and use the latest email.');throw e;}
+    if(!data.access_token||!data.user?.id||!data.user?.email||!data.user.email_confirmed_at||data.user.is_anonymous)throw Error('A verified email account is required.');session={token:data.access_token,id:data.user.id,email:data.user.email,expires:Date.now()+Math.min(3600,Number(data.expires_in)||3600)*1000};return {id:session.id,email:session.email};
+   },
+   async loadProfile(){const s=active();const rows=await request('/rest/v1/pmc_profiles?id=eq.'+encodeURIComponent(s.id)+'&select=id,full_name,institute,updated_at','GET',undefined,s.token);if(!Array.isArray(rows))throw Error('Profile storage is unavailable. Contact Dailwind support.');return rows[0]||null;},
+   async saveProfile(name,institute){const s=active(),p=profile(name,institute);await request('/rest/v1/pmc_profiles','POST',{id:s.id,...p},s.token).catch(async e=>{if(e.status!==409)throw e;await request('/rest/v1/pmc_profiles?id=eq.'+encodeURIComponent(s.id),'PATCH',p,s.token);});return p;},
+   async logout(){const s=session;session=null;if(s)await request('/auth/v1/logout?scope=local','POST',undefined,s.token);},
+   researchToken(){return active().token;}
+  };
+ }
+ root.DailwindPMCAuth={config,profile,create};if(typeof module!=='undefined'&&module.exports)module.exports=root.DailwindPMCAuth;
+})(typeof self!=='undefined'?self:globalThis);

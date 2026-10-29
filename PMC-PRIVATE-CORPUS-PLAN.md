@@ -1,3 +1,7 @@
+# v8.4 account implementation update
+
+The current standalone package is **PMC-Private-Server-v0.2.zip**. It replaces the earlier Google OAuth setup with **Supabase email OTP**, a RLS-protected account profile and a validated private-server session handoff. Read **SUPABASE-SETUP-GUIDE.md** and the v0.2 README; these supersede the old provider instructions below. The real corpus remains private and has not been supplied or deployed. Public signup awaits your own Supabase project/SMTP configuration.
+
 # v8.3 implementation note
 
 A separate runnable server starter is now included as `PMC-Private-Server-v0.1.zip`. Its source is in `private-pmc/` in the development project, never in the public website export. It implements local encrypted indexing, bounded research APIs, Google OIDC setup, server-side account policies and saved queries. Real Google credentials, a private HTTPS host, corpus files and benchmark validation are still required. Its README supersedes the earlier planning-only directions below. The public PMC page remains synthetic/Coming Soon.
