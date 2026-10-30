@@ -17,6 +17,8 @@ def harden_html(text,path,root):
         policy=policy.replace("connect-src 'self'", "connect-src 'self' https://*.supabase.co")
     if route=='mat-cleaner/index.html':
         policy=policy.replace("script-src 'self'", "script-src 'self' blob:").replace("worker-src 'self'", "worker-src 'self' blob:")
+    # Keep the supplied studio mark consistent in headers, footers and launchers.
+    text=text.replace('dailwind-logo-v861.webp','dailwind-logo-v866.webp')
     # Every shared route uses the supplied Dailwind logo on a white card.
     # This is static HTML: crawlers do not have to run JavaScript.
     canonical=re.search(r'<link\b[^>]*rel="canonical"[^>]*href="([^"]+)"',text,re.I)
@@ -25,11 +27,11 @@ def harden_html(text,path,root):
         parsed=urlsplit(unescape(canonical[1]))
         if parsed.scheme=='https' and parsed.netloc:origin='https://'+parsed.netloc
     text=re.sub(r'<meta\b[^>]*(?:property|name)="(?:og:image(?:\:[a-z_]+)?|twitter:image(?:\:alt)?|twitter:card)"[^>]*>','',text,flags=re.I)
-    preview=origin+'/assets/dailwind-share-v861.png'
+    preview=origin+'/assets/dailwind-share-v866.png'
     # Version every route's icons, including aliases and standalone workspaces.
     text=re.sub(r'<link\b[^>]*rel="(?:icon|shortcut icon|apple-touch-icon)"[^>]*>','',text,flags=re.I)
     prefix=posixpath.relpath('assets',posixpath.dirname(route) or '.')+'/'
-    text=text.replace('</head>','<link rel="icon" type="image/png" sizes="64x64" href="'+prefix+'favicon-v861.png"><link rel="apple-touch-icon" sizes="180x180" href="'+prefix+'apple-touch-icon-v861.png"></head>',1)
+    text=text.replace('</head>','<link rel="icon" type="image/png" sizes="64x64" href="'+prefix+'favicon-v866.png"><link rel="apple-touch-icon" sizes="180x180" href="'+prefix+'apple-touch-icon-v866.png"></head>',1)
     tags='<meta property="og:image" content="'+preview+'"><meta property="og:image:secure_url" content="'+preview+'"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:type" content="image/png"><meta property="og:image:alt" content="Dailwind Studio logo on a white background"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="'+preview+'"><meta name="twitter:image:alt" content="Dailwind Studio logo on a white background">'
     title=re.search(r'<title>(.*?)</title>',text,re.S|re.I)
     if title and not re.search(r'property="og:title"',text,re.I):tags+='<meta property="og:title" content="'+escape(unescape(title[1]),quote=True)+'">'
