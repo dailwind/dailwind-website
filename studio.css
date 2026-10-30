@@ -27,3 +27,6 @@
 .header .brand-logo,.footer .brand-logo{width:32px!important;height:32px!important;flex:0 0 32px!important;object-fit:contain;border-radius:3px}
 .header .brand{gap:9px!important}.footer .brand{gap:9px!important}
 @media(max-width:650px){.header .brand-logo{width:29px!important;height:29px!important;flex-basis:29px!important}}
+
+/* Optical alignment of the supplied transparent mark and wordmark. */
+.header .brand,.footer .brand{align-items:center!important}.header .brand>span,.footer .brand>span{display:block;line-height:1.1}.header .brand-logo,.footer .brand-logo{align-self:center;transform:translateY(-2px)}

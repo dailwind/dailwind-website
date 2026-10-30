@@ -5,9 +5,28 @@ Website, research tools and text-preparation workspaces by **Arslan Tahir**.
 - Website: https://dailwind.com
 - Contact: arslan@dailwind.com
 - Last updated: 30 October 2026
-- Update package: **v8.5.1** (apply after v8.5)
+- Update package: **v8.6** (apply after v8.5 or v8.5.1)
 
 This README describes the latest website update packages. Features become live on your GitHub Pages website after you upload their files and successfully deploy them.
+
+## v8.6 — managed approvals, private PMC preview and layout fixes
+
+Apply **Dailwind-Update-v8.6.zip after v8.5 or v8.5.1**. Upload its contents into the existing GitHub website repository root, preserving paths and replacing matching files. Keep unchanged files. Include the supplied `publishing/` tools and root-entry manifest; use the existing GitHub Actions workflow. Staging automatically removes the retired public MAT engine/Python ZIP from the deployed site; avoid branch-only deployment. Files/history previously made public cannot be recalled. Do not upload the separate setup ZIP to GitHub. The patch includes the current logo/icon dependencies so it also applies on v8.5, and deliberately preserves your existing `assets/pmc-auth-config.js`; keep or set your own public Project URL/key there.
+
+**Dailwind-Supabase-Setup-v8.6.zip** contains `SETUP.sql`, `MAKE-ME-ADMIN.sql`, email template and two private MAT activation bundles. They are for your own Supabase project and the protected admin page, not the public website. **DAILWIND-EASY-SETUP.md** has the dashboard-only steps. No local server, Python, CLI or separate subdomain is needed for the new managed design.
+
+- All HTML routes, including app/toolkit/alias/article links, use static Open Graph/Twitter metadata with the supplied logo on an opaque white 1200×630 image. New image URL: `assets/dailwind-share-v86.png`. Third-party preview caches can still delay refresh.
+- Logo/wordmark optical alignment, PMC project-copy padding, readable dark PMC-card heading and centered pill finder with a shared blue focus ring are fixed. Toolkit controls receive a consistent Apple-inspired finish. Visitor interface copy and task prompts are English; Roman Urdu/native-language search hints are removed.
+- MAT Tagger Cleaner keeps its existing URL and now requires verified email, an access request, operator-approved payment and active expiry. Unconfigured/unauthorized sessions fail closed. Premium code is removed from current public assets and delivered only from the private Supabase bucket. SHA-256 integrity is checked before loading a private bundle over HTTPS. Other local toolkits stay usable without an account.
+- `/manage/` is the operator interface. It handles recent requests, approval length (1–366 days), confirmed-payment approval for MAT, decline/revoke actions, private toolkit activation and PMC TXT imports. Authority is checked in SQL, not inferred from browser/profile metadata. Registration is not payment; payment/price confirmation happens privately with the operator. No automatic checkout, renewal billing or request-notification email is included.
+- The owner can import UTF-8 TXT sources up to **50 MiB total preview source text**, using sequential browser reads and small database uploads. Incomplete imports are not searchable and can be removed. Source text is stored in a non-exposed private database schema with no direct reader grants; it does not go into public website files. Actual usable capacity depends on provider/device/network limits and database indexes take extra space.
+- Approved PMC accounts receive up to 10 short excerpts per search, with a 40-search daily allowance and their own saved query phrases. Search is literal token/phrase full-text search, not a complete replacement for every corpus-analysis feature. Matching-passage counts can include small boundary overlaps; they are not exact word-occurrence counts. The original synthetic public demo remains separate.
+- Visible excerpts and delivered browser code can be copied. Old public code copies cannot be revoked. This release controls future access/delivery; it does not offer impossible-to-copy DRM, guaranteed immunity from hacking or cryptographic secrecy from the database operator/provider.
+- Access/requests/expiry/imports require your actual Supabase setup. No project credentials were supplied and no real accounts/emails/payment/corpus were activated here. Until configured, the paid MAT page is locked with an explicit setup state.
+
+**Validation:** site link/label/metadata/SRI/security checks; email-client regression checks; existing corpus-preparation preservation/ZIP tests; private-member initialization/hash/revocation tests; actual embedded PostgreSQL execution with simulated Auth/Storage and real roles/RLS; paid/expired/revoked/admin denial; import sequence/size limits; search quotas and saved-search isolation. A 50-MiB synthetic import worker test verifies source SHA-256 after overlap removal and Unicode/emoji handling. Phone frames at 375px and a 1024px laptop frame show no horizontal overflow in finder, PMC or MAT gate; PMC project copy has 22px mobile and 42px desktop padding. The finder focus ring and dark-card contrast were inspected in-browser.
+
+**Limits:** no live Supabase project/SMTP/payment or real corpus import was available to test. The approved private-bundle HTTPS path must be tested after setup; the internal HTTP preview lacks Web Crypto's secure integrity API and correctly cannot activate that path. Database query/size caps were tested with fixtures, not a 50-MiB live provider import. MAT itself is not installed, so full downstream MAT compatibility remains unverified. Earlier Python/private-server instructions below are historical and superseded for this managed workflow.
 
 ## v8.5.1 — supplied transparent logo update
 

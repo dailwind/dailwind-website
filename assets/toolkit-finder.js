@@ -10,7 +10,7 @@
    const has=s=>new RegExp(s,'u').test(q);
    if(t.slug==='mat-cleaner'&&has('\\bmat\\b|mattagger|count_only|division by zero'))score+=24;
    if(t.slug==='english-ocr'&&has('ocr|scann?ed|scan |tasveer|tasvir|تصویر|स्कैन'))score+=10;
-   if(t.slug==='corpus-cleaner'&&has('clean|remove|references|bibliography|hata|saaf|صفائی|صاف|साफ|हटा'))score+=7;
+   if(t.slug==='corpus-cleaner'&&has('clean|remove|references|bibliography'))score+=7;
    if(t.slug==='pdf-tools'&&has('split|divid|chunk|parts|tukr|hisse|taqseem|تقسیم'))score+=10;
    if(t.slug==='image-tools'&&has('images? to (?:one )?pdf|pdf (?:pages )?to images?|compress (?:my )?(?:images?|photos?)|resize|png|jpeg|webp'))score+=16;
    if(t.slug==='pdf-tools'&&has('compress|smaller|chh?ota|छोटा')&&has('pdf'))score+=10;

@@ -2,6 +2,7 @@
 from pathlib import Path
 from urllib.parse import urlsplit,urlunsplit,parse_qsl,urlencode,unquote
 import base64,hashlib,re
+from html import escape,unescape
 
 POLICY="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; worker-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
 
@@ -10,8 +11,25 @@ def harden_html(text,path,root):
     policy=POLICY
     if re.search(r'<script[^>]+src="(?:\.\./)*app\.js',text):
         policy=policy.replace("script-src 'self' 'wasm-unsafe-eval'", "script-src 'self' 'wasm-unsafe-eval' https://www.googletagmanager.com").replace("connect-src 'self'", "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com")
-    if path.relative_to(root).as_posix()=='pmc/account/index.html':
-        policy=policy.replace("connect-src 'self'", "connect-src 'self' https://*.supabase.co").replace("form-action 'none'", "form-action 'self' https://pmc.dailwind.com")
+    route=path.relative_to(root).as_posix()
+    if route in {'pmc/index.html','pmc/account/index.html','manage/index.html','mat-cleaner/index.html'}:
+        policy=policy.replace("connect-src 'self'", "connect-src 'self' https://*.supabase.co")
+    if route=='mat-cleaner/index.html':
+        policy=policy.replace("script-src 'self'", "script-src 'self' blob:").replace("worker-src 'self'", "worker-src 'self' blob:")
+    # Every shared route uses the supplied Dailwind logo on a white card.
+    # This is static HTML: crawlers do not have to run JavaScript.
+    canonical=re.search(r'<link\b[^>]*rel="canonical"[^>]*href="([^"]+)"',text,re.I)
+    origin='https://dailwind.com'
+    if canonical:
+        parsed=urlsplit(unescape(canonical[1]))
+        if parsed.scheme=='https' and parsed.netloc:origin='https://'+parsed.netloc
+    text=re.sub(r'<meta\b[^>]*(?:property|name)="(?:og:image(?:\:[a-z_]+)?|twitter:image(?:\:alt)?|twitter:card)"[^>]*>','',text,flags=re.I)
+    preview=origin+'/assets/dailwind-share-v86.png'
+    tags='<meta property="og:image" content="'+preview+'"><meta property="og:image:secure_url" content="'+preview+'"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:type" content="image/png"><meta property="og:image:alt" content="Dailwind Studio logo on a white background"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="'+preview+'"><meta name="twitter:image:alt" content="Dailwind Studio logo on a white background">'
+    title=re.search(r'<title>(.*?)</title>',text,re.S|re.I)
+    if title and not re.search(r'property="og:title"',text,re.I):tags+='<meta property="og:title" content="'+escape(unescape(title[1]),quote=True)+'">'
+    if not re.search(r'property="og:type"',text,re.I):tags+='<meta property="og:type" content="website">'
+    text=text.replace('</head>',tags+'</head>',1)
     text=re.sub(r'<meta\b[^>]*http-equiv=["\']Content-Security-Policy["\'][^>]*>','',text,flags=re.I)
     text=re.sub(r'<meta\b[^>]*name=["\']referrer["\'][^>]*>','',text,flags=re.I)
     text=re.sub(r'<head\b[^>]*>',lambda m:m[0]+'<meta http-equiv="Content-Security-Policy" content="'+policy+'"><meta name="referrer" content="strict-origin-when-cross-origin">',text,count=1,flags=re.I)
@@ -56,6 +74,7 @@ def assert_safe_tree(path):
     forbidden={'.git','.github','.env','node_modules','__pycache__'}
     for p in [path,*path.rglob('*')] if path.is_dir() else [path]:
         if p.is_symlink():raise ValueError('Symlinks must never be published: '+str(p))
+        if p.name in {'mat-worker-v86.js','mat-window-v86.js'}:raise ValueError('Private toolkit activation files must never be published: '+str(p))
         if (p.name.startswith('.') and p.name not in {'.well-known','.nojekyll','.gitkeep'}) or p.name in forbidden or p.name.startswith('.env.') or p.suffix.lower() in {'.pem','.key','.p12','.pfx'}:
             raise ValueError('Private/build files must never be published: '+str(p))
         if p.is_file():

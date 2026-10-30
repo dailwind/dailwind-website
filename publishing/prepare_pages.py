@@ -12,5 +12,11 @@ for name in json.loads((root/'publishing/site-files.json').read_text()):
     assert_safe_tree(source)
     if source.is_dir():shutil.copytree(source,out/name,ignore=shutil.ignore_patterns('.gitkeep'))
     elif source.is_file():shutil.copy2(source,out/name)
+retired=root/'publishing/retired-files.json'
+if retired.exists():
+    for name in json.loads(retired.read_text()):
+        if not isinstance(name,str) or Path(name).is_absolute() or '..' in Path(name).parts or not name.startswith('assets/'):raise ValueError('Invalid retired website asset.')
+        candidate=out/name
+        if candidate.is_file():candidate.unlink()
 harden_site(out)
 print('Website staged in _site. Publishing tools and workflow files are excluded.')

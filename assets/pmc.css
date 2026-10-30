@@ -5,3 +5,6 @@
 @media(max-width:720px){.pmc-project-info{grid-template-columns:1fr;gap:20px;padding:35px 0}.pmc-team{padding:23px}}
 
 .pmc-private-link{display:block;margin:20px 0;color:#17634f;font-size:14px;font-weight:650}.pmc-private-link[hidden]{display:none}
+
+/* Keep project copy comfortably inside the page at every width. */
+.pmc-project-info{box-sizing:border-box;max-width:1240px;width:100%;margin-inline:auto;padding:60px 42px;gap:45px}.pmc-project-info>div,.pmc-team{min-width:0}.pmc-project-info p,.pmc-team h3{overflow-wrap:anywhere}.pmc-next{width:calc(100% - 84px);box-sizing:border-box}.pmc-page .button,.pmc-search button,.pmc-more{border-radius:999px;background:#0071e3;border-color:#0071e3}.pmc-more{background:#fff;color:#0066cc}.pmc-search input,.pmc-search select{border-radius:14px}.pmc-project-info .pmc-eyebrow{margin-bottom:20px}.pmc-page .pmc-account-page{max-width:100%;padding:30px 0;gap:40px}.pmc-page .pmc-account-intro h2{font-size:38px;letter-spacing:-.04em;line-height:1.1}.pmc-page [hidden]{display:none!important}#pmc-private-form{grid-template-columns:minmax(0,1fr) auto auto}#pmc-private-results h3{font-size:22px}@media(max-width:720px){.pmc-project-info{padding:35px 22px;gap:24px}.pmc-next{width:calc(100% - 44px)}#pmc-private-form{grid-template-columns:1fr}.pmc-page .pmc-account-page{gap:25px}}
