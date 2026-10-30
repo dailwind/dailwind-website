@@ -5,7 +5,7 @@ Website, research tools and text-preparation workspaces by **Arslan Tahir**.
 - Website: https://dailwind.com
 - Contact: arslan@dailwind.com
 - Last updated: 31 October 2026
-- Update package: **v8.6** (apply after v8.5 or v8.5.1)
+- Update package: **v8.6.2** (applied directly to the live GitHub website)
 
 This README describes the latest website update packages. Features become live on your GitHub Pages website after you upload their files and successfully deploy them.
 
@@ -39,9 +39,11 @@ This repair was applied directly to the existing GitHub website. Keep all unchan
 - Uses managed Supabase for verified accounts, private research access and the selected PMC preview. Previous local/Python server instructions later in this README are historical.
 - MAT remains a paid service requiring operator approval and confirmed payment. Signup alone grants no paid access. The PMC collection remains separate. Full MAT tagging is performed in MAT itself.
 
-If GitHub Pages still uses **Deploy from a branch**, open repository **Settings → Pages → Build and deployment → Source → GitHub Actions**. That makes future configuration changes deploy with fresh integrity checks and excludes publishing sources from the public artifact. A successful Publish Dailwind run is the deployment check.
+GitHub Pages now uses **GitHub Actions** as its publishing source, with HTTPS enforced. Keep this setting. Future configuration changes deploy with fresh integrity checks and exclude publishing sources from the public artifact. The restored Publish Dailwind workflow completed successfully.
 
-The website administrator uses the confirmed account selected during setup. Open `/manage/`, choose **Sign in**, receive an email code and manage access requests there. Private MAT activation files belong only in the private Supabase bucket. Never upload the setup ZIP or activation files to public GitHub.
+The confirmed owner account is now an operator with a saved profile, and both MAT activation files have been uploaded to the private bucket. Anonymous HTTP requests cannot read those files or profile records. Live database tests confirmed denial for non-admin, unpaid and expired access; test changes were rolled back. The website administrator uses the confirmed account selected during setup. Open `/manage/`, choose **Sign in**, receive an email code and manage access requests there. Private MAT activation files belong only in the private Supabase bucket. Never upload the setup ZIP or activation files to public GitHub.
+
+**Email delivery is still pending:** the project has no custom SMTP provider and Supabase returned `over_email_send_rate_limit` during the live login test. The dashboard requires custom SMTP before editing email templates. Public signup and the approved browser download flow cannot be called fully operational until SMTP, numeric-code templates and an end-to-end login are completed. See **EMAIL-SETUP-NEXT.md** and **SETUP-STATUS-v8.6.2.md**. No sender account or paid service was created.
 
 ## v8.5.1 — supplied transparent logo update
 
