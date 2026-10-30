@@ -51,7 +51,21 @@ def harden_html(text,path,root):
         versioned=urlunsplit(('', '',url.path,urlencode(query),url.fragment))
         tag=tag[:src.start(1)]+versioned+tag[src.end(1):]
         return tag[:-1]+' integrity="'+digest+'">'
-    return re.sub(r'<script\b[^>]*>',script,text,flags=re.I)
+    text=re.sub(r'<script\b[^>]*>',script,text,flags=re.I)
+    # Refresh shared layout fixes on every route, including cached nested pages.
+    def stylesheet(m):
+        tag=m[0]
+        if not re.search(r'\brel="stylesheet"',tag,re.I):return tag
+        href=re.search(r'\bhref="([^"]+)"',tag)
+        if not href:return tag
+        url=urlsplit(unescape(href[1]))
+        if url.scheme or url.netloc:return tag
+        target=(root/unquote(url.path.lstrip('/')) if url.path.startswith('/') else path.parent/unquote(url.path)).resolve()
+        if not target.is_relative_to(root.resolve()) or not target.is_file():raise ValueError('Stylesheet path escapes the website or is missing: '+href[1])
+        query=[(k,v) for k,v in parse_qsl(url.query) if k!='h']+[('h',hashlib.sha256(target.read_bytes()).hexdigest()[:12])]
+        versioned=urlunsplit(('', '',url.path,urlencode(query),url.fragment))
+        return tag[:href.start(1)]+versioned+tag[href.end(1):]
+    return re.sub(r'<link\b[^>]*>',stylesheet,text,flags=re.I)
 
 def validate_pmc_auth_config(root):
     path=Path(root)/'assets/pmc-auth-config.js'

@@ -30,3 +30,11 @@
 
 /* Optical alignment of the supplied transparent mark and wordmark. */
 .header .brand,.footer .brand{align-items:center!important}.header .brand>span,.footer .brand>span{display:block;line-height:1.1}.header .brand-logo,.footer .brand-logo{align-self:center;transform:translateY(-2px)}
+
+/* Compact identity; match the mark's centre to the wordmark on every route. */
+.header .brand-logo,.footer .brand-logo{width:26px!important;height:26px!important;flex:0 0 26px!important;transform:none}
+.header .brand,.footer .brand{gap:8px!important}
+.app-section-heading{display:flex;flex-direction:column;align-items:flex-start;gap:13px}
+.app-section-heading .eyebrow{margin:0}
+.app-section-heading h2{max-width:780px}
+.app-section-heading>p:last-child:not(.eyebrow){margin:0;max-width:610px}
