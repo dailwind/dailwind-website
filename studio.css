@@ -32,7 +32,7 @@
 .header .brand,.footer .brand{align-items:center!important}.header .brand>span,.footer .brand>span{display:block;line-height:1.1}.header .brand-logo,.footer .brand-logo{align-self:center;transform:translateY(-2px)}
 
 /* Compact identity; match the mark's centre to the wordmark on every route. */
-.header .brand-logo,.footer .brand-logo{width:26px!important;height:26px!important;flex:0 0 26px!important;transform:none}
+.header .brand-logo,.footer .brand-logo{width:.85em!important;height:.85em!important;flex:0 0 .85em!important;transform:none}
 .header .brand,.footer .brand{gap:8px!important}
 .app-section-heading{display:flex;flex-direction:column;align-items:flex-start;gap:13px}
 .app-section-heading .eyebrow{margin:0}

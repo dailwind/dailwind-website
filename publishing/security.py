@@ -52,6 +52,11 @@ def harden_html(text,path,root):
         tag=tag[:src.start(1)]+versioned+tag[src.end(1):]
         return tag[:-1]+' integrity="'+digest+'">'
     text=re.sub(r'<script\b[^>]*>',script,text,flags=re.I)
+    # One shared control theme across studio pages and standalone toolkits.
+    # Keep it last so existing per-tool styles do not push arrows to the edge.
+    text=re.sub(r'<link\b[^>]*\bdata-dailwind-controls(?:="[^"]*")?[^>]*>','',text,flags=re.I)
+    controls=posixpath.relpath('assets/form-controls.css',posixpath.dirname(route) or '.')
+    text=text.replace('</head>','<link rel="stylesheet" data-dailwind-controls href="'+controls+'"></head>',1)
     # Refresh shared layout fixes on every route, including cached nested pages.
     def stylesheet(m):
         tag=m[0]

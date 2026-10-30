@@ -1,0 +1,30 @@
+/* Shared Dailwind form controls. Keep native select semantics and form events. */
+:root{--dw-select-chevron:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m4 6 4 4 4-4' stroke='%2369707c' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+html body select{box-sizing:border-box;max-width:100%;min-width:0;border:1px solid #d5d9e1;border-radius:12px!important;background-color:#fff;color:#1d1d1f;color-scheme:light;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5;box-shadow:0 1px 2px #15243b05;cursor:pointer}
+html body select:not([multiple]):not([size]){-webkit-appearance:none;appearance:none;background-image:var(--dw-select-chevron)!important;background-repeat:no-repeat!important;background-size:16px 16px!important;background-position:right 14px center!important;padding-inline-start:14px!important;padding-inline-end:46px!important}
+html body select:not(:disabled):hover{border-color:#a4afbf;background-color:#fcfdff}
+html body select:focus-visible{outline:3px solid #0071e3!important;outline-offset:3px;border-color:#0071e3}
+html body select:disabled{color:#8a8f99;background-color:#f5f5f7;border-color:#e3e5eb;cursor:not-allowed;opacity:.75}
+html body select:dir(rtl):not([multiple]):not([size]){background-position:left 14px center!important}
+
+/* The corpus app uses the same small brand initial as the studio header. */
+html body .arc-brand{align-items:center;gap:8px}
+html body .arc-brand img{width:.85em!important;height:.85em!important;flex:0 0 .85em!important;object-fit:contain;border-radius:0;box-shadow:none}
+
+/* Browsers supporting customizable selects also get a styled, top-layer menu. */
+@supports (appearance:base-select){
+ html body select:not([multiple]):not([size]),html body select:not([multiple]):not([size])::picker(select){appearance:base-select}
+ html body select:not([multiple]):not([size]){display:flex;align-items:center;justify-content:space-between;gap:12px;background-image:none!important;padding-inline-end:14px!important;text-align:start;white-space:nowrap}
+ html body select:not([multiple]):not([size])::picker-icon{content:"";display:block;flex:0 0 16px;width:16px;height:16px;margin:0;background:var(--dw-select-chevron) center/16px 16px no-repeat;align-self:center;transition:transform .16s ease}
+ html body select:open::picker-icon{transform:rotate(180deg)}
+ html body select::picker(select){box-sizing:border-box;min-width:anchor-size(width);max-width:min(560px,calc(100vw - 24px));max-height:min(360px,65dvh);margin-block:6px;border:1px solid #d9dfe9;border-radius:16px;padding:6px;background:#fffffffa;color:#1d1d1f;box-shadow:0 16px 48px #172a4a26,0 2px 8px #172a4a0d;backdrop-filter:blur(12px);overflow:auto;overscroll-behavior:contain;font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+ html body select option{box-sizing:border-box;display:flex;align-items:center;gap:10px;min-height:36px;margin:2px 0;padding:9px 12px;border:0;border-radius:10px;background:transparent;color:#303642;font-size:14px;line-height:1.45;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
+ html body select option:checked{background:#eaf2ff;color:#005bb8;font-weight:600}
+ html body select option:not(:disabled):hover,html body select option:focus-visible{outline:none;background:#0071e3;color:white}
+ html body select option::checkmark{color:currentColor}
+ html body select option:disabled{color:#969ba5;cursor:not-allowed;background:transparent}
+ html body select optgroup{padding:5px;color:#6e6e73;font-size:11px;font-weight:650}
+}
+@media(max-width:650px){html body select{font-size:16px!important;min-height:44px}html body select::picker(select){font-size:16px}html body select option{min-height:44px;font-size:16px}}
+@media(prefers-reduced-motion:reduce){html body select::picker-icon{transition:none}}
+@media(forced-colors:active){html body select{background-color:Canvas;color:CanvasText;border-color:ButtonText}html body select:focus-visible{outline-color:Highlight!important}html body select option:checked,html body select option:not(:disabled):hover{background:Highlight;color:HighlightText}}
