@@ -57,6 +57,23 @@ def harden_html(text,path,root):
     text=re.sub(r'<link\b[^>]*\bdata-dailwind-controls(?:="[^"]*")?[^>]*>','',text,flags=re.I)
     controls=posixpath.relpath('assets/form-controls.css',posixpath.dirname(route) or '.')
     text=text.replace('</head>','<link rel="stylesheet" data-dailwind-controls href="'+controls+'"></head>',1)
+    tool_routes={'corpus-toolkit','stylistic-toolkit','corpus-cleaner','mat-cleaner','corpus-merger','file-converter','english-ocr','pdf-tools','image-tools','metadata-studio'}
+    tool=route.split('/')[0]
+    if tool in tool_routes and route==tool+'/index.html':
+        def workspace_body(m):
+            tag=m[0]
+            tag=re.sub(r'\s+data-dailwind-tool="[^"]*"','',tag)
+            classes=re.search(r'\bclass="([^"]*)"',tag)
+            if classes:
+                names=classes[1].split()
+                if 'dailwind-workspace' not in names:names.append('dailwind-workspace')
+                tag=tag[:classes.start(1)]+' '.join(names)+tag[classes.end(1):]
+            else:tag=tag[:-1]+' class="dailwind-workspace">'
+            return tag[:-1]+' data-dailwind-tool="'+tool+'">'
+        text=re.sub(r'<body\b[^>]*>',workspace_body,text,count=1,flags=re.I)
+        text=re.sub(r'<link\b[^>]*\bdata-dailwind-workspace(?:="[^"]*")?[^>]*>','',text,flags=re.I)
+        theme=posixpath.relpath('assets/research-workspace.css',posixpath.dirname(route) or '.')
+        text=text.replace('</head>','<link rel="stylesheet" data-dailwind-workspace href="'+theme+'"></head>',1)
     # Refresh shared layout fixes on every route, including cached nested pages.
     def stylesheet(m):
         tag=m[0]
