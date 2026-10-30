@@ -4,7 +4,7 @@ Website, research tools and text-preparation workspaces by **Arslan Tahir**.
 
 - Website: https://dailwind.com
 - Contact: arslan@dailwind.com
-- Last updated: 30 October 2026
+- Last updated: 31 October 2026
 - Update package: **v8.6** (apply after v8.5 or v8.5.1)
 
 This README describes the latest website update packages. Features become live on your GitHub Pages website after you upload their files and successfully deploy them.
@@ -27,6 +27,21 @@ Apply **Dailwind-Update-v8.6.zip after v8.5 or v8.5.1**. Upload its contents int
 **Validation:** site link/label/metadata/SRI/security checks; email-client regression checks; existing corpus-preparation preservation/ZIP tests; private-member initialization/hash/revocation tests; actual embedded PostgreSQL execution with simulated Auth/Storage and real roles/RLS; paid/expired/revoked/admin denial; import sequence/size limits; search quotas and saved-search isolation. A 50-MiB synthetic import worker test verifies source SHA-256 after overlap removal and Unicode/emoji handling. Phone frames at 375px and a 1024px laptop frame show no horizontal overflow in finder, PMC or MAT gate; PMC project copy has 22px mobile and 42px desktop padding. The finder focus ring and dark-card contrast were inspected in-browser.
 
 **Limits:** no live Supabase project/SMTP/payment or real corpus import was available to test. The approved private-bundle HTTPS path must be tested after setup; the internal HTTP preview lacks Web Crypto's secure integrity API and correctly cannot activate that path. Database query/size caps were tested with fixtures, not a 50-MiB live provider import. MAT itself is not installed, so full downstream MAT compatibility remains unverified. Earlier Python/private-server instructions below are historical and superseded for this managed workflow.
+
+## v8.6.2 — live setup repair (31 October 2026)
+
+This repair was applied directly to the existing GitHub website. Keep all unchanged files. No local server is required.
+
+- Restores `.github/workflows/dailwind-pages.yml` and the missing security contact file. The workflow rebuilds Articles and stages the public site with current script integrity hashes on every main-branch update.
+- Refreshes integrity hashes on account, MAT, PMC, administration and other pages after the Supabase configuration changed. Integrity protection remains enabled.
+- Removes retired public MAT engine files and the retired Python download from the current repository and publication. Earlier Git history or third-party copies cannot be recalled.
+- Your Supabase URL and publishable key are preserved; no secret/service-role key is added to the website.
+- Uses managed Supabase for verified accounts, private research access and the selected PMC preview. Previous local/Python server instructions later in this README are historical.
+- MAT remains a paid service requiring operator approval and confirmed payment. Signup alone grants no paid access. The PMC collection remains separate. Full MAT tagging is performed in MAT itself.
+
+If GitHub Pages still uses **Deploy from a branch**, open repository **Settings → Pages → Build and deployment → Source → GitHub Actions**. That makes future configuration changes deploy with fresh integrity checks and excludes publishing sources from the public artifact. A successful Publish Dailwind run is the deployment check.
+
+The website administrator uses the confirmed account selected during setup. Open `/manage/`, choose **Sign in**, receive an email code and manage access requests there. Private MAT activation files belong only in the private Supabase bucket. Never upload the setup ZIP or activation files to public GitHub.
 
 ## v8.5.1 — supplied transparent logo update
 
