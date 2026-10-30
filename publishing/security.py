@@ -2,6 +2,7 @@
 from pathlib import Path
 from urllib.parse import urlsplit,urlunsplit,parse_qsl,urlencode,unquote
 import base64,hashlib,re
+import posixpath
 from html import escape,unescape
 
 POLICY="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; worker-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
@@ -24,7 +25,11 @@ def harden_html(text,path,root):
         parsed=urlsplit(unescape(canonical[1]))
         if parsed.scheme=='https' and parsed.netloc:origin='https://'+parsed.netloc
     text=re.sub(r'<meta\b[^>]*(?:property|name)="(?:og:image(?:\:[a-z_]+)?|twitter:image(?:\:alt)?|twitter:card)"[^>]*>','',text,flags=re.I)
-    preview=origin+'/assets/dailwind-share-v86.png'
+    preview=origin+'/assets/dailwind-share-v861.png'
+    # Version every route's icons, including aliases and standalone workspaces.
+    text=re.sub(r'<link\b[^>]*rel="(?:icon|shortcut icon|apple-touch-icon)"[^>]*>','',text,flags=re.I)
+    prefix=posixpath.relpath('assets',posixpath.dirname(route) or '.')+'/'
+    text=text.replace('</head>','<link rel="icon" type="image/png" sizes="64x64" href="'+prefix+'favicon-v861.png"><link rel="apple-touch-icon" sizes="180x180" href="'+prefix+'apple-touch-icon-v861.png"></head>',1)
     tags='<meta property="og:image" content="'+preview+'"><meta property="og:image:secure_url" content="'+preview+'"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:type" content="image/png"><meta property="og:image:alt" content="Dailwind Studio logo on a white background"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="'+preview+'"><meta name="twitter:image:alt" content="Dailwind Studio logo on a white background">'
     title=re.search(r'<title>(.*?)</title>',text,re.S|re.I)
     if title and not re.search(r'property="og:title"',text,re.I):tags+='<meta property="og:title" content="'+escape(unescape(title[1]),quote=True)+'">'
