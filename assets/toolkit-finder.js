@@ -14,9 +14,10 @@
    if(t.slug==='pdf-tools'&&has('split|divid|chunk|parts|tukr|hisse|taqseem|تقسیم'))score+=10;
    if(t.slug==='image-tools'&&has('images? to (?:one )?pdf|pdf (?:pages )?to images?|compress (?:my )?(?:images?|photos?)|resize|png|jpeg|webp'))score+=16;
    if(t.slug==='pdf-tools'&&has('compress|smaller|chh?ota|छोटा')&&has('pdf'))score+=10;
-   if(t.slug==='file-converter'&&has('pdf (?:ko |to )?(?:text|txt|word)|word to (?:text|txt)|docx to'))score+=12;
+   if(t.slug==='file-converter'&&has('pdf (?:ko |to )?(?:text|txt|word)|word to (?:text|txt|pdf)|docx to'))score+=12;
    if(t.slug==='metadata-studio'&&has('metadata|excel|csv|catalog|all.*(?:word|count)|total word|count.*words?|words?.*count'))score+=12;
    if(t.slug==='stylistic-toolkit'&&has('poem|poetry|foreground|parallelism|deviation|stylistic'))score+=12;
+   for(const [slug,pattern]of [['lexical-metrics','lexical diversity|mattr|hapax|type token|vocabulary richness'],['morphology-explorer','morpholog|inflection|lemma|word forms'],['syntax-explorer','syntax|syntactic|dependency|conllu|sentence structure'],['sentiment-studio','sentiment|polarity|positive|negative|vader'],['register-profile','register profile|mda|multidimensional|multi dimensional|biber'],['forensic-compare','forensic|authorship|stylometry|compare two texts|plagiarism']])if(t.slug===slug&&has(pattern))score+=20;
    if(t.slug==='corpus-merger'&&has('merge|combine|concatenate|many.*one|milana|jorna'))score+=12;
    return {...t,score,matched};}).filter(t=>t.score>=2).sort((a,b)=>b.score-a.score);
  }

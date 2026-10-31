@@ -68,7 +68,7 @@ def harden_html(text,path,root,social=None):
     text=re.sub(r'<link\b[^>]*\bdata-dailwind-controls(?:="[^"]*")?[^>]*>','',text,flags=re.I)
     controls=posixpath.relpath('assets/form-controls.css',posixpath.dirname(route) or '.')
     text=text.replace('</head>','<link rel="stylesheet" data-dailwind-controls href="'+controls+'"></head>',1)
-    tool_routes={'corpus-toolkit','stylistic-toolkit','corpus-cleaner','mat-cleaner','corpus-merger','file-converter','english-ocr','pdf-tools','image-tools','metadata-studio'}
+    tool_routes={'corpus-toolkit','stylistic-toolkit','corpus-cleaner','mat-cleaner','corpus-merger','file-converter','english-ocr','pdf-tools','image-tools','metadata-studio','lexical-metrics','morphology-explorer','syntax-explorer','sentiment-studio','register-profile','forensic-compare'}
     tool=route.split('/')[0]
     if tool in tool_routes and route==tool+'/index.html':
         def workspace_body(m):
