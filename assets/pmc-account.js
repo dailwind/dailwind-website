@@ -17,5 +17,5 @@
  $('auth-change').addEventListener('click',()=>{$('auth-email-sent').hidden=true;$('auth-entry').hidden=false;pending=null;say('');$('auth-email').focus();});
  $('auth-profile').addEventListener('submit',async e=>{e.preventDefault();if(busy)return;lock(true);try{await client.saveProfile($('auth-profile-name').value,$('auth-profile-institute').value);await loadProfile();say('Your profile has been saved to your account.');}catch{say('Profile could not be saved. Check your name and connection, then try again or contact Dailwind.');}finally{lock(false);}});
  $('auth-signout').addEventListener('click',async()=>{if(busy)return;lock(true);try{await client.logout();}catch{}finally{location.reload();}});
- try{client=DailwindPMCAuth.create(window.PMCAuthConfig);setMode('signup');returnFromEmail();}catch(e){$('auth-setup').hidden=false;$('auth-send').disabled=true;document.querySelectorAll('[data-auth-mode]').forEach(b=>b.disabled=true);say(e.message);}
+ try{client=DailwindPMCAuth.create(window.PMCAuthConfig);setMode(window.location.pathname==='/manage/'?'login':'signup');returnFromEmail();}catch(e){$('auth-setup').hidden=false;$('auth-send').disabled=true;document.querySelectorAll('[data-auth-mode]').forEach(b=>b.disabled=true);say(e.message);}
 })();
