@@ -4,6 +4,7 @@ from urllib.parse import urlsplit,urlunsplit,parse_qsl,urlencode,unquote
 import base64,hashlib,re
 import posixpath
 from social import prepare_social
+from discovery import apply_discovery
 from html import escape,unescape
 
 POLICY="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; worker-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
@@ -15,9 +16,11 @@ def harden_html(text,path,root,social=None):
         policy=policy.replace("script-src 'self' 'wasm-unsafe-eval'", "script-src 'self' 'wasm-unsafe-eval' https://www.googletagmanager.com").replace("connect-src 'self'", "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com")
     route=path.relative_to(root).as_posix()
     if route in {'pmc/index.html','pmc/account/index.html','manage/index.html','mat-cleaner/index.html'}:
-        policy=policy.replace("connect-src 'self'", "connect-src 'self' https://*.supabase.co")
+        policy=policy.replace("connect-src 'self'", "connect-src 'self' https://kotxgvwbffengeuvaoca.supabase.co")
     if route=='mat-cleaner/index.html':
         policy=policy.replace("script-src 'self'", "script-src 'self' blob:").replace("worker-src 'self'", "worker-src 'self' blob:")
+    hashes=['\'sha256-'+base64.b64encode(hashlib.sha256(code.encode()).digest()).decode()+'\'' for code in re.findall(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>',text,re.S)]
+    if hashes:policy=policy.replace("script-src 'self'","script-src 'self' "+' '.join(hashes))
     # Keep the supplied studio mark consistent in headers, footers and launchers.
     text=text.replace('dailwind-logo-v861.webp','dailwind-logo-v866.webp')
     # Every shared route uses the supplied Dailwind logo on a white card.
@@ -115,6 +118,7 @@ def validate_pmc_auth_config(root):
 def harden_site(root):
     root=Path(root).resolve()
     validate_pmc_auth_config(root)
+    apply_discovery(root)
     social=prepare_social(root)
     for path in root.rglob('*.html'):
         if 'publishing' in path.relative_to(root).parts:continue

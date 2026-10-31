@@ -115,7 +115,7 @@ def build(site,template):
             notices.append('<aside class="translation-note" aria-label="Translation details"><p>'+escape(meta['translation_note'])+'</p>'+original+'</aside>')
         if meta.get('editorial_note'):notices.append('<aside class="translation-note" aria-label="Editorial note"><p>'+escape(meta['editorial_note'])+'</p></aside>')
         body=''.join(notices)+body
-        byline=' · '.join(filter(None,[escape(meta['author']),escape(meta['date']),{'md':'Article','txt':'Text','pdf':'PDF'}[meta['format']]]))
+        byline=' · '.join(filter(None,[escape(meta['author']),escape(meta['date']),{'md':'Online reading','txt':'Text','pdf':'PDF'}[meta['format']]]))
         mapping={'__ARTICLE_TITLE__':escape(meta['title'],quote=True),'__ARTICLE_DESCRIPTION__':escape(meta['summary'] or ('A shared PDF document.' if meta['format']=='pdf' else 'An article from the Dailwind Studio reading room.'),quote=True),'__ARTICLE_CATEGORY__':escape(meta['category']),'__ARTICLE_BYLINE__':byline,'__ARTICLE_SLUG__':slug,'__ARTICLE_BODY__':body}
         page=re.sub(r'__ARTICLE_(?:TITLE|DESCRIPTION|CATEGORY|BYLINE|SLUG|BODY)__',lambda m:mapping[m[0]],shell)
         pages.append((slug+'.html',page));entries.append(meta)
@@ -126,12 +126,12 @@ def build(site,template):
     for name,html in pages:(read/name).write_text(html)
     rows=[]
     for item in entries:
-        title=escape(item['title']);url=escape(item['url'],quote=True);fmt=item['format'];meta=' · '.join(filter(None,[escape(item['author']),escape(item['date']),fmt.upper() if fmt!='md' else 'ARTICLE']))
+        title=escape(item['title']);url=escape(item['url'],quote=True);fmt=item['format'];meta=' · '.join(filter(None,[escape(item['author']),escape(item['date']),fmt.upper() if fmt!='md' else 'READ ONLINE']))
         search=escape(' '.join([item.get(k,'') for k in ('title','author','summary','category','original_title','original_author')]).casefold(),quote=True)
-        rows.append(f'<article class="article-row" data-article-row data-format="{fmt}" data-search="{search}"><div class="article-row-meta"><span>{escape(item["category"])}</span><span>{fmt.upper() if fmt!="md" else "ARTICLE"}</span></div><div><h2><a href="{url}">{title}</a></h2><p>{escape(item["summary"])}</p><p class="article-byline">{meta}</p></div><a class="article-arrow" href="{url}" aria-label="Read {title}">↗</a></article>')
+        rows.append(f'<article class="article-row" data-article-row data-format="{fmt}" data-search="{search}"><div class="article-row-meta"><span>{escape(item["category"])}</span><span>{fmt.upper() if fmt!="md" else "READ ONLINE"}</span></div><div><h2><a href="{url}">{title}</a></h2><p>{escape(item["summary"])}</p><p class="article-byline">{meta}</p></div><a class="article-arrow" href="{url}" aria-label="Read {title}">↗</a></article>')
     empty='<div class="articles-empty"><span class="empty-mark" aria-hidden="true">¶</span><h2>The reading room is open.</h2><p>New articles will be collected here as they are shared. Come back for writing on language, education and research.</p></div>'
     index=site/'articles/index.html';html=index.read_text();html=re.sub(r'<!-- ARTICLE_LIST_START -->.*?<!-- ARTICLE_LIST_END -->',lambda m:'<!-- ARTICLE_LIST_START -->'+(''.join(rows) or empty)+'<!-- ARTICLE_LIST_END -->',html,flags=re.S)
-    html=re.sub(r'(<p id="article-count"[^>]*>).*?(</p>)',lambda m:m[1]+str(len(entries))+(' article' if len(entries)==1 else ' articles')+m[2],html)
+    html=re.sub(r'(<p id="article-count"[^>]*>).*?(</p>)',lambda m:m[1]+str(len(entries))+(' piece' if len(entries)==1 else ' pieces')+m[2],html)
     index.write_text(html);(site/'articles/catalog.json').write_text(json.dumps(entries,indent=2,ensure_ascii=False)+'\n')
     sitemap=site/'sitemap.xml'
     if sitemap.exists():

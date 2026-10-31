@@ -27,6 +27,7 @@
     let user;try{user=await request('/auth/v1/user','GET',undefined,payload.access_token);}catch{throw Error('This sign-in link is invalid or expired. Request a new email and use the latest link.');}
     return remember({access_token:payload.access_token,expires_in:payload.expires_in,user});
    },
+   async notifyRequest(tool,userId){if(!['mat','pmc'].includes(tool))throw Error('Unknown service.');return request('/functions/v1/access-request-email','POST',{tool,...(userId?{user_id:userId}:{})},active().token);},
    async loadProfile(){const s=active();const rows=await request('/rest/v1/pmc_profiles?id=eq.'+encodeURIComponent(s.id)+'&select=id,full_name,institute,updated_at','GET',undefined,s.token);if(!Array.isArray(rows))throw Error('Profile storage is unavailable. Contact Dailwind support.');return rows[0]||null;},
    async saveProfile(name,institute){const s=active(),p=profile(name,institute);await request('/rest/v1/pmc_profiles','POST',{id:s.id,...p},s.token).catch(async e=>{if(e.status!==409)throw e;await request('/rest/v1/pmc_profiles?id=eq.'+encodeURIComponent(s.id),'PATCH',p,s.token);});return p;},
    async logout(){const s=session;session=null;if(s)await request('/auth/v1/logout?scope=local','POST',undefined,s.token);},
