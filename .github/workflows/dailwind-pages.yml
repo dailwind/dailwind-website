@@ -27,7 +27,10 @@ jobs:
       - name: Build article list and reading pages
         run: python3 publishing/build_articles.py --site .
       - name: Stage website
-        run: python3 publishing/prepare_pages.py
+        run: |
+          python3 -m venv /tmp/dailwind-publishing
+          /tmp/dailwind-publishing/bin/pip install --only-binary=:all: -r publishing/requirements.txt
+          /tmp/dailwind-publishing/bin/python publishing/prepare_pages.py
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:

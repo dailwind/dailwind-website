@@ -25,3 +25,8 @@ html:has(body.dailwind-workspace){background:#f5f5f7!important}body.dailwind-wor
 body.dailwind-workspace{overflow-x:clip}.dailwind-workspace .prep-layout>*{min-width:0}
 /* Long option labels wrap inside narrow controls instead of widening the page. */
 .dailwind-workspace select{white-space:normal!important;overflow-wrap:anywhere}
+.dailwind-workspace .workspace-return{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:8px 14px;border:1px solid #dce4ef;border-radius:999px;background:#f2f6fc;color:#0066cc;font:600 12px/1.2 system-ui,-apple-system,sans-serif;text-decoration:none;white-space:nowrap}
+.dailwind-workspace .workspace-return:hover{background:#e7f0ff}
+.dailwind-workspace .workspace-return:focus-visible{outline:3px solid #0071e3;outline-offset:3px}
+.dailwind-workspace .system-bar .workspace-return{font-size:11px;min-height:32px;padding:6px 12px}
+@media(max-width:650px){.dailwind-workspace .prep-top{flex-wrap:wrap}.dailwind-workspace .prep-top .workspace-return{margin-left:auto}.dailwind-workspace .system-bar{flex-wrap:wrap}.dailwind-workspace .system-bar .workspace-return{order:-1}.dailwind-workspace .system-bar time{margin-left:auto}}

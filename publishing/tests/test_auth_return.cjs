@@ -1,0 +1,48 @@
+'use strict';
+const assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs');
+const Auth=require('../../assets/pmc-auth-client.js');
+const config={supabaseUrl:'https://testproject.supabase.co',publishableKey:'sb_publishable_abcdefghijklmnop'};
+const user={id:'verified-id',email:'researcher@example.org',email_confirmed_at:'2026-10-31T00:00:00Z',is_anonymous:false};
+const response=(data,status=200)=>({ok:status<400,status,json:async()=>data});
+const make=(handler)=>Auth.create(config,handler);
+(async()=>{
+ let calls=[];
+ const client=make(async(url,options)=>{calls.push({url,options});if(url.endsWith('/auth/v1/user'))return response(user);return response({access_token:'signed.payload.signature',expires_in:3600,user});});
+ await assert.rejects(()=>client.rpc('dw_status'),/expired/);
+ assert.deepEqual(await client.resume({access_token:'signed.payload.signature',type:'magiclink',expires_in:3600}),{id:user.id,email:user.email});
+ assert.equal(calls[0].url,'https://testproject.supabase.co/auth/v1/user');
+ assert.equal(calls[0].options.headers.Authorization,'Bearer signed.payload.signature');
+ assert.equal(client.researchToken(),'signed.payload.signature');
+ await client.verify(user.email,'123456');
+ assert.equal(JSON.parse(calls.at(-1).options.body).type,'email');
+ await client.send(user.email,false);
+ assert.equal(new URL(calls.at(-1).url).searchParams.get('redirect_to'),'https://dailwind.com/pmc/account/');
+ assert.equal(JSON.parse(calls.at(-1).options.body).create_user,false);
+ await assert.rejects(()=>client.resume({error_code:'otp_expired',error_description:'<script>bad</script>'}),/invalid, expired or already used/);
+ await assert.rejects(()=>client.resume({access_token:'invalid'}),/invalid/);
+ await assert.rejects(()=>client.resume({access_token:'signed.payload.signature',type:'recovery'}),/fresh sign-in/);
+ const expired=make(async()=>response({},401));
+ await assert.rejects(()=>expired.resume({access_token:'expired.payload.signature'}),/invalid or expired/);
+ assert.throws(()=>expired.researchToken(),/expired/);
+ const unverified=make(async()=>response({...user,email_confirmed_at:null}));
+ await assert.rejects(()=>unverified.resume({access_token:'unverified.payload.signature'}),/verified email/);
+ assert.throws(()=>unverified.researchToken(),/expired/);
+ const anonymous=make(async()=>response({...user,is_anonymous:true}));
+ await assert.rejects(()=>anonymous.resume({access_token:'anonymous.payload.signature'}),/verified email/);
+ const limited=make(async()=>response({error_code:'over_email_send_rate_limit'},429));
+ await assert.rejects(()=>limited.send(user.email,false),/sending limit/);
+ const source=fs.readFileSync(require.resolve('../../assets/auth-return.js'),'utf8');
+ function bridge(path,hash,search=''){
+  const result={};const location={pathname:path,hash,search,replace:value=>result.redirect=value};const window={};
+  vm.runInNewContext(source,{URLSearchParams,location,window,history:{replaceState:(a,b,url)=>result.cleaned=url},Object});
+  return {...result,payload:window.DailwindAuthReturn};
+ }
+ assert.equal(bridge('/','#access_token=signed.payload.signature&refresh_token=secret').redirect,'/pmc/account/#access_token=signed.payload.signature&refresh_token=secret');
+ const returned=bridge('/pmc/','#access_token=signed.payload.signature&refresh_token=secret','?utm_source=test');
+ assert.equal(returned.cleaned,'/pmc/?utm_source=test');
+ assert.equal(returned.payload.access_token,'signed.payload.signature');
+ assert.equal(bridge('/pmc/','#workspace').payload,undefined);
+ assert.equal(bridge('/pmc/','','?error_code=otp_expired').cleaned,'/pmc/');
+ await client.logout();assert.throws(()=>client.researchToken(),/expired/);
+ console.log('Auth return, OTP, callback cleanup, server validation and rejection checks passed.');
+})().catch(error=>{console.error(error);process.exitCode=1;});

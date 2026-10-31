@@ -31,3 +31,27 @@
 @keyframes tour-progress{to{transform:scaleX(1)}}
 @media(max-width:650px){.tour-content{min-height:245px}.tour-symbol{width:56px;height:56px;border-radius:16px;font-size:36px;flex-basis:56px}.tour-content h3{font-size:26px}.tour-controls{flex-wrap:wrap}.finder-search>div>.finder-search-icon{flex-basis:22px;width:22px}.finder-search-icon svg{width:20px;height:20px}}
 @media(prefers-reduced-motion:reduce){.finder-group .toolkit-card{transition:none}.finder-group .toolkit-card:hover{transform:none}.tour-scene.is-changing .tour-content,.tour-scene.is-running .tour-progress span{animation:none}.tour-progress{display:none}}
+
+/* On phones the tour becomes a landscape tablet, not a tall monitor. */
+@media(max-width:650px){
+ .toolkit-tour{width:calc(100% - 28px);max-width:570px;margin-top:28px}
+ .toolkit-tour .desktop-screen{position:relative;border:9px solid #242427;border-radius:24px;box-shadow:0 0 0 1px #73737b,0 14px 32px #0003}
+ .toolkit-tour .desktop-top,.toolkit-tour .desktop-stand{display:none}
+ .toolkit-tour .tour-scene{padding:14px 16px 12px;min-height:0;aspect-ratio:4/3;display:flex;flex-direction:column;justify-content:space-between}
+ .toolkit-tour .tour-meta{font-size:7px;gap:8px}
+ .toolkit-tour .tour-content{min-height:0;gap:13px;padding:14px 0 9px;flex:1}
+ .toolkit-tour .tour-symbol{width:42px;height:42px;flex-basis:42px;border-radius:12px;font-size:28px}
+ .toolkit-tour .tour-kicker{font-size:7px;margin-bottom:6px;letter-spacing:.08em}
+ .toolkit-tour .tour-content h3{font-size:clamp(18px,5.2vw,28px);line-height:1.08;margin-bottom:8px}
+ .toolkit-tour .tour-content p:not(.tour-kicker){font-size:10px;line-height:1.4;margin:0 0 7px}
+ .toolkit-tour .tour-content a{font-size:10px}
+ .toolkit-tour .tour-visual{padding:2px 0 8px;gap:4px}
+ .toolkit-tour .tour-visual>span{height:4px}
+ .toolkit-tour .tour-visual>b{font-size:7px}
+ .toolkit-tour .tour-progress{margin:0 0 6px;height:2px}
+ .toolkit-tour .tour-controls{padding-top:6px;gap:5px;flex-wrap:nowrap}
+ .toolkit-tour .tour-controls>button{padding:5px 7px;font-size:9px;min-height:30px}
+ .toolkit-tour .tour-dots{gap:3px;flex:1;justify-content:center}
+ .toolkit-tour .tour-dots button{width:5px;height:5px;padding:0;min-height:0;min-width:0;border:0}
+ .toolkit-tour .tour-dots button[aria-current=true]{width:10px}
+}

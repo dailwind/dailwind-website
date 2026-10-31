@@ -3,11 +3,12 @@ from pathlib import Path
 from urllib.parse import urlsplit,urlunsplit,parse_qsl,urlencode,unquote
 import base64,hashlib,re
 import posixpath
+from social import prepare_social
 from html import escape,unescape
 
 POLICY="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; worker-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
 
-def harden_html(text,path,root):
+def harden_html(text,path,root,social=None):
     # Keep optional consent-based analytics on studio pages, never on text-processing desks.
     policy=POLICY
     if re.search(r'<script[^>]+src="(?:\.\./)*app\.js',text):
@@ -26,17 +27,22 @@ def harden_html(text,path,root):
     if canonical:
         parsed=urlsplit(unescape(canonical[1]))
         if parsed.scheme=='https' and parsed.netloc:origin='https://'+parsed.netloc
-    text=re.sub(r'<meta\b[^>]*(?:property|name)="(?:og:image(?:\:[a-z_]+)?|twitter:image(?:\:alt)?|twitter:card)"[^>]*>','',text,flags=re.I)
-    preview=origin+'/assets/dailwind-share-v866.png'
-    # Version every route's icons, including aliases and standalone workspaces.
+    text=re.sub(r'<meta\b[^>]*(?:property|name)="(?:og:[a-z_:]+|twitter:[a-z_:]+)"[^>]*>','',text,flags=re.I)
+    preview=social['image'] if social else origin+'/assets/dailwind-share-v866.png'
     text=re.sub(r'<link\b[^>]*rel="(?:icon|shortcut icon|apple-touch-icon)"[^>]*>','',text,flags=re.I)
     prefix=posixpath.relpath('assets',posixpath.dirname(route) or '.')+'/'
     text=text.replace('</head>','<link rel="icon" type="image/png" sizes="64x64" href="'+prefix+'favicon-v866.png"><link rel="apple-touch-icon" sizes="180x180" href="'+prefix+'apple-touch-icon-v866.png"></head>',1)
-    tags='<meta property="og:image" content="'+preview+'"><meta property="og:image:secure_url" content="'+preview+'"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:type" content="image/png"><meta property="og:image:alt" content="Dailwind Studio logo on a white background"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="'+preview+'"><meta name="twitter:image:alt" content="Dailwind Studio logo on a white background">'
-    title=re.search(r'<title>(.*?)</title>',text,re.S|re.I)
-    if title and not re.search(r'property="og:title"',text,re.I):tags+='<meta property="og:title" content="'+escape(unescape(title[1]),quote=True)+'">'
-    if not re.search(r'property="og:type"',text,re.I):tags+='<meta property="og:type" content="website">'
+    fields={'og:image':preview,'og:image:secure_url':preview,'og:image:width':'1200','og:image:height':'630','og:image:type':'image/png','og:image:alt':'Dailwind Studio logo and '+(social['title'] if social else 'research tools')+' on a white background','og:site_name':'Dailwind Studio','og:type':social['type'] if social else 'website'}
+    if social:fields.update({'og:title':social['title'],'og:description':social['description'],'og:url':social['url']})
+    tags=''.join('<meta property="'+key+'" content="'+escape(value,quote=True)+'">' for key,value in fields.items())
+    twitter={'card':'summary_large_image','image':preview,'image:alt':fields['og:image:alt']}
+    if social:twitter.update({'title':social['title'],'description':social['description']})
+    tags+=''.join('<meta name="twitter:'+key+'" content="'+escape(value,quote=True)+'">' for key,value in twitter.items())
     text=text.replace('</head>',tags+'</head>',1)
+    # A tiny synchronous bridge handles legacy email links returning to Home.
+    text=re.sub(r'<script\b[^>]*data-auth-return[^>]*></script>','',text,flags=re.I)
+    bridge=posixpath.relpath('assets/auth-return.js',posixpath.dirname(route) or '.')
+    text=text.replace('<head>','<head><script data-auth-return src="'+bridge+'"></script>',1)
     text=re.sub(r'<meta\b[^>]*http-equiv=["\']Content-Security-Policy["\'][^>]*>','',text,flags=re.I)
     text=re.sub(r'<meta\b[^>]*name=["\']referrer["\'][^>]*>','',text,flags=re.I)
     text=re.sub(r'<head\b[^>]*>',lambda m:m[0]+'<meta http-equiv="Content-Security-Policy" content="'+policy+'"><meta name="referrer" content="strict-origin-when-cross-origin">',text,count=1,flags=re.I)
@@ -109,9 +115,10 @@ def validate_pmc_auth_config(root):
 def harden_site(root):
     root=Path(root).resolve()
     validate_pmc_auth_config(root)
+    social=prepare_social(root)
     for path in root.rglob('*.html'):
         if 'publishing' in path.relative_to(root).parts:continue
-        path.write_text(harden_html(path.read_text(),path,root))
+        path.write_text(harden_html(path.read_text(),path,root,social.get(path.relative_to(root).as_posix())))
 
 def assert_safe_tree(path):
     forbidden={'.git','.github','.env','node_modules','__pycache__'}

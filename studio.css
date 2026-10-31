@@ -34,6 +34,43 @@
 /* Compact identity; match the mark's centre to the wordmark on every route. */
 .header .brand-logo,.footer .brand-logo{width:.85em!important;height:.85em!important;flex:0 0 .85em!important;transform:none}
 .header .brand,.footer .brand{gap:8px!important}
+
+/* Align the visible mark with the capital letters, rather than the line box. */
+.header .brand-logo,.footer .brand-logo{transform:translateY(-.08em);align-self:center}
+.header .brand>span,.footer .brand>span{line-height:1;white-space:nowrap}
+.home-app-summary{max-width:590px;margin:0 auto 23px;color:#6e6e73;font-size:17px;line-height:1.5;padding-inline:20px}
+
+/* A quiet reading room, shared by the index and every article. */
+body:has(.articles-section),body:has(.article-page){background:#f5f5f7}
+.page-intro:has(+.articles-section){text-align:center;padding-block:72px 38px;max-width:920px}
+.page-intro:has(+.articles-section) .eyebrow{color:#0066cc;font-size:11px;letter-spacing:.12em}
+.page-intro:has(+.articles-section) h1{font-size:clamp(42px,6vw,72px);letter-spacing:-.05em;margin:15px 0 22px;line-height:1.06}
+.page-intro:has(+.articles-section) .lede{max-width:620px;margin:auto;color:#6e6e73;font-size:20px;line-height:1.5}
+.articles-section{padding-bottom:70px}
+.articles-toolbar{max-width:none;grid-template-columns:minmax(0,1fr) 220px;background:#fff;border:1px solid #e5e5ea;border-radius:24px;padding:24px;gap:20px;box-shadow:0 8px 30px #101c3404}
+.articles-toolbar label{font-size:12px;color:#62626b;display:block;margin-bottom:9px}
+.articles-toolbar input{border-radius:999px;border-color:#d2d2d7;min-height:48px;padding:12px 18px;width:100%}
+#article-count{font-size:12px;color:#6e6e73;padding:8px 4px}
+#article-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.article-row{position:relative;display:flex;flex-direction:column;gap:20px;padding:30px 30px 65px;border:1px solid #e5e5ea;border-radius:24px;background:#fff;min-width:0;transition:box-shadow .2s ease}
+.article-row:hover{box-shadow:0 12px 35px #101c340a}
+.article-row[hidden]{display:none!important}
+.article-row-meta{display:flex;flex-direction:row;justify-content:space-between;gap:12px;font-size:10px;font-weight:650;color:#0066cc;text-transform:uppercase;letter-spacing:.08em}
+.article-row h2{font-size:27px;letter-spacing:-.035em;line-height:1.16;margin:0 0 18px}
+.article-row p{font-size:15px;line-height:1.6;color:#6e6e73}
+.article-row .article-byline{font-size:12px;margin:20px 0 0;color:#73737b}
+.article-row .article-arrow{position:absolute;right:27px;bottom:23px;display:grid;place-items:center;background:#f1f6ff;color:#0066cc;border-radius:50%;width:36px;height:36px;font-size:21px}
+.submission-note{padding:35px;background:#fff;border:1px solid #e5e5ea;border-radius:24px;margin-top:36px;text-align:center}
+.submission-note h2{font-size:29px;letter-spacing:-.035em}
+.submission-note p{font-size:15px;color:#6e6e73}
+.article-page{max-width:900px;margin:40px auto 70px;padding:44px clamp(22px,5vw,64px) 60px;background:#fff;border:1px solid #e5e5ea;border-radius:26px}
+.article-header{margin-top:35px;border-bottom:1px solid #e5e5ea;padding-bottom:30px}
+.article-header h1{font-size:clamp(36px,5vw,57px);line-height:1.08;letter-spacing:-.045em;overflow-wrap:anywhere}
+.article-header .eyebrow{color:#0066cc}
+.article-header .lede{color:#6e6e73;font-size:19px;line-height:1.6}
+.article-body{max-width:700px;margin:35px auto 0;color:#303038}
+.article-body p{line-height:1.9}
+@media(max-width:650px){.home-app-summary{font-size:14px;max-width:340px}.page-intro:has(+.articles-section){padding-block:44px 28px}.page-intro:has(+.articles-section) .lede{font-size:17px}.articles-toolbar{padding:20px;border-radius:20px;grid-template-columns:1fr;gap:17px}.articles-toolbar input{font-size:16px}#article-list{grid-template-columns:1fr;gap:16px}.article-row{padding:25px 24px 63px;border-radius:20px}.article-row h2{font-size:25px}.submission-note{padding:25px}.article-page{width:calc(100% - 28px);margin-top:24px;padding:28px 23px 40px;border-radius:20px}.article-header{margin-top:30px}.article-header .lede{font-size:17px}.article-body p{font-size:17px}}
 .app-section-heading{display:flex;flex-direction:column;align-items:flex-start;gap:13px}
 .app-section-heading .eyebrow{margin:0}
 .app-section-heading h2{max-width:780px}
