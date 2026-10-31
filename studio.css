@@ -28,16 +28,13 @@
 .header .brand{gap:9px!important}.footer .brand{gap:9px!important}
 @media(max-width:650px){.header .brand-logo{width:29px!important;height:29px!important;flex-basis:29px!important}}
 
-/* Optical alignment of the supplied transparent mark and wordmark. */
-.header .brand,.footer .brand{align-items:center!important}.header .brand>span,.footer .brand>span{display:block;line-height:1.1}.header .brand-logo,.footer .brand-logo{align-self:center;transform:translateY(-2px)}
-
-/* Compact identity; match the mark's centre to the wordmark on every route. */
-.header .brand-logo,.footer .brand-logo{width:.85em!important;height:.85em!important;flex:0 0 .85em!important;transform:none}
-.header .brand,.footer .brand{gap:8px!important}
-
-/* Align the visible mark with the capital letters, rather than the line box. */
-.header .brand-logo,.footer .brand-logo{transform:translateY(-.08em);align-self:center}
-.header .brand>span,.footer .brand>span{line-height:1;white-space:nowrap}
+/* Match the logo to the wordmark's capital height and alphabetic baseline. */
+.header .brand,.footer .brand{align-items:baseline!important;gap:8px!important}
+.header .brand>span,.footer .brand>span{display:block;line-height:1.2;white-space:nowrap}
+.header .brand-logo,.footer .brand-logo{width:.79em!important;height:.79em!important;flex:0 0 .79em!important;object-fit:contain;align-self:baseline;transform:translateY(.03em)}
+@supports(height:1cap){
+ .header .brand-logo,.footer .brand-logo{width:1.085cap!important;height:1.085cap!important;flex-basis:1.085cap!important;transform:translateY(.042cap)}
+}
 .home-app-summary{max-width:590px;margin:0 auto 23px;color:#6e6e73;font-size:17px;line-height:1.5;padding-inline:20px}
 
 /* A quiet reading room, shared by the index and every article. */

@@ -7,9 +7,10 @@ html body select:focus-visible{outline:3px solid #0071e3!important;outline-offse
 html body select:disabled{color:#8a8f99;background-color:#f5f5f7;border-color:#e3e5eb;cursor:not-allowed;opacity:.75}
 html body select:dir(rtl):not([multiple]):not([size]){background-position:left 14px center!important}
 
-/* The corpus app uses the same small brand initial as the studio header. */
-html body .arc-brand{align-items:center;gap:8px}
-html body .arc-brand img{width:.85em!important;height:.85em!important;flex:0 0 .85em!important;object-fit:contain;border-radius:0;box-shadow:none}
+/* Align the corpus header mark with the first title line, not its subtitle. */
+html body .arc-brand{align-items:baseline;gap:8px}
+html body .arc-brand img{width:.79em!important;height:.79em!important;flex:0 0 .79em!important;align-self:baseline;transform:translateY(.03em);object-fit:contain;border-radius:0;box-shadow:none}
+@supports(height:1cap){html body .arc-brand img{width:1.085cap!important;height:1.085cap!important;flex-basis:1.085cap!important;transform:translateY(.042cap)}}
 
 /* Browsers supporting customizable selects also get a styled, top-layer menu. */
 @supports (appearance:base-select){
