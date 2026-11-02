@@ -21,3 +21,45 @@ body.reading-greek{--greek-paper:#f6f1e7;--greek-ink:#292d29;--greek-muted:#6865
 .rr-motion .reading-greek .greek-painting,.rr-motion .reading-greek .greek-intro,.rr-motion .reading-greek .articles-toolbar,.rr-motion .reading-greek .article-row,.rr-motion .reading-greek .submission-note,.rr-motion .reading-greek .article-header,.rr-motion .reading-greek .article-body{opacity:0;translate:0 16px;transition:opacity .7s ease var(--rr-delay,0ms),translate .7s cubic-bezier(.2,.7,.2,1) var(--rr-delay,0ms),transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s ease,border-color .35s ease,background-color .35s ease}
 .rr-motion .reading-greek .rr-in{opacity:1;translate:0 0}
 @media(prefers-reduced-motion:reduce){.reading-greek .article-row,.reading-greek .article-row:hover,.reading-greek .article-row:focus-within,.reading-greek .article-arrow,.reading-greek .article-row:hover .article-arrow,.reading-greek .greek-painting img,.reading-greek .greek-painting:hover img{transition:none;transform:none}}
+/* ---- Reading Room: classical details (meander, columns, small caps) ---- */
+.reading-greek{--greek-gold:#a8874f;--meander:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='14' viewBox='0 0 24 14'%3E%3Cpath d='M0 12.5H18.5V1.5H6.5V9H13V5.5' fill='none' stroke='%23a8874f' stroke-width='1.4'/%3E%3C/svg%3E")}
+.reading-greek .greek-hero{position:relative}
+.reading-greek .greek-painting-inner{position:relative}
+.reading-greek .greek-intro{position:relative}
+.reading-greek .greek-intro:before{content:"";display:block;width:min(264px,70%);height:14px;margin:0 auto 26px;background:var(--meander) center/24px 14px space no-repeat;opacity:.75}
+.reading-greek .greek-intro h1{font-variant:small-caps;letter-spacing:.005em}
+.reading-greek .greek-intro .eyebrow{letter-spacing:.26em;color:#8a6c38}
+.reading-greek .greek-divider{gap:14px}
+.reading-greek .greek-divider:before,.reading-greek .greek-divider:after{content:"";width:12px;height:26px;flex:0 0 12px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='26' viewBox='0 0 12 26'%3E%3Cg fill='none' stroke='%23a8874f' stroke-width='1'%3E%3Cpath d='M.5 1.5h11M1.5 3.5h9M2.5 5.5v16M5 5.5v16M7 5.5v16M9.5 5.5v16M1.5 22.5h9M.5 24.5h11'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;opacity:.85}
+.reading-greek .articles-section:before{content:"";display:block;height:14px;margin:0 0 30px;background:var(--meander) center/24px 14px repeat-x;opacity:.55;-webkit-mask:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)}
+.reading-greek .article-row{background:linear-gradient(180deg,#fffdf8,#fbf6ea)}
+.reading-greek .article-row h2{font-variant:small-caps;letter-spacing:0}
+.reading-greek .submission-note h2,.reading-greek .submission-note h3{font-variant:small-caps;font-family:Georgia,"Times New Roman",serif;font-weight:400}
+.reading-greek .submission-note{background:linear-gradient(180deg,#fffaf0aa,transparent),var(--meander) top center/24px 14px repeat-x;background-origin:padding-box;padding-top:46px}
+/* ---- Living touches: hero drift and light sheen, lamp glow, olive leaves, butterfly ---- */
+@keyframes rr-drift{0%{transform:scale(1.035) translate(-.8%,.2%)}100%{transform:scale(1.07) translate(.9%,-.5%)}}
+@keyframes rr-sheen{0%,55%{transform:translateX(-120%) skewX(-18deg)}85%,100%{transform:translateX(320%) skewX(-18deg)}}
+@keyframes rr-lamp{0%,100%{opacity:.55}20%{opacity:.68}35%{opacity:.5}60%{opacity:.72}80%{opacity:.6}}
+@keyframes rr-enter{from{opacity:0;transform:scale(1.1)}to{opacity:1;transform:scale(1.035) translate(-.8%,.2%)}}
+@media(prefers-reduced-motion:no-preference){
+.reading-greek:not(.greek-reader) .greek-painting img{animation:rr-enter 2.2s cubic-bezier(.2,.7,.2,1) both,rr-drift 26s ease-in-out 2.2s infinite alternate}
+.reading-greek:not(.greek-reader) .greek-painting-inner:after{content:"";position:absolute;inset:0 auto 0 0;width:28%;background:linear-gradient(90deg,transparent,#fff7e035,#fffbef55,#fff7e035,transparent);pointer-events:none;animation:rr-sheen 11s ease-in-out 3s infinite}
+.reading-greek:not(.greek-reader) .greek-intro:after{content:"";position:absolute;left:50%;top:40%;width:min(560px,90%);height:260px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,#f3d79a40,transparent);pointer-events:none;z-index:-1;animation:rr-lamp 5.5s ease-in-out infinite}
+}
+.rr-life{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:40}
+.rr-leaf-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
+.rr-leaf{position:absolute;top:-30px;left:var(--x,50%);width:22px;height:10px;pointer-events:none;animation:rr-fall var(--d,12s) linear forwards;opacity:0}
+.rr-leaf svg{display:block;width:100%;height:100%;animation:rr-sway 3.2s ease-in-out infinite alternate}
+@keyframes rr-fall{0%{opacity:0;transform:translate(0,0) rotate(0)}10%{opacity:.85}85%{opacity:.8}100%{opacity:0;transform:translate(var(--dx,60px),var(--dy,420px)) rotate(var(--r,240deg))}}
+@keyframes rr-sway{from{transform:rotate(-25deg) translateX(-4px)}to{transform:rotate(25deg) translateX(4px)}}
+.rr-butterfly{position:absolute;left:0;top:0;width:34px;height:28px;margin:-14px 0 0 -17px;pointer-events:none;will-change:transform;filter:drop-shadow(0 3px 3px #3f30122e)}
+.rr-butterfly svg{display:block;width:100%;height:100%;overflow:visible}
+.rr-butterfly .rr-wing-l,.rr-butterfly .rr-wing-r{transform-box:view-box;transform-origin:17px 14px;animation:rr-flap .16s ease-in-out infinite alternate}
+.rr-butterfly .rr-wing-r{animation-name:rr-flap-r}
+.rr-butterfly.is-resting .rr-wing-l,.rr-butterfly.is-resting .rr-wing-r{animation-duration:1.6s;animation-timing-function:ease-in-out}
+.rr-butterfly.is-resting .rr-wing-l{animation-name:rr-rest}.rr-butterfly.is-resting .rr-wing-r{animation-name:rr-rest-r}
+@keyframes rr-flap{from{transform:scaleX(1)}to{transform:scaleX(.18)}}
+@keyframes rr-flap-r{from{transform:scaleX(1)}to{transform:scaleX(.18)}}
+@keyframes rr-rest{0%,70%{transform:scaleX(.55)}85%{transform:scaleX(.95)}100%{transform:scaleX(.55)}}
+@keyframes rr-rest-r{0%,70%{transform:scaleX(.55)}85%{transform:scaleX(.95)}100%{transform:scaleX(.55)}}
+@media(prefers-reduced-motion:reduce){.rr-life,.rr-leaf-layer{display:none!important}}
