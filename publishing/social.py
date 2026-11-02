@@ -62,7 +62,7 @@ def card(path, logo, meta):
     image.save(path,optimize=True)
 
 def prepare_social(root):
-    root=Path(root); output=root/'assets/social-v867'; output.mkdir(parents=True,exist_ok=True)
+    root=Path(root); output=root/'assets/social-v8614'; output.mkdir(parents=True,exist_ok=True)
     with Image.open(root/'assets/dailwind-logo-v866.webp') as source:
         rgba=source.convert('RGBA'); logo=rgba.crop(rgba.getbbox())
     result={}
@@ -77,6 +77,6 @@ def prepare_social(root):
         digest=hashlib.sha256((meta['title']+'\n'+meta['description']).encode()).hexdigest()[:16]
         filename='share-'+digest+'.png'; target=output/filename
         if not target.exists(): card(target,logo,meta)
-        meta['image']='https://dailwind.com/assets/social-v867/'+filename
+        meta['image']='https://dailwind.com/assets/social-v8614/'+filename
         result[route]=meta
     return result
