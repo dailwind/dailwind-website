@@ -36,7 +36,7 @@
  function settings(){if(kind==='cleaner')commitWords();return {...Object.fromEntries(keys.map(k=>[k,!!$('rule-'+k)?.checked])),find:$('prep-find')?.value||'',replace:$('prep-replace')?.value||'',keywords:$('prep-keywords')?.value||'',words:removalWords,sentences:$('prep-sentences')?.value||'',caseSensitive:$('keyword-case')?.getAttribute('aria-pressed')!=='false',wholeWords:$('keyword-whole')?.checked!==false,keywordLines:$('keyword-lines')?.checked===true,separator:$('merge-separator')?.value||'blank',duplicates:kind==='merger'?$('merge-duplicates').checked:!!$('rule-duplicates')?.checked};}
  function task(action,selected,options){
   return new Promise((resolve,reject)=>{
-   worker??=new Worker('../assets/preparation-worker.js?v=83');const id=++serial;
+   worker??=new Worker('../assets/preparation-worker.js?v=20261103');const id=++serial;
    const timer=setTimeout(()=>{worker.terminate();worker=null;reject(Error('Processing timed out. Try fewer or smaller files. Your imported text remains available.'));},180000);
    worker.onmessage=({data})=>{if(data.id!==id)return;clearTimeout(timer);data.error?reject(Error(data.error)):resolve(data.result);};
    worker.onerror=()=>{clearTimeout(timer);worker.terminate();worker=null;reject(Error('The local worker could not run. Reload the hosted page; do not open HTML directly from a ZIP.'));};

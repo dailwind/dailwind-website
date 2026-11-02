@@ -2,7 +2,7 @@
 (()=>{
  const $=id=>document.getElementById(id),A=ArcMetadata,el=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);return n;};
  let rows=[],custom=[],selected=new Set(A.DEFAULT),worker=null,busy=false,cancelled=false,seq=0,current=null,page=0,url=null,exportWorker=null;
- const mobile=/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)||(navigator.deviceMemory&&navigator.deviceMemory<=4),limit=mobile?20000000:100000000;
+ const mobile=/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)||(navigator.deviceMemory&&navigator.deviceMemory<=4),CAPT=window.ArcCapacity?.text||{fileBytes:CAPT.fileBytes,fileChars:mobile?20000000:100000000},limit=CAPT.fileChars,MBLIM=Math.round(CAPT.fileBytes/1048576);
  const say=s=>$('meta-status').textContent=s;
  const fields=()=>[...A.FIELDS,...custom.map(c=>[c.id,c.label,'Custom'])];
  const included=()=>rows.filter(r=>r.included!==false);
@@ -11,8 +11,8 @@
  function analyze(text,options){if(!worker){worker=new Worker('../assets/metadata-worker.js?v=81');worker.onmessage=({data})=>{if(!current||data.id!==current.id)return;clearTimeout(current.timer);const p=current;current=null;data.error?p.reject(Error(data.error)):p.resolve(data.result);};worker.onerror=()=>abortWorker('Metadata worker failed. Try a smaller file.');}return new Promise((resolve,reject)=>{const id=++seq;current={id,resolve,reject,timer:setTimeout(()=>abortWorker('This file took too long. Try a smaller text.'),300000)};worker.postMessage({id,text,options});});}
  function abortWorker(message){worker?.terminate();worker=null;if(current){clearTimeout(current.timer);current.reject(Error(message));current=null;}}
  function defaults(){return {corpus:$('meta-corpus').value.trim(),genre:$('meta-genre').value,author:$('meta-author').value.trim(),source:$('meta-source').value.trim(),year:$('meta-year').value.trim(),language:$('meta-language').value.trim()};}
- async function read(f){const ext=f.name.split('.').at(-1).toLowerCase();if(f.size>(mobile?60:250)*1048576)throw Error('File exceeds this device’s '+(mobile?60:250)+' MB input limit.');let text,encoding='UTF-8';
-  if(['pdf','docx'].includes(ext)){text=await PreparationFiles.readFile(f,{fileBytes:(mobile?60:250)*1048576,fileChars:limit,pages:10000,cancelled:()=>cancelled,onProgress:n=>say('Extracting '+f.name+' · page '+n+'…')});encoding='Extracted text';}
+ async function read(f){const ext=f.name.split('.').at(-1).toLowerCase();if(f.size>CAPT.fileBytes)throw Error('File exceeds this device’s '+MBLIM+' MB input limit.');let text,encoding='UTF-8';
+  if(['pdf','docx'].includes(ext)){text=await PreparationFiles.readFile(f,{fileBytes:CAPT.fileBytes,fileChars:limit,pages:10000,cancelled:()=>cancelled,onProgress:n=>say('Extracting '+f.name+' · page '+n+'…')});encoding='Extracted text';}
   else if(['txt','text','md','csv','srt','vtt','conll','conllu'].includes(ext)){const b=await f.arrayBuffer(),u=new Uint8Array(b),choice=$('meta-encoding').value;encoding=choice==='auto'?(u[0]===255&&u[1]===254?'utf-16le':u[0]===254&&u[1]===255?'utf-16be':'utf-8'):choice;text=new TextDecoder(encoding).decode(b).replace(/^\uFEFF/,'');}
   else throw Error('Use TXT, Markdown, CSV, SRT, VTT, DOCX or selectable PDF.');
   if(text.length>limit)throw Error('File exceeds '+(limit/1000000)+' million characters on this device.');return {text,encoding,ext};
@@ -54,6 +54,6 @@
  $('meta-clear').addEventListener('click',()=>{if(busy||!confirm('Clear all metadata records? Download your exports first.'))return;rows=[];page=0;render();say('Records cleared.');});
  document.querySelectorAll('[data-meta-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
  for(const id of ['meta-case','meta-numbers','meta-subtitles','meta-title-mode','meta-encoding'])$(id).addEventListener('change',()=>{if(rows.length)say('Counting/extraction settings apply to newly added files. Existing records keep the methods used when they were analyzed.');});
- $('meta-device-limit').textContent='Up to 2,000 records. '+(mobile?'60 MB / 20 million characters':'250 MB / 100 million characters')+' per file, subject to device memory. Files are read one at a time; source text is discarded after metadata is calculated. PDF extraction: up to 10,000 pages. Scans need OCR first.';
+ $('meta-device-limit').textContent='Up to 2,000 records. '+(MBLIM+' MB / '+(limit/1000000)+' million characters')+' per file, subject to device memory. Files are read one at a time; source text is discarded after metadata is calculated. PDF extraction: up to 10,000 pages. Scans need OCR first.';
  renderColumns();render();
 })();
