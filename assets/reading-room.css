@@ -75,3 +75,13 @@ body.reading-greek{--greek-paper:#f6f1e7;--greek-ink:#292d29;--greek-muted:#6865
 .reading-greek .poem-body blockquote p{font-size:clamp(1.12rem,1rem + .5vw,1.36rem);line-height:1.85;letter-spacing:.01em}
 .reading-greek .poem-body blockquote:first-child::before,.reading-greek .poem-body blockquote:last-child::before{content:"";display:block;width:120px;height:9px;margin:0 auto 26px;background:repeating-linear-gradient(90deg,#b69a69 0 2px,transparent 2px 7px);opacity:.75}
 .reading-greek .poem-body blockquote:last-child p{font-style:italic;color:#8a6d3b;font-size:1.25rem}
+
+/* Format badge: bottom-left of each card, on the same inset as the category label. */
+.reading-greek .article-row{grid-template-rows:1fr auto;row-gap:18px}
+.reading-greek .article-row>.article-row-meta{grid-column:1;grid-row:1}
+.reading-greek .article-row>div:not(.article-row-meta){grid-column:2;grid-row:1}
+.reading-greek .article-row>.article-arrow{grid-column:3;grid-row:1/span 2;align-self:end}
+.reading-greek .article-format{grid-column:1;grid-row:2;justify-self:start;align-self:end;margin:0;padding:0;font-size:9px;line-height:1.6;letter-spacing:.08em;text-transform:uppercase;color:#8d7348;opacity:1;transition:opacity .2s ease}
+.reading-greek .article-row:hover .article-format,.reading-greek .article-row:focus-within .article-format{opacity:.45}
+@media(max-width:750px){.reading-greek .article-row{grid-template-rows:auto 1fr auto}.reading-greek .article-row>.article-row-meta{grid-column:1/-1;grid-row:1}.reading-greek .article-row>div:not(.article-row-meta){grid-column:1;grid-row:2}.reading-greek .article-row>.article-arrow{grid-column:2;grid-row:2/span 2}.reading-greek .article-format{grid-column:1;grid-row:3}}
+@media(prefers-reduced-motion:reduce){.reading-greek .article-format{transition:none}}
