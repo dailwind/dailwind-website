@@ -1,11 +1,10 @@
 'use strict';
 (()=>{
  // Decorative media is silent. The only motion control lives in the page footer.
- // Visitors who ask for reduced motion start with the slideshow paused (videos are not affected).
+ // The phone slideshow always runs (it only rests while the tab is hidden); reduced motion gets a plain crossfade.
  const reduce=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null;
  let motionPaused=!!(reduce&&reduce.matches);
  const syncs=[];
- const allowed=()=>!motionPaused&&!document.hidden;
  function syncAll(){syncs.forEach(sync=>sync());}
  function label(){document.querySelectorAll('[data-motion-toggle]').forEach(b=>{b.textContent=motionPaused?'Resume automatic media':'Pause automatic media';b.setAttribute('aria-pressed',String(motionPaused));});}
  document.querySelectorAll('[data-motion-toggle]').forEach(button=>button.addEventListener('click',()=>{motionPaused=!motionPaused;label();syncAll();}));
@@ -16,12 +15,11 @@
   const slides=[...box.querySelectorAll('[data-phone-slide]')];if(!slides.length)return;
   const label=box.querySelector('[data-scene-description]'),count=box.querySelector('[data-slide-counter]');
   const captions=['Corpus workspace','Parts of speech','Punctuation pyramid','KWIC concordance','Dispersion plot','File view','Full-screen reading','Word cloud','Sentiment & tone','Analysis history'];
-  let index=0,visible=true,timer=null;
+  let index=0,timer=null;
   function load(i){const img=slides[i];if(!img.getAttribute('src')&&img.dataset.src)img.src=img.dataset.src;}
   function select(i){index=(i+slides.length)%slides.length;load(index);slides.forEach((s,n)=>s.classList.toggle('is-active',n===index));if(label)label.textContent=captions[index]||'App screen';if(count)count.textContent=String(index+1).padStart(2,'0')+' / '+slides.length;load((index+1)%slides.length);}
-  function sync(){if(timer!==null)clearInterval(timer);timer=null;if(allowed()&&visible)timer=setInterval(()=>select(index+1),3500);}
+  function sync(){if(timer!==null)clearInterval(timer);timer=null;if(!document.hidden)timer=setInterval(()=>select(index+1),2000);}
   select(0);syncs.push(sync);sync();
-  if('IntersectionObserver'in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();},{threshold:0,rootMargin:'160px'}).observe(box);
  });
  // Videos always autoplay muted and loop; no pause state, footer toggle or reduced-motion setting stops them.
  document.querySelectorAll('[data-autoplay-player]').forEach(box=>{
