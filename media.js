@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
  // Decorative media is silent. The only motion control lives in the page footer.
- // Visitors who ask for reduced motion start with automatic media paused.
+ // Visitors who ask for reduced motion start with the slideshow paused (videos are not affected).
  const reduce=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null;
  let motionPaused=!!(reduce&&reduce.matches);
  const syncs=[];
@@ -23,21 +23,17 @@
   select(0);syncs.push(sync);sync();
   if('IntersectionObserver'in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();},{threshold:0,rootMargin:'160px'}).observe(box);
  });
+ // Videos always autoplay muted and loop; no pause state, footer toggle or reduced-motion setting stops them.
  document.querySelectorAll('[data-autoplay-player]').forEach(box=>{
-  const video=box.querySelector('video');if(!video)return;let visible=true,pending=false,retry=null;
-  video.controls=false;video.removeAttribute('controls');video.muted=true;video.defaultMuted=true;video.loop=true;video.playsInline=true;video.autoplay=false;video.preload='metadata';
-  const active=()=>allowed()&&visible;
-  function attempt(){if(!active()){if(!video.paused)video.pause();return;}if(pending||!video.paused&&!video.ended)return;pending=true;try{const request=video.play();Promise.resolve(request).catch(()=>{}).finally(()=>{pending=false;if(!active()&&!video.paused)video.pause();});}catch{pending=false;}}
-  function sync(){if(retry!==null)clearTimeout(retry);retry=null;attempt();}
-  function recover(){if(active()){if(retry!==null)clearTimeout(retry);retry=setTimeout(()=>{retry=null;attempt();},180);}}
-  for(const event of ['loadeddata','canplay','canplaythrough'])video.addEventListener(event,attempt);
-  video.addEventListener('ended',()=>{if(active()){video.currentTime=0;attempt();}});
-  video.addEventListener('pause',recover);video.addEventListener('stalled',recover);
+  const video=box.querySelector('video');if(!video)return;let pending=false;
+  video.controls=false;video.removeAttribute('controls');video.muted=true;video.defaultMuted=true;video.loop=true;video.playsInline=true;video.autoplay=true;video.preload='auto';
+  function attempt(){if(pending||!video.paused&&!video.ended)return;pending=true;try{const request=video.play();Promise.resolve(request).catch(()=>{}).finally(()=>{pending=false;});}catch{pending=false;}}
+  for(const event of ['loadedmetadata','loadeddata','canplay','canplaythrough','pause','stalled'])video.addEventListener(event,attempt);
+  video.addEventListener('ended',()=>{video.currentTime=0;attempt();});
   // Browsers can deny autoplay. A normal page interaction retries without a player overlay.
   document.addEventListener('pointerdown',attempt,{passive:true});document.addEventListener('keydown',attempt);
-  window.addEventListener('focus',attempt);syncs.push(sync);sync();
-  if('IntersectionObserver'in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();},{threshold:0,rootMargin:'160px'}).observe(box);
-  setInterval(()=>{if(active()&&(video.paused||video.ended))attempt();},2500);
+  document.addEventListener('visibilitychange',attempt);window.addEventListener('pageshow',attempt);window.addEventListener('focus',attempt);
+  attempt();setInterval(attempt,1000);
  });
  const dialog=document.getElementById('screenshot-dialog');if(!dialog)return;
  const enlarged=document.getElementById('enlarged-screenshot'),caption=document.getElementById('screenshot-caption');let opener;
