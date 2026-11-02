@@ -33,6 +33,10 @@ jobs:
           python3 -m venv /tmp/dailwind-publishing
           /tmp/dailwind-publishing/bin/pip install --only-binary=:all: -r publishing/requirements.txt
           /tmp/dailwind-publishing/bin/python publishing/prepare_pages.py
+      - name: Check built site (metadata and internal links)
+        run: |
+          python3 publishing/tests/test_check_site.py
+          python3 publishing/check_site.py _site
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
