@@ -9,3 +9,34 @@
 .toolkit-motion-paused .toolkit-card .toolkit-symbol{animation-play-state:paused!important}
 @media(prefers-reduced-motion:reduce){.toolkit-card .toolkit-symbol,.toolkit-card.toolkit-in-view .toolkit-symbol{animation:none!important;transform:none!important}}
 .toolkit-card[data-toolkit=mat-cleaner] .toolkit-card-top{padding-top:0}
+/* ---- Toolkits polish: consistent grid rhythm, card anatomy and interaction states ---- */
+.finder-library .finder-group .toolkit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:stretch}
+.finder-library .finder-group>header{gap:14px;align-items:baseline;margin-bottom:20px}
+.finder-library .finder-group>header>span{min-width:22px;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.finder-library .finder-group .toolkit-card{padding:28px;border-radius:22px;gap:0;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.finder-library .finder-group .toolkit-card:is(:hover,:focus-within){transform:translateY(-3px);border-color:color-mix(in srgb,var(--tool-accent) 28%,#e6e8ed);box-shadow:0 14px 36px #1827440f}
+.finder-library .toolkit-card .toolkit-card-top{display:flex;align-items:center;gap:8px;min-height:52px;margin:0 0 18px}
+.finder-library .toolkit-card .toolkit-card-top>.toolkit-symbol{margin-right:auto!important}
+.finder-library .toolkit-card h3{margin:0 0 10px;line-height:1.2}
+.finder-library .toolkit-card .toolkit-task{margin:0 0 6px;line-height:1.5}
+.finder-library .toolkit-card .toolkit-task+p{margin:0 0 22px}
+.finder-library .toolkit-card .button{margin-top:auto;min-height:44px;padding:10px 20px;transition:filter .2s ease,box-shadow .2s ease}
+.finder-library .toolkit-card .button:hover{filter:brightness(1.08);text-decoration:none}
+.finder-library .toolkit-card .button:focus-visible{outline:2px solid var(--tool-accent);outline-offset:3px}
+.finder-library .toolkit-local{display:flex;align-items:center;gap:7px;margin-top:14px;min-height:18px;font-size:11px;line-height:1.4}
+.finder-library .toolkit-local.is-on-device:before{content:"";width:7px;height:7px;border-radius:50%;background:#34a853;box-shadow:0 0 0 3px #34a8531f;flex:0 0 7px}
+.toolkit-card[data-toolkit=mat-cleaner] .toolkit-paid-badge{position:static!important;margin:0;padding:6px 12px!important;font-size:11px!important}
+.toolkit-new-badge,.toolkit-last-badge{display:inline-flex;align-items:center;min-height:24px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.02em}
+.toolkit-new-badge{background:#fff;color:var(--tool-accent);border:1px solid color-mix(in srgb,var(--tool-accent) 30%,transparent)}
+.toolkit-last-badge{background:#1d1d1f;color:#fff}
+.toolkit-card.toolkit-last-used{border-color:color-mix(in srgb,var(--tool-accent) 40%,#e6e8ed)!important}
+.finder-categories button{display:inline-flex;align-items:center;gap:7px;min-height:42px;min-width:56px;justify-content:center;transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.finder-categories button:hover{border-color:#b5cce8}
+.finder-categories button:focus-visible{outline:2px solid #0066cc;outline-offset:2px}
+.finder-chip-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#eef2f6;color:#4b5a6a;font-size:11px;font-variant-numeric:tabular-nums}
+.finder-categories button[aria-pressed=true] .finder-chip-count{background:#ffffff33;color:#fff}
+.finder-resume{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 8px;margin:12px auto 0;font-size:13px;color:#62626b}
+.finder-resume a{font-weight:600;color:#0066cc}
+.finder-resume-clear{font:inherit;font-size:12px;border:0;background:none;color:#6e6e73;text-decoration:underline;cursor:pointer;min-height:32px;padding:0 4px}
+@media(max-width:760px){.finder-library .finder-group .toolkit-grid{grid-template-columns:1fr;gap:16px}.finder-library .finder-group .toolkit-card{padding:22px}}
+@media(prefers-reduced-motion:reduce){.finder-library .finder-group .toolkit-card,.finder-library .toolkit-card .button,.finder-categories button{transition:none}.finder-library .finder-group .toolkit-card:is(:hover,:focus-within){transform:none}}
