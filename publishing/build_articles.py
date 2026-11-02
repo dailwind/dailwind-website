@@ -94,6 +94,17 @@ def slug_for(path):
     slug=re.sub(r'[^a-z0-9]+','-',name).strip('-')[:90]
     return (slug or 'article')+'-'+hashlib.sha256(path.name.encode()).hexdigest()[:8]
 
+def page_title(meta):
+    # Search titles stay unique and close to 50-60 characters.
+    title=meta['title'];author=meta.get('author','');category=meta.get('category','')
+    options=[title+' by '+author+' | '+category+' | Dailwind Reading Room' if author and category else '',title+' | '+category+' | Dailwind Reading Room' if category else '',title+' | Dailwind Reading Room',title+' | Dailwind']
+    return next((o for o in options if o and len(o)<=62),title)
+
+def meta_description(meta,summary):
+    if len(summary)>=120:return summary
+    extra=(' By '+meta['author']+',' if meta.get('author') else '')+' free to read in the Dailwind Reading Room.'
+    return summary+extra if len(summary+extra)<=165 else summary
+
 def build(site,template):
     source=site/'articles/uploads';read=site/'articles/read';source.mkdir(parents=True,exist_ok=True)
     shell=template.read_text();entries=[];pages=[]
@@ -116,8 +127,9 @@ def build(site,template):
         if meta.get('editorial_note'):notices.append('<aside class="translation-note" aria-label="Editorial note"><p>'+escape(meta['editorial_note'])+'</p></aside>')
         body=''.join(notices)+body
         byline=' · '.join(filter(None,[escape(meta['author']),escape(meta['date']),{'md':'Online reading','txt':'Text','pdf':'PDF'}[meta['format']]]))
-        mapping={'__ARTICLE_TITLE__':escape(meta['title'],quote=True),'__ARTICLE_DESCRIPTION__':escape(meta['summary'] or ('A shared PDF document.' if meta['format']=='pdf' else 'An article from the Dailwind Studio reading room.'),quote=True),'__ARTICLE_CATEGORY__':escape(meta['category']),'__ARTICLE_BYLINE__':byline,'__ARTICLE_SLUG__':slug,'__ARTICLE_BODY__':body}
-        page=re.sub(r'__ARTICLE_(?:TITLE|DESCRIPTION|CATEGORY|BYLINE|SLUG|BODY)__',lambda m:mapping[m[0]],shell)
+        summary=meta['summary'] or ('A shared PDF document.' if meta['format']=='pdf' else 'An article from the Dailwind Studio reading room.')
+        mapping={'__ARTICLE_PAGE_TITLE__':escape(page_title(meta),quote=True),'__ARTICLE_META_DESCRIPTION__':escape(meta_description(meta,summary),quote=True),'__ARTICLE_TITLE__':escape(meta['title'],quote=True),'__ARTICLE_DESCRIPTION__':escape(meta['summary'] or ('A shared PDF document.' if meta['format']=='pdf' else 'An article from the Dailwind Studio reading room.'),quote=True),'__ARTICLE_CATEGORY__':escape(meta['category']),'__ARTICLE_BYLINE__':byline,'__ARTICLE_SLUG__':slug,'__ARTICLE_BODY__':body}
+        page=re.sub(r'__ARTICLE_(?:PAGE_TITLE|META_DESCRIPTION|TITLE|DESCRIPTION|CATEGORY|BYLINE|SLUG|BODY)__',lambda m:mapping[m[0]],shell)
         pages.append((slug+'.html',page));entries.append(meta)
     entries.sort(key=lambda e:(e['date'],e['title'].casefold()),reverse=True)
     # Commit generated files only once every input has validated.
@@ -143,6 +155,7 @@ def build(site,template):
             if '/articles/read/' in loc.text:root.remove(node)
         for entry in entries:
             node=ET.SubElement(root,'{'+ns['m']+'}url');ET.SubElement(node,'{'+ns['m']+'}loc').text=(base or 'https://dailwind.com')+'/articles/'+entry['url']
+            if re.fullmatch(r'\d{4}-\d{2}-\d{2}',entry.get('date') or ''):ET.SubElement(node,'{'+ns['m']+'}lastmod').text=entry['date']
         tree.write(sitemap,encoding='unicode',xml_declaration=True)
     print(f'Articles built: {len(entries)}; no manual catalog editing required.')
     return entries

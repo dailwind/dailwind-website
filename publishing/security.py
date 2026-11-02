@@ -49,6 +49,9 @@ def harden_html(text,path,root,social=None):
     text=re.sub(r'<meta\b[^>]*http-equiv=["\']Content-Security-Policy["\'][^>]*>','',text,flags=re.I)
     text=re.sub(r'<meta\b[^>]*name=["\']referrer["\'][^>]*>','',text,flags=re.I)
     text=re.sub(r'<head\b[^>]*>',lambda m:m[0]+'<meta http-equiv="Content-Security-Policy" content="'+policy+'"><meta name="referrer" content="strict-origin-when-cross-origin">',text,count=1,flags=re.I)
+    # The character encoding must be the first element in <head>.
+    text=re.sub(r'<meta\b[^>]*\bcharset=["\']?[\w-]+["\']?[^>]*>','',text,flags=re.I)
+    text=re.sub(r'<head\b[^>]*>',lambda m:m[0]+'<meta charset="utf-8">',text,count=1,flags=re.I)
     def script(m):
         tag=m[0];src=re.search(r'\bsrc="([^"]+)"',tag)
         if not src:return tag

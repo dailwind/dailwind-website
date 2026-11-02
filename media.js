@@ -1,11 +1,15 @@
 'use strict';
 (()=>{
  // Decorative media is silent. The only motion control lives in the page footer.
- let motionPaused=false;
+ // Visitors who ask for reduced motion start with automatic media paused.
+ const reduce=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null;
+ let motionPaused=!!(reduce&&reduce.matches);
  const syncs=[];
  const allowed=()=>!motionPaused&&!document.hidden;
  function syncAll(){syncs.forEach(sync=>sync());}
- document.querySelectorAll('[data-motion-toggle]').forEach(button=>button.addEventListener('click',()=>{motionPaused=!motionPaused;document.querySelectorAll('[data-motion-toggle]').forEach(b=>{b.textContent=motionPaused?'Resume automatic media':'Pause automatic media';b.setAttribute('aria-pressed',String(motionPaused));});syncAll();}));
+ function label(){document.querySelectorAll('[data-motion-toggle]').forEach(b=>{b.textContent=motionPaused?'Resume automatic media':'Pause automatic media';b.setAttribute('aria-pressed',String(motionPaused));});}
+ document.querySelectorAll('[data-motion-toggle]').forEach(button=>button.addEventListener('click',()=>{motionPaused=!motionPaused;label();syncAll();}));
+ label();
  document.addEventListener('visibilitychange',syncAll);
  window.addEventListener('pageshow',syncAll);
  document.querySelectorAll('[data-phone-showcase]').forEach(box=>{
@@ -21,7 +25,7 @@
  });
  document.querySelectorAll('[data-autoplay-player]').forEach(box=>{
   const video=box.querySelector('video');if(!video)return;let visible=true,pending=false,retry=null;
-  video.controls=false;video.removeAttribute('controls');video.muted=true;video.defaultMuted=true;video.loop=true;video.playsInline=true;video.autoplay=true;
+  video.controls=false;video.removeAttribute('controls');video.muted=true;video.defaultMuted=true;video.loop=true;video.playsInline=true;video.autoplay=false;video.preload='metadata';
   const active=()=>allowed()&&visible;
   function attempt(){if(!active()){if(!video.paused)video.pause();return;}if(pending||!video.paused&&!video.ended)return;pending=true;try{const request=video.play();Promise.resolve(request).catch(()=>{}).finally(()=>{pending=false;if(!active()&&!video.paused)video.pause();});}catch{pending=false;}}
   function sync(){if(retry!==null)clearTimeout(retry);retry=null;attempt();}
