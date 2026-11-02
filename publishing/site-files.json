@@ -42,5 +42,9 @@
   "syntax-explorer",
   "terms.html",
   "toolkit",
-  "toolkits"
+  "toolkits",
+  "readability-studio",
+  "stylometry-lab",
+  "parallel-aligner",
+  "qualitative-coder"
 ]

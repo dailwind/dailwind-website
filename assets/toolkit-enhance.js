@@ -4,7 +4,7 @@
 (()=>{
  const grid=document.querySelector('.finder-library');if(!grid)return;
  const cards=[...document.querySelectorAll('.toolkit-card[data-toolkit]')];if(!cards.length)return;
- const KEY='dailwind:lastToolkit',NEW=new Set(['lexical-metrics','morphology-explorer','syntax-explorer','sentiment-studio','register-profile','forensic-compare']);
+ const KEY='dailwind:lastToolkit',NEW=new Set(['lexical-metrics','morphology-explorer','syntax-explorer','sentiment-studio','register-profile','forensic-compare','readability-studio','stylometry-lab','parallel-aligner','qualitative-coder']);
  const store={get(){try{return JSON.parse(localStorage.getItem(KEY)||'null');}catch{return null;}},set(v){try{localStorage.setItem(KEY,JSON.stringify(v));}catch{}}};
  const nameOf=c=>(c.querySelector('h3')?.textContent||'').trim();
  // 1. Counts on the category chips.
