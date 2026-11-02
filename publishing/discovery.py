@@ -74,8 +74,11 @@ def apply_discovery(root):
   m=page_metadata(text,route)
   if route.endswith('/coverage.html') and primary not in PAGES:m['description']='Read the documented feature coverage, methods and practical limits of the Dailwind browser corpus analysis toolkit.'
   text=setmeta(text,'description',m['description'])
-  private=route in {'pmc/account/index.html','manage/index.html','404.html','assets/linguax/preview.html'};alias=primary!=route
-  text=setmeta(text,'robots','noindex, follow' if private or alias else 'index, follow, max-image-preview:large')
+  # Each page's own robots meta tag is the single source of truth; the build never rewrites it.
+  robots=re.search(r'<meta\b[^>]*name="robots"[^>]*content="([^"]*)"',text,re.I)
+  if not robots:raise ValueError('Missing <meta name="robots"> in '+route)
+  private='noindex' in robots[1].lower();alias=primary!=route
+  if alias and not private:raise ValueError('Alias/redirect page must be noindex: '+route)
   if not private and not alias:urls.add((m['url'],lastmod(root,route,catalog.get(path.stem) if route.startswith('articles/read/') else None)))
   if primary=='articles/index.html':name='Reading Room'
   elif primary=='pmc/index.html':name='Pakistan Medical Corpus (PMC)'
