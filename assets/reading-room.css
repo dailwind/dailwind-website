@@ -67,3 +67,9 @@ body.reading-greek{--greek-paper:#f6f1e7;--greek-ink:#292d29;--greek-muted:#6865
 .reading-greek .footer{border-top:3px double #d8c49a}
 @media(max-width:650px){.reading-greek .submission-note{padding:66px 18px 34px}}
 @media(prefers-reduced-motion:reduce){.reading-greek .submission-note,.reading-greek .submission-note a.underlink,.reading-greek .footer-bottom>div>a,.reading-greek .footer-bottom>div>button{transition:none}.reading-greek .submission-note a.underlink:hover,.reading-greek .submission-note a.underlink:focus-visible,.reading-greek .footer-bottom>div>a:hover,.reading-greek .footer-bottom>div>button:hover,.reading-greek .footer-bottom>div>a:focus-visible,.reading-greek .footer-bottom>div>button:focus-visible{transform:none}}
+
+.reading-greek .poem-body{text-align:center;font-family:"Cormorant Garamond","EB Garamond",Garamond,Georgia,"Times New Roman",serif;margin:34px auto 10px;max-width:620px}
+.reading-greek .poem-body blockquote{border:0;background:none;padding:0;margin:0 0 26px;font-style:normal;color:#3f3424}
+.reading-greek .poem-body blockquote p{font-size:clamp(1.12rem,1rem + .5vw,1.36rem);line-height:1.85;letter-spacing:.01em}
+.reading-greek .poem-body blockquote:first-child::before,.reading-greek .poem-body blockquote:last-child::before{content:"";display:block;width:120px;height:9px;margin:0 auto 26px;background:repeating-linear-gradient(90deg,#b69a69 0 2px,transparent 2px 7px);opacity:.75}
+.reading-greek .poem-body blockquote:last-child p{font-style:italic;color:#8a6d3b;font-size:1.25rem}

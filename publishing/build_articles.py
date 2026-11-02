@@ -125,6 +125,7 @@ def build(site,template):
             if meta.get('original_author'):original+='<p>Original byline: <bdi lang="ur" dir="rtl">'+escape(meta['original_author'])+'</bdi></p>'
             notices.append('<aside class="translation-note" aria-label="Translation details"><p>'+escape(meta['translation_note'])+'</p>'+original+'</aside>')
         if meta.get('editorial_note'):notices.append('<aside class="translation-note" aria-label="Editorial note"><p>'+escape(meta['editorial_note'])+'</p></aside>')
+        if meta['category'].casefold() in {'poetry','poem','poems'}:body='<div class="poem-body">'+body+'</div>'
         body=''.join(notices)+body
         byline=' · '.join(filter(None,[escape(meta['author']),escape(meta['date']),{'md':'Online reading','txt':'Text','pdf':'PDF'}[meta['format']]]))
         summary=meta['summary'] or ('A shared PDF document.' if meta['format']=='pdf' else 'An article from the Dailwind Studio reading room.')
