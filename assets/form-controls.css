@@ -34,3 +34,16 @@ html body .arc-brand img{width:.79em!important;height:.79em!important;flex:0 0 .
 @media(max-width:760px){select,body select,body.dailwind-workspace select{appearance:none!important;display:block!important;width:100%;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.4;padding:12px 40px 12px 12px!important;border-radius:13px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2350647d' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:16px!important}select::picker(select){appearance:auto!important}.dailwind-workspace button{max-width:100%;white-space:normal;overflow-wrap:anywhere}.pmc-output-actions{min-width:0;flex-wrap:wrap}}
 /* Match the enhanced-picker selectors so their desktop rules cannot win on phones. */
 @media(max-width:760px){html body select:not([multiple]):not([size]),html body.dailwind-workspace select:not([multiple]):not([size]){appearance:none!important;display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;overflow-wrap:normal!important;background-image:var(--dw-select-chevron)!important;background-position:right 12px center!important;padding-inline-start:12px!important;padding-inline-end:40px!important;min-height:46px}html body select:not([multiple]):not([size])::picker-icon{display:none!important}html body select option{white-space:nowrap!important}}
+/* Themed popover that replaces the OS select picker on touch and narrow screens (assets/mobile-select.js). */
+.dw-select-pop{position:fixed;z-index:2147483000;box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:6px;margin:0;background:#fff;color:var(--dw-pop-ink,#1d1d1f);border:1px solid #d5d9e1;border-radius:12px;box-shadow:0 1px 2px #15243b0d,0 14px 36px #15243b24;font-size:15px;line-height:1.35;color-scheme:light;outline:none;animation:dw-pop-in .14s ease-out}
+.dw-select-pop.is-static{animation:none}
+@keyframes dw-pop-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.dw-select-option{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:10px 12px;border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.dw-select-option.in-group{padding-inline-start:22px}
+.dw-select-option.is-active{background:#f1f5fb}
+.dw-select-option[aria-selected="true"]{font-weight:600;color:#0066cc}
+.dw-select-option[aria-disabled="true"]{color:#8a8f99;cursor:not-allowed}
+.dw-select-check{flex:0 0 auto;width:16px;text-align:center;color:#0066cc}
+.dw-select-group{padding:10px 12px 4px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6e6e73}
+.dw-select-pop:focus-visible .dw-select-option.is-active{outline:2px solid #0071e3;outline-offset:-2px}
+@media(prefers-reduced-motion:reduce){.dw-select-pop{animation:none}}

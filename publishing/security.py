@@ -46,6 +46,11 @@ def harden_html(text,path,root,social=None):
     text=re.sub(r'<script\b[^>]*data-auth-return[^>]*></script>','',text,flags=re.I)
     bridge=posixpath.relpath('assets/auth-return.js',posixpath.dirname(route) or '.')
     text=text.replace('<head>','<head><script data-auth-return src="'+bridge+'"></script>',1)
+    # Themed select popover for touch and narrow screens; desktop keeps the native control.
+    text=re.sub(r'<script\b[^>]*data-dailwind-select[^>]*></script>','',text,flags=re.I)
+    picker=posixpath.relpath('assets/mobile-select.js',posixpath.dirname(route) or '.')
+    if re.search(r'<select\b',text,flags=re.I) or re.search(r'<script\b[^>]*\bsrc=',text,flags=re.I):
+        text=text.replace('</head>','<script data-dailwind-select defer src="'+picker+'"></script></head>',1)
     text=re.sub(r'<meta\b[^>]*http-equiv=["\']Content-Security-Policy["\'][^>]*>','',text,flags=re.I)
     text=re.sub(r'<meta\b[^>]*name=["\']referrer["\'][^>]*>','',text,flags=re.I)
     text=re.sub(r'<head\b[^>]*>',lambda m:m[0]+'<meta http-equiv="Content-Security-Policy" content="'+policy+'"><meta name="referrer" content="strict-origin-when-cross-origin">',text,count=1,flags=re.I)
