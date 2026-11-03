@@ -7,7 +7,7 @@ from social import prepare_social
 from discovery import apply_discovery
 from html import escape,unescape
 
-POLICY="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; worker-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+POLICY="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; worker-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests"
 
 def harden_html(text,path,root,social=None):
     # Keep optional consent-based analytics on studio pages, never on text-processing desks.
@@ -45,7 +45,9 @@ def harden_html(text,path,root,social=None):
     # A tiny synchronous bridge handles legacy email links returning to Home.
     text=re.sub(r'<script\b[^>]*data-auth-return[^>]*></script>','',text,flags=re.I)
     bridge=posixpath.relpath('assets/auth-return.js',posixpath.dirname(route) or '.')
-    text=text.replace('<head>','<head><script data-auth-return src="'+bridge+'"></script>',1)
+    text=re.sub(r'<script\b[^>]*data-frame-guard[^>]*></script>','',text,flags=re.I)
+    guard=posixpath.relpath('assets/frame-guard.js',posixpath.dirname(route) or '.')
+    text=text.replace('<head>','<head><script data-frame-guard src="'+guard+'"></script><script data-auth-return src="'+bridge+'"></script>',1)
     # Themed select popover for touch and narrow screens; desktop keeps the native control.
     text=re.sub(r'<script\b[^>]*data-dailwind-select[^>]*></script>','',text,flags=re.I)
     picker=posixpath.relpath('assets/mobile-select.js',posixpath.dirname(route) or '.')
