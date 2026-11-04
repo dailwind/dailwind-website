@@ -33,10 +33,10 @@ const SPECS=[
  {id:'schengen',name:'Schengen / EU visa & passports',w:35,h:45,head:[32,36],bg:'#f2f2f2',src:'france-visas.gouv.fr (ICAO / ISO 19794-5)',url:'https://www.france-visas.gouv.fr/documents/d/france-visas/iso_iec_fv_visa_photograph_requirements_en'},
  {id:'cn',name:'China visa',w:33,h:48,head:[28,33],bg:'#ffffff',src:'visaforchina.cn',url:'https://www.visaforchina.cn/SYD4_EN/qianzhengyewu/jichuzhishi/changjianwenti/552371235904950309.html'},
  {id:'ca',name:'Canada passport',w:50,h:70,head:[31,36],bg:'#ffffff',src:'canada.ca',url:'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html'},
- {id:'in-visa',name:'India visa (2x2 in)',w:50.8,h:50.8,head:[25,35],bg:'#ffffff',src:'indianvisaonline.gov.in',url:'https://indianvisaonline.gov.in/visa/instruction.html'},
+ {id:'in-visa',name:'India visa',w:50.8,h:50.8,head:[25,35],bg:'#ffffff',src:'indianvisaonline.gov.in',url:'https://indianvisaonline.gov.in/visa/instruction.html'},
  {id:'in-pp',name:'India passport (630 × 810 px, face 80–85%)',w:35,h:45,head:[36,38],bg:'#ffffff',src:'Embassy of India (Passport Seva ICAO guidelines, 2025)',url:'https://www.eoivienna.gov.in/public_files/assets/pdf/Guidelines_29_08_2025.pdf'},
  {id:'pk',name:'Pakistan passport',w:35,h:45,head:[32,36],bg:'#ffffff',src:'onlinemrp.dgip.gov.pk (size; head range per ICAO)',url:'https://onlinemrp.dgip.gov.pk/photo-requirements/'},
- {id:'sa',name:'Saudi Arabia visa (2x2 in)',w:50.8,h:50.8,head:[36,41],bg:'#ffffff',src:'Saudi embassy / visa.visitsaudi.com (face 70–80%)',url:'https://www.saudiembassy.net/guideline-accepted-photographs-saudi-visas'},
+ {id:'sa',name:'Saudi Arabia visa',w:50.8,h:50.8,head:[36,41],bg:'#ffffff',src:'Saudi embassy / visa.visitsaudi.com (face 70–80%)',url:'https://www.saudiembassy.net/guideline-accepted-photographs-saudi-visas'},
  {id:'ae',name:'United Arab Emirates visa',w:43,h:55,head:[32,36],bg:'#ffffff',src:'icp.gov.ae (ICAO guidelines)',url:'https://icp.gov.ae/wp-content/uploads/2021/11/ICA-photography-Visa-guidelines-.pdf'},
  {id:'au',name:'Australia passport',w:35,h:45,head:[32,36],bg:'#ffffff',src:'passports.gov.au',url:'https://www.passports.gov.au/passports-explained/how-apply/passport-photo-guidelines'},
  {id:'jp',name:'Japan passport',w:35,h:45,head:[32,36],bg:'#ffffff',src:'mofa.go.jp (34 ± 2 mm)',url:'https://www.mofa.go.jp/mofaj/toko/passport/ic_photo.html'}];
