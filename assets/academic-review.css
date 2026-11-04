@@ -40,3 +40,9 @@
 .finder-resume-clear{font:inherit;font-size:12px;border:0;background:none;color:#6e6e73;text-decoration:underline;cursor:pointer;min-height:32px;padding:0 4px}
 @media(max-width:760px){.finder-library .finder-group .toolkit-grid{grid-template-columns:1fr;gap:16px}.finder-library .finder-group .toolkit-card{padding:22px}}
 @media(prefers-reduced-motion:reduce){.finder-library .finder-group .toolkit-card,.finder-library .toolkit-card .button,.finder-categories button{transition:none}.finder-library .finder-group .toolkit-card:is(:hover,:focus-within){transform:none}}
+.finder-recent{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 8px;margin:12px auto 0;max-width:900px;font-size:13px;color:#62626b}
+.finder-recent-label{font-weight:600;color:#1d1d1f;margin-right:2px}
+.finder-recent-chip{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid #d9e0ea;background:#fff;color:#1d1d1f;text-decoration:none;font-weight:500}
+.finder-recent-chip:hover,.finder-recent-chip:focus-visible{border-color:#0071e3;color:#0066cc}
+.finder-kbd{display:inline-block;min-width:1.6em;padding:0 5px;border:1px solid #d2d2d7;border-bottom-width:2px;border-radius:5px;font:600 11px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:#1d1d1f;background:#fff;text-align:center}
+@media(hover:none){.finder-keys{display:none}}
