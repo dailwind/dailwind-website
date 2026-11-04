@@ -17,6 +17,9 @@ def harden_html(text,path,root,social=None):
     route=path.relative_to(root).as_posix()
     if route in {'pmc/index.html','pmc/account/index.html','manage/index.html','mat-cleaner/index.html'}:
         policy=policy.replace("connect-src 'self'", "connect-src 'self' https://kotxgvwbffengeuvaoca.supabase.co")
+    if route=='citation-generator/index.html':
+        # DOI lookup only: the public Crossref REST API, nothing else.
+        policy=policy.replace("connect-src 'self'", "connect-src 'self' https://api.crossref.org")
     if route=='mat-cleaner/index.html':
         policy=policy.replace("script-src 'self'", "script-src 'self' blob:").replace("worker-src 'self'", "worker-src 'self' blob:")
     hashes=['\'sha256-'+base64.b64encode(hashlib.sha256(code.encode()).digest()).decode()+'\'' for code in re.findall(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>',text,re.S)]
