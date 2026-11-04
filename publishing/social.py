@@ -40,19 +40,11 @@ def wrap(draw, text, f, width):
         else: current=trial
     return lines+([current] if current else [])
 
-def wordmark(draw, x, y, size):
-    """Text logo: bold DAILWIND, regular STUDIO, tracked, with a blue accent dot."""
-    track=size*0.08
-    for word,bold in (('DAILWIND',True),(' STUDIO',False)):
-        f=font(size,bold)
-        for ch in word:
-            draw.text((x,y),ch,font=f,fill='#1d1d1f'); x+=draw.textlength(ch,font=f)+track
-    r=size*0.12; cy=y+size*0.8
-    draw.ellipse((x+size*0.05,cy-r,x+size*0.05+2*r,cy+r),fill='#0066cc')
-
 def card(path, logo, meta):
     image=Image.new('RGB',(1200,630),'white'); draw=ImageDraw.Draw(image)
-    wordmark(draw,80,78,30)
+    mark=logo.copy(); mark.thumbnail((78,78),Image.Resampling.LANCZOS)
+    image.paste(mark,(80+(78-mark.width)//2,57+(78-mark.height)//2),mark)
+    draw.text((183,80),'DAILWIND STUDIO',font=font(23,True),fill='#42424a')
     draw.line((80,169,1120,169),fill='#e5e5ea',width=2)
     size=57
     while size>30:
@@ -70,8 +62,9 @@ def card(path, logo, meta):
     image.save(path,optimize=True)
 
 def prepare_social(root):
-    root=Path(root); output=root/'assets/social-v870'; output.mkdir(parents=True,exist_ok=True)
-    logo=None
+    root=Path(root); output=root/'assets/social-v871'; output.mkdir(parents=True,exist_ok=True)
+    with Image.open(root/'assets/dailwind-logo-v866.webp') as source:
+        rgba=source.convert('RGBA'); logo=rgba.crop(rgba.getbbox())
     result={}
     pages={}
     for path in sorted(root.rglob('*.html')):
@@ -84,6 +77,6 @@ def prepare_social(root):
         digest=hashlib.sha256((meta['title']+'\n'+meta['description']).encode()).hexdigest()[:16]
         filename='share-'+digest+'.png'; target=output/filename
         if not target.exists(): card(target,logo,meta)
-        meta['image']='https://dailwind.com/assets/social-v870/'+filename
+        meta['image']='https://dailwind.com/assets/social-v871/'+filename
         result[route]=meta
     return result

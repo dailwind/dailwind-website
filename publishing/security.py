@@ -22,8 +22,8 @@ def harden_html(text,path,root,social=None):
     hashes=['\'sha256-'+base64.b64encode(hashlib.sha256(code.encode()).digest()).decode()+'\'' for code in re.findall(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>',text,re.S)]
     if hashes:policy=policy.replace("script-src 'self'","script-src 'self' "+' '.join(hashes))
     # Keep the supplied studio mark consistent in headers, footers and launchers.
-    # The studio mark is a text wordmark; drop any legacy logo image that slips back in.
-    text=re.sub(r'<img\b[^>]*class="brand-logo"[^>]*>','',text,flags=re.I)
+    # Keep the supplied studio mark consistent in headers, footers and launchers.
+    text=text.replace('dailwind-logo-v861.webp','dailwind-logo-v871.webp').replace('dailwind-logo-v866.webp','dailwind-logo-v871.webp')
     # Every shared route uses the supplied Dailwind logo on a white card.
     # This is static HTML: crawlers do not have to run JavaScript.
     canonical=re.search(r'<link\b[^>]*rel="canonical"[^>]*href="([^"]+)"',text,re.I)
@@ -32,11 +32,11 @@ def harden_html(text,path,root,social=None):
         parsed=urlsplit(unescape(canonical[1]))
         if parsed.scheme=='https' and parsed.netloc:origin='https://'+parsed.netloc
     text=re.sub(r'<meta\b[^>]*(?:property|name)="(?:og:[a-z_:]+|twitter:[a-z_:]+)"[^>]*>','',text,flags=re.I)
-    preview=social['image'] if social else origin+'/assets/dailwind-share-v870.png'
+    preview=social['image'] if social else origin+'/assets/dailwind-share-v866.png'
     text=re.sub(r'<link\b[^>]*rel="(?:icon|shortcut icon|apple-touch-icon)"[^>]*>','',text,flags=re.I)
     prefix=posixpath.relpath('assets',posixpath.dirname(route) or '.')+'/'
-    text=text.replace('</head>','<link rel="icon" type="image/svg+xml" href="'+prefix+'favicon-v870.svg"><link rel="icon" type="image/png" sizes="64x64" href="'+prefix+'favicon-v870.png"><link rel="apple-touch-icon" sizes="180x180" href="'+prefix+'apple-touch-icon-v870.png"></head>',1)
-    fields={'og:image':preview,'og:image:secure_url':preview,'og:image:width':'1200','og:image:height':'630','og:image:type':'image/png','og:image:alt':'Dailwind Studio wordmark and '+(social['title'] if social else 'research tools')+' on a white background','og:site_name':'Dailwind Studio','og:type':social['type'] if social else 'website'}
+    text=text.replace('</head>','<link rel="icon" type="image/png" sizes="64x64" href="'+prefix+'favicon-v866.png"><link rel="apple-touch-icon" sizes="180x180" href="'+prefix+'apple-touch-icon-v866.png"></head>',1)
+    fields={'og:image':preview,'og:image:secure_url':preview,'og:image:width':'1200','og:image:height':'630','og:image:type':'image/png','og:image:alt':'Dailwind Studio logo and '+(social['title'] if social else 'research tools')+' on a white background','og:site_name':'Dailwind Studio','og:type':social['type'] if social else 'website'}
     if social:fields.update({'og:title':social['title'],'og:description':social['description'],'og:url':social['url']})
     tags=''.join('<meta property="'+key+'" content="'+escape(value,quote=True)+'">' for key,value in fields.items())
     twitter={'card':'summary_large_image','image':preview,'image:alt':fields['og:image:alt']}

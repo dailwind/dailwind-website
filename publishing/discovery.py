@@ -88,7 +88,7 @@ def apply_discovery(root):
   elif primary=='pmc/index.html':name='Pakistan Medical Corpus (PMC)'
   elif primary=='index.html':name='Dailwind Studio'
   else:name=m['title'].split(' | ')[0]
-  org={'@type':'Organization','@id':ORIGIN+'/#organization','name':'Dailwind Studio','url':ORIGIN+'/','logo':ORIGIN+'/assets/apple-touch-icon-v870.png'}
+  org={'@type':'Organization','@id':ORIGIN+'/#organization','name':'Dailwind Studio','url':ORIGIN+'/','logo':ORIGIN+'/assets/dailwind-logo-v866.webp'}
   website={'@type':'WebSite','@id':ORIGIN+'/#website','name':'Dailwind Studio','url':ORIGIN+'/','publisher':{'@id':org['@id']}}
   page={'@type':'CollectionPage' if primary in {'articles/index.html','toolkits/index.html'} else 'WebPage','@id':m['url']+'#page','url':m['url'],'name':name,'description':m['description'],'isPartOf':{'@id':website['@id']},'inLanguage':'en'}
   graph=[org,website,page]
