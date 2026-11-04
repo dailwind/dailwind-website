@@ -22,30 +22,24 @@ const PRESETS=[['Instagram post','1080x1080'],['Instagram portrait','1080x1350']
 async function searchQuality(encode,target,{min=0.05,max=0.95,steps=8}={}){let lo=min,hi=max,best=null;const top=await encode(hi);if(top<=target)return{quality:hi,size:top,met:true};for(let i=0;i<steps;i++){const mid=(lo+hi)/2,s=await encode(mid);if(s<=target){best={quality:mid,size:s,met:true};lo=mid;}else hi=mid;}if(best)return best;const s=await encode(min);return{quality:min,size:s,met:s<=target};}
 /* Passport / visa specs. head = chin-to-crown height range in mm; eye = eye line from bottom edge range in mm (where specified).
    Sources (checked Nov 2026; always confirm with the issuing authority):
-   US: travel.state.gov/content/travel/en/passports/how-apply/photos.html — 2x2 in, head 1–1 3/8 in, eyes 1 1/8–1 3/8 in from bottom, digital ≥600x600.
-   UK: gov.uk/photos-for-passports — 35x45 mm, head 29–34 mm.
-   Schengen/EU: ICAO Doc 9303 & EU visa photo guidance — 35x45 mm, face 32–36 mm (70–80%).
-   China: visaforchina.cn photo requirements — 33x48 mm, head 28–33 mm, head width 15–22 mm.
-   Canada: canada.ca passport photo specifications — 50x70 mm, chin to crown 31–36 mm.
-   India: indianvisaonline.gov.in photo spec — 51x51 mm, head 25–35 mm; passportindia.gov.in — 35x45 mm.
-   Pakistan: dgip.gov.pk / NADRA ICAO guidance — 35x45 mm, face 32–36 mm.
-   Saudi Arabia: visa.mofa.gov.sa — 40x60 mm (4x6 cm), white background.
-   UAE: ICP / GDRFA visa photo guidance — 43x55 mm, white background.
-   Australia: passports.gov.au photo guidelines — 35x45 mm, head 32–36 mm.
-   Japan: mofa.go.jp passport photo standard — 35x45 mm, head 32–36 mm (34 ±2). */
+   Verified 2026-11-05 against official pages (URL on each spec, shown in the UI):
+   US 2x2 in, head 25-35 mm, eyes 28-35 mm from bottom; UK printed 35x45, head 29-34; Schengen 35x45, 32-36 (ICAO);
+   China 33x48, 28-33; Canada 50x70, 31-36; India visa 2x2 in, 25-35; India passport 630x810 px, face 80-85%;
+   Pakistan 35x45 (DGIP gives no head range: ICAO 32-36 used); Saudi 2x2 in, face 70-80%; UAE 43x55 (ICP ICAO guide);
+   Australia 35-40 x 45-50, head 32-36; Japan 35x45, head 34 +/- 2 mm. */
 const SPECS=[
- {id:'us',name:'United States passport / visa',w:50.8,h:50.8,head:[25.4,34.9],eye:[28.6,34.9],bg:'#ffffff',src:'travel.state.gov'},
- {id:'uk',name:'United Kingdom passport',w:35,h:45,head:[29,34],bg:'#f2f2f2',src:'gov.uk/photos-for-passports'},
- {id:'schengen',name:'Schengen / EU visa & passports',w:35,h:45,head:[32,36],bg:'#f2f2f2',src:'ICAO Doc 9303 / EU visa code guidance'},
- {id:'cn',name:'China visa',w:33,h:48,head:[28,33],bg:'#ffffff',src:'visaforchina.cn'},
- {id:'ca',name:'Canada passport',w:50,h:70,head:[31,36],bg:'#ffffff',src:'canada.ca'},
- {id:'in-visa',name:'India visa (2x2 in)',w:50.8,h:50.8,head:[25,35],bg:'#ffffff',src:'indianvisaonline.gov.in'},
- {id:'in-pp',name:'India passport',w:35,h:45,head:[32,36],bg:'#ffffff',src:'passportindia.gov.in'},
- {id:'pk',name:'Pakistan passport / visa',w:35,h:45,head:[32,36],bg:'#ffffff',src:'dgip.gov.pk (ICAO 9303)'},
- {id:'sa',name:'Saudi Arabia visa',w:40,h:60,head:[32,36],bg:'#ffffff',src:'visa.mofa.gov.sa'},
- {id:'ae',name:'United Arab Emirates visa',w:43,h:55,head:[32,36],bg:'#ffffff',src:'icp.gov.ae'},
- {id:'au',name:'Australia passport',w:35,h:45,head:[32,36],bg:'#ffffff',src:'passports.gov.au'},
- {id:'jp',name:'Japan passport',w:35,h:45,head:[32,36],bg:'#ffffff',src:'mofa.go.jp'}];
+ {id:'us',name:'United States passport / visa',w:50.8,h:50.8,head:[25.4,34.9],eye:[28.6,34.9],bg:'#ffffff',src:'travel.state.gov',url:'https://travel.state.gov/en/passports/apply/help/photos.html'},
+ {id:'uk',name:'United Kingdom passport (printed)',w:35,h:45,head:[29,34],bg:'#f2f2f2',src:'gov.uk',url:'https://www.gov.uk/photos-for-passports/photo-requirements'},
+ {id:'schengen',name:'Schengen / EU visa & passports',w:35,h:45,head:[32,36],bg:'#f2f2f2',src:'france-visas.gouv.fr (ICAO / ISO 19794-5)',url:'https://www.france-visas.gouv.fr/documents/d/france-visas/iso_iec_fv_visa_photograph_requirements_en'},
+ {id:'cn',name:'China visa',w:33,h:48,head:[28,33],bg:'#ffffff',src:'visaforchina.cn',url:'https://www.visaforchina.cn/SYD4_EN/qianzhengyewu/jichuzhishi/changjianwenti/552371235904950309.html'},
+ {id:'ca',name:'Canada passport',w:50,h:70,head:[31,36],bg:'#ffffff',src:'canada.ca',url:'https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html'},
+ {id:'in-visa',name:'India visa (2x2 in)',w:50.8,h:50.8,head:[25,35],bg:'#ffffff',src:'indianvisaonline.gov.in',url:'https://indianvisaonline.gov.in/visa/instruction.html'},
+ {id:'in-pp',name:'India passport (630 × 810 px, face 80–85%)',w:35,h:45,head:[36,38],bg:'#ffffff',src:'Embassy of India (Passport Seva ICAO guidelines, 2025)',url:'https://www.eoivienna.gov.in/public_files/assets/pdf/Guidelines_29_08_2025.pdf'},
+ {id:'pk',name:'Pakistan passport',w:35,h:45,head:[32,36],bg:'#ffffff',src:'onlinemrp.dgip.gov.pk (size; head range per ICAO)',url:'https://onlinemrp.dgip.gov.pk/photo-requirements/'},
+ {id:'sa',name:'Saudi Arabia visa (2x2 in)',w:50.8,h:50.8,head:[36,41],bg:'#ffffff',src:'Saudi embassy / visa.visitsaudi.com (face 70–80%)',url:'https://www.saudiembassy.net/guideline-accepted-photographs-saudi-visas'},
+ {id:'ae',name:'United Arab Emirates visa',w:43,h:55,head:[32,36],bg:'#ffffff',src:'icp.gov.ae (ICAO guidelines)',url:'https://icp.gov.ae/wp-content/uploads/2021/11/ICA-photography-Visa-guidelines-.pdf'},
+ {id:'au',name:'Australia passport',w:35,h:45,head:[32,36],bg:'#ffffff',src:'passports.gov.au',url:'https://www.passports.gov.au/passports-explained/how-apply/passport-photo-guidelines'},
+ {id:'jp',name:'Japan passport',w:35,h:45,head:[32,36],bg:'#ffffff',src:'mofa.go.jp (34 ± 2 mm)',url:'https://www.mofa.go.jp/mofaj/toko/passport/ic_photo.html'}];
 const mmToPx=(mm,dpi=300)=>Math.round(mm/25.4*dpi);
 /* Target layout in output pixels: crown line, chin line, eye band */
 function guides(spec,dpi=300){const W=mmToPx(spec.w,dpi),H=mmToPx(spec.h,dpi);const head=(spec.head[0]+spec.head[1])/2;const top=(spec.h-head)/2*0.62;/* slightly more space below chin than above crown */
