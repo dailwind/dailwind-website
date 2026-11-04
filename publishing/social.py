@@ -40,11 +40,28 @@ def wrap(draw, text, f, width):
         else: current=trial
     return lines+([current] if current else [])
 
-def card(path, logo, meta):
+# Logo lockup variants: (dominant bold line, secondary regular line).
+VARIANTS={'v1':('DAILWIND','APP STUDIO'),'v2':('APP STUDIO','DAILWIND')}
+
+def tracked(draw, xy, text, f, spacing, fill):
+    x,y=xy
+    for ch in text:
+        draw.text((x,y),ch,font=f,fill=fill); x+=draw.textlength(ch,font=f)+spacing
+    return x-spacing
+
+def lockup(draw, image, logo, variant='v1', x=80, y=57, height=78):
+    # Logo mark, then a stacked wordmark whose two lines fill the logo height (5:3 split, like the site header).
+    mark=logo.copy(); mark.thumbnail((height,height),Image.Resampling.LANCZOS)
+    image.paste(mark,(x+(height-mark.width)//2,y+(height-mark.height)//2),mark)
+    top,bottom=VARIANTS[variant]; tx=x+height+20
+    big=font(round(height*.53),True); small=font(round(height*.235))
+    bb=draw.textbbox((0,0),top,font=big); sb=draw.textbbox((0,0),bottom,font=small)
+    tracked(draw,(tx,y-bb[1]+round(height*.04)),top,big,round(height*.03),'#1d1d1f')
+    tracked(draw,(tx,y+height-sb[3]-round(height*.02)),bottom,small,round(height*.075),'#3a3a3f')
+
+def card(path, logo, meta, variant='v1'):
     image=Image.new('RGB',(1200,630),'white'); draw=ImageDraw.Draw(image)
-    mark=logo.copy(); mark.thumbnail((78,78),Image.Resampling.LANCZOS)
-    image.paste(mark,(80+(78-mark.width)//2,57+(78-mark.height)//2),mark)
-    draw.text((183,80),'DAILWIND STUDIO',font=font(23,True),fill='#42424a')
+    lockup(draw,image,logo,variant)
     draw.line((80,169,1120,169),fill='#e5e5ea',width=2)
     size=57
     while size>30:
@@ -62,7 +79,7 @@ def card(path, logo, meta):
     image.save(path,optimize=True)
 
 def prepare_social(root):
-    root=Path(root); output=root/'assets/social-v871'; output.mkdir(parents=True,exist_ok=True)
+    root=Path(root); output=root/'assets/social-v872'; output.mkdir(parents=True,exist_ok=True)
     with Image.open(root/'assets/dailwind-logo-v866.webp') as source:
         rgba=source.convert('RGBA'); logo=rgba.crop(rgba.getbbox())
     result={}
@@ -77,6 +94,6 @@ def prepare_social(root):
         digest=hashlib.sha256((meta['title']+'\n'+meta['description']).encode()).hexdigest()[:16]
         filename='share-'+digest+'.png'; target=output/filename
         if not target.exists(): card(target,logo,meta)
-        meta['image']='https://dailwind.com/assets/social-v871/'+filename
+        meta['image']='https://dailwind.com/assets/social-v872/'+filename
         result[route]=meta
     return result
