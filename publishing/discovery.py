@@ -9,6 +9,7 @@ from social import page_metadata
 PAGES={
  'index.html':('Dailwind Studio | Corpus Tools, PDF Utilities & LinguaX Arc','Explore browser-based corpus analysis, text cleaning, English OCR, PDF utilities and LinguaX Arc, the offline Android corpus toolkit.'),
  'toolkits/index.html':('Dailwind Research Toolkits | Corpus, Text, PDF & Image Tools','Find the right tool for corpus analysis, text cleaning, English OCR, PDF conversion, file merging and metadata reports. Most tools run on your device.'),
+ 'apps/index.html':('Dailwind App Store | Android Apps by Dailwind Studio','Browse Android apps from Dailwind Studio, including Owl File Saver and LinguaX Arc, plus apps coming soon.'),
  'corpus-toolkit/index.html':('Corpus Analysis Online | Dailwind Corpus Toolkit','Explore KWIC concordance, word frequencies, collocations, keyness and charts with your own texts. Analyze corpora locally in your browser.'),
  'corpus-cleaner/index.html':('Corpus Cleaner for Books, Theses & OCR Text | Dailwind','Clean books, theses, articles and damaged OCR text. Remove chosen words or phrases, review an audit and download copies. Files stay on your device.'),
  'stylistic-toolkit/index.html':('Stylistic Analysis Tool | Dailwind Stylistic Toolkit','Explore parallelism and possible deviation across eight linguistic levels. Inspect textual evidence and record your own close-reading interpretation.'),
@@ -90,7 +91,7 @@ def apply_discovery(root):
   else:name=m['title'].split(' | ')[0]
   org={'@type':'Organization','@id':ORIGIN+'/#organization','name':'Dailwind Studio','url':ORIGIN+'/','logo':ORIGIN+'/assets/dailwind-logo-v866.webp'}
   website={'@type':'WebSite','@id':ORIGIN+'/#website','name':'Dailwind Studio','url':ORIGIN+'/','publisher':{'@id':org['@id']}}
-  page={'@type':'CollectionPage' if primary in {'articles/index.html','toolkits/index.html'} else 'WebPage','@id':m['url']+'#page','url':m['url'],'name':name,'description':m['description'],'isPartOf':{'@id':website['@id']},'inLanguage':'en'}
+  page={'@type':'CollectionPage' if primary in {'articles/index.html','toolkits/index.html','apps/index.html'} else 'WebPage','@id':m['url']+'#page','url':m['url'],'name':name,'description':m['description'],'isPartOf':{'@id':website['@id']},'inLanguage':'en'}
   graph=[org,website,page]
   if route.split('/')[0] in TOOLS and route.endswith('/index.html'):
    page['mainEntity']={'@type':'SoftwareApplication','name':name,'applicationCategory':'EducationalApplication','operatingSystem':'Web browser','url':m['url'],'description':m['description'],'isAccessibleForFree':route!='mat-cleaner/index.html'}

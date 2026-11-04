@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Owl File Saver",
+    "status": "live",
+    "description": "Save and organise your files on Android.",
+    "icon": "assets/apps/owl-file-saver-icon-v1-256.webp",
+    "icon2x": "assets/apps/owl-file-saver-icon-v1-512.webp",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.dailwind.sendtostorage"
+  },
+  {
+    "name": "LinguaX Arc",
+    "status": "live",
+    "description": "An offline corpus toolkit for Android. Search in context, study patterns and keep your analysis on your device.",
+    "icon": "assets/linguax/app-icon.webp",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.aistudio.linguaxarc.lhvqkp",
+    "learnMoreUrl": "linguax-arc/"
+  },
+  {
+    "name": "Next app",
+    "status": "coming-soon",
+    "description": "A new Dailwind app is in development. Details will be shared here soon."
+  }
+]

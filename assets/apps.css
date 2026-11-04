@@ -1,0 +1,27 @@
+/* Dailwind App Store (/apps/) */
+.apps-hero{padding-top:clamp(48px,8vw,104px);padding-bottom:clamp(24px,4vw,40px)}
+.apps-hero h1{margin:0 0 16px}
+.apps-section{padding-bottom:clamp(40px,6vw,72px)}
+.apps-section>header{display:flex;align-items:baseline;gap:14px;margin-bottom:20px}
+.apps-section>header span{font-size:13px;font-weight:700;color:#6e6e73;letter-spacing:.06em}
+.apps-section>header h2{margin:0}
+.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px;align-items:stretch}
+.app-card{display:flex;flex-direction:column;gap:12px;padding:26px;border-radius:24px;background:#fff;border:1px solid rgba(0,0,0,.08);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.app-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px}
+.app-icon{width:72px;height:72px;border-radius:22%;object-fit:cover;border:1px solid rgba(0,0,0,.08);background:#eef6f1;display:flex;align-items:center;justify-content:center;font-weight:750;font-size:24px;color:#1d1d1f;flex:none}
+.app-card h3{margin:4px 0 0;font-size:22px;line-height:1.2}
+.app-card p{margin:0;color:#424245;line-height:1.5}
+.app-badge{font-size:12px;font-weight:700;letter-spacing:.03em;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.app-badge.live{background:#e7f4ea;color:#17602b}
+.app-badge.soon{background:#f1f1f4;color:#4a4a50}
+.app-actions{margin-top:auto;padding-top:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.play-button{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:8px 18px;border-radius:12px;background:#1d1d1f;color:#fff;text-decoration:none;font-weight:650;line-height:1.15}
+.play-button small{display:block;font-size:11px;font-weight:500;opacity:.85}
+.play-button:hover,.play-button:focus-visible{background:#000}
+.play-button:focus-visible,.app-link:focus-visible{outline:3px solid #0071e3;outline-offset:3px}
+.play-button svg{flex:none}
+.play-button[aria-disabled=true]{background:#e8e8ed;color:#6e6e73;cursor:not-allowed}
+.app-link{color:#0066cc;font-weight:600;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.app-link:hover{text-decoration:underline}
+.app-card.soon{background:#fafafc;border-style:dashed}
+@media (max-width:600px){.app-card{padding:22px}.app-icon{width:64px;height:64px}}
