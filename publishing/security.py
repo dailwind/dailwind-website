@@ -38,7 +38,7 @@ def harden_html(text,path,root,social=None):
     # Preload the self-hosted logo font so the Variant 1 lockup renders in its final face from the first frame.
     if 'brand-v1' in text:text=text.replace('</head>',''.join('<link rel="preload" href="'+prefix+'fonts/dailwind-logo-'+w+'.woff2" as="font" type="font/woff2" crossorigin>' for w in ('800','400'))+'</head>',1)
     text=text.replace('</head>','<link rel="icon" type="image/png" sizes="64x64" href="'+prefix+'favicon-v876.png"><link rel="apple-touch-icon" sizes="180x180" href="'+prefix+'apple-touch-icon-v876.png"></head>',1)
-    fields={'og:image':preview,'og:image:secure_url':preview,'og:image:width':'1200','og:image:height':'630','og:image:type':'image/png','og:image:alt':'Dailwind Studio logo and '+(social['title'] if social else 'research tools')+' on a white background','og:site_name':'Dailwind Studio','og:type':social['type'] if social else 'website'}
+    fields={'og:image':preview,'og:image:secure_url':preview,'og:image:width':'1200','og:image:height':'630','og:image:type':'image/png','og:image:alt':'Dailwind App Studio logo'+(' and '+social['title'] if social and social['title']!='Dailwind Studio' else '')+' on a white background','og:site_name':'Dailwind Studio','og:type':social['type'] if social else 'website'}
     if social:fields.update({'og:title':social['title'],'og:description':social['description'],'og:url':social['url']})
     tags=''.join('<meta property="'+key+'" content="'+escape(value,quote=True)+'">' for key,value in fields.items())
     twitter={'card':'summary_large_image','image':preview,'image:alt':fields['og:image:alt']}
