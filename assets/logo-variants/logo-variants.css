@@ -1,0 +1,19 @@
+/* Logo variant comparison page (noindex). */
+.lv{padding:56px 0 80px}.lv-intro{max-width:720px;margin:0 auto 44px;text-align:center}.lv-intro h1{font-size:clamp(34px,5vw,56px);letter-spacing:-.02em;margin:8px 0 12px;color:#1d1d1f}.lv-intro p{color:#55555c;font-size:17px;line-height:1.5}
+.lv-tag{font-size:12px;font-weight:600;letter-spacing:.14em;color:#6e6e73;margin:0}
+.lv-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}@media(max-width:900px){.lv-grid{grid-template-columns:1fr}}
+.lv-col{background:#fff;border-radius:22px;padding:28px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 28px rgba(0,0,0,.06)}
+.lv-col h2{font-size:28px;margin:6px 0 6px;color:#1d1d1f}.lv-desc{font-size:14px;color:#55555c;margin:0 0 18px;line-height:1.5}
+.lv-col h3{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#86868b;margin:22px 0 8px}
+.lv-frame{display:flex;align-items:center;gap:16px;min-height:72px;padding:0 22px;border-radius:14px;border:1px solid #e5e5ea;position:static!important;top:auto!important;box-shadow:none!important}
+.lv-header{background:rgba(245,245,247,.9)}.lv-footer{background:#f5f5f7;margin:0}.lv-phone{width:375px;max-width:100%;box-sizing:border-box;padding:0 18px}
+.lv-frame .brand{display:inline-flex!important;align-items:center!important;gap:10px!important;text-decoration:none}
+.lv-frame .brand-logo{display:block;width:auto!important;height:40px!important}
+.lv-frame .brand>.brand-stack{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;height:40px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1d1d1f;text-transform:uppercase;white-space:nowrap}
+.lv-phone .brand{gap:8px!important}.lv-phone .brand-logo{height:34px!important}.lv-phone .brand>.brand-stack{height:34px}.lv-phone .brand-stack .brand-word{height:21px;font-size:19.5px;line-height:21px}.lv-phone .brand-stack .brand-suffix{height:13px;font-size:9.5px;line-height:13px}
+/* Variant 2: APP STUDIO dominant; slightly smaller cap size so the longer word keeps the lockup compact, wider tracking on DAILWIND to align the right edges. */
+.lv-v2 .brand-stack .brand-word{font-size:21px;letter-spacing:.03em}.lv-v2 .brand-stack .brand-suffix{letter-spacing:.62em}
+.lv-v2 .lv-phone .brand-stack .brand-word{font-size:18px}.lv-v2 .lv-phone .brand-stack .brand-suffix{font-size:9.5px}
+.lv-icons{gap:20px;color:#6e6e73;font-size:13px}.lv-icons img{border-radius:8px}.lv-icons img+img{border-radius:14px}
+.lv-card{display:block;width:100%;height:auto;border-radius:14px;border:1px solid #e5e5ea}
+.lv-foot{text-align:center;margin-top:40px}
