@@ -5,9 +5,9 @@ sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
 import build_apps
 class AppsPage(unittest.TestCase):
     def test_up_to_date(self):
-        page,out=build_apps.build();self.assertEqual(out.read_text(),page,'run python3 publishing/build_apps.py')
+        for out,page in build_apps.build().items():self.assertEqual(out.read_text(),page,'run python3 publishing/build_apps.py')
     def test_markup(self):
-        page,_=build_apps.build()
+        page=build_apps.build()[build_apps.ROOT/'apps/index.html']
         self.assertNotRegex(page,r'<script(?![^>]*\bsrc=)[^>]*>(?!</script>)')
         self.assertNotIn(' style="',page.split('<main')[1])
         self.assertIn('aria-current="page">App Store</a>',page)

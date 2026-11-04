@@ -10,6 +10,7 @@ PAGES={
  'index.html':('Dailwind Studio | Corpus Tools, PDF Utilities & LinguaX Arc','Explore browser-based corpus analysis, text cleaning, English OCR, PDF utilities and LinguaX Arc, the offline Android corpus toolkit.'),
  'toolkits/index.html':('Dailwind Research Toolkits | Corpus, Text, PDF & Image Tools','Find the right tool for corpus analysis, text cleaning, English OCR, PDF conversion, file merging and metadata reports. Most tools run on your device.'),
  'apps/index.html':('Dailwind App Store | Android Apps by Dailwind Studio','Browse Android apps from Dailwind Studio, including Owl File Saver and LinguaX Arc, plus apps coming soon.'),
+ 'apps/owl-file-saver/index.html':('Owl File Saver for Android | Dailwind App Store','A private, offline file saver for Android. Save shared files in one tap, organise them and keep them on your device.'),
  'corpus-toolkit/index.html':('Corpus Analysis Online | Dailwind Corpus Toolkit','Explore KWIC concordance, word frequencies, collocations, keyness and charts with your own texts. Analyze corpora locally in your browser.'),
  'corpus-cleaner/index.html':('Corpus Cleaner for Books, Theses & OCR Text | Dailwind','Clean books, theses, articles and damaged OCR text. Remove chosen words or phrases, review an audit and download copies. Files stay on your device.'),
  'stylistic-toolkit/index.html':('Stylistic Analysis Tool | Dailwind Stylistic Toolkit','Explore parallelism and possible deviation across eight linguistic levels. Inspect textual evidence and record your own close-reading interpretation.'),

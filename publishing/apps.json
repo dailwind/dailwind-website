@@ -2,10 +2,25 @@
   {
     "name": "Owl File Saver",
     "status": "live",
-    "description": "Save and organise your files on Android.",
+    "description": "A private, offline file saver for Android. Save shared files in one tap, organise them and keep them on your device.",
     "icon": "assets/apps/owl-file-saver-icon-v1-256.webp",
     "icon2x": "assets/apps/owl-file-saver-icon-v1-512.webp",
-    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.dailwind.sendtostorage"
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=com.dailwind.sendtostorage",
+    "slug": "owl-file-saver",
+    "learnMoreUrl": "apps/owl-file-saver/",
+    "details": [
+      "Owl File Saver is a private, offline file saver, storage organiser and status vault for Android. Save, organise and safeguard shared files, photos, videos and statuses directly on your device, with no internet access required."
+    ],
+    "features": [
+      "One-tap save from the Android share sheet to the storage folder you choose.",
+      "Status saver for WhatsApp and WhatsApp Business, with a fullscreen viewer.",
+      "Built-in video player with touch controls and a mute toggle.",
+      "Day and dark themes, including an OLED-friendly dark mode.",
+      "App lock with a private offline 4-digit PIN.",
+      "History with filters (images, documents, media, archives) and search by filename or extension.",
+      "No internet permission, no analytics and no ads. Your files never leave your device."
+    ],
+    "detailsSource": "Google Play listing for com.dailwind.sendtostorage (read 2026-11-04)"
   },
   {
     "name": "LinguaX Arc",
