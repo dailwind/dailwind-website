@@ -24,3 +24,4 @@ Icons: convert to WebP, e.g. with Pillow, 256 and 512 px, versioned filename und
 
 Keep descriptions factual: copy facts from the app's Google Play listing; do not invent features.
 Cards animate in via `assets/apps-motion.js` + `assets/apps.css` (disabled for reduced motion).
+Layout check (needs Playwright): `python3 publishing/tests/test_apps_layout.py` after `prepare_pages.py`, or pass a base URL such as `https://dailwind.com/`.

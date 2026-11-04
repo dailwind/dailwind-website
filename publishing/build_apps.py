@@ -57,7 +57,7 @@ def card(a):
     actions=[x for x in actions if x]
     act='<div class="app-actions">'+''.join(actions)+'</div>' if actions else ''
     sub='<p class="app-category">'+e(a['category'])+'</p>' if a.get('category') else ''
-    return ('<article class="app-card'+(' soon' if soon else '')+'"><div class="app-card-head">'+icon_html(a,'../')+'<div class="app-title"><h3 class="app-name">'+e(a['name'])+'</h3>'+sub+'</div>'+badge(a)+'</div>'
+    return ('<article class="app-card'+(' soon' if soon else '')+'"><div class="app-card-head">'+icon_html(a,'../')+'<div class="app-title"><h3 class="app-name">'+e(a['name'])+'</h3>'+sub+badge(a)+'</div></div>'
             '<p class="app-desc">'+e(a['description'])+'</p>'+act+'</article>')
 
 def section(num,title,items,ident):
