@@ -9,6 +9,7 @@ The page `apps/index.html` is generated. Do not edit it by hand.
 Fields:
 - `name` (required) – app name.
 - `status` (required) – `live` (shown under "Available now") or `coming-soon` (shown under "Coming soon", with a Coming Soon label).
+- `category` (optional) – grey subtitle under the name, e.g. `Files & storage · Android`.
 - `description` (required) – one or two short sentences. Plain text.
 - `icon` (optional) – site path to a square image, e.g. `assets/apps/my-app-icon-v1-256.webp` (256 px). Without it, the card shows the app's initials.
 - `icon2x` (optional) – 512 px version for high-density screens.

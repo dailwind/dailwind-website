@@ -20,7 +20,8 @@
       "History with filters (images, documents, media, archives) and search by filename or extension.",
       "No internet permission, no analytics and no ads. Your files never leave your device."
     ],
-    "detailsSource": "Google Play listing for com.dailwind.sendtostorage (read 2026-11-04)"
+    "detailsSource": "Google Play listing for com.dailwind.sendtostorage (read 2026-11-04)",
+    "category": "Files & storage · Android"
   },
   {
     "name": "LinguaX Arc",
@@ -28,11 +29,13 @@
     "description": "An offline corpus toolkit for Android. Search in context, study patterns and keep your analysis on your device.",
     "icon": "assets/linguax/app-icon.webp",
     "playStoreUrl": "https://play.google.com/store/apps/details?id=com.aistudio.linguaxarc.lhvqkp",
-    "learnMoreUrl": "linguax-arc/"
+    "learnMoreUrl": "linguax-arc/",
+    "category": "Education · Android"
   },
   {
     "name": "Next app",
     "status": "coming-soon",
-    "description": "A new Dailwind app is in development. Details will be shared here soon."
+    "description": "A new Dailwind app is in development. Details will be shared here soon.",
+    "category": "In development"
   }
 ]

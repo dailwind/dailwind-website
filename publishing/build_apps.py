@@ -53,10 +53,12 @@ def play(a):
 def card(a):
     soon=a['status']=='coming-soon'
     actions=[play(a)]
-    if a.get('learnMoreUrl'):actions.append('<a class="app-link" href="../'+e(a['learnMoreUrl'])+'" aria-label="Learn more about '+e(a['name'])+'">Learn more →</a>')
+    if a.get('learnMoreUrl'):actions.append('<a class="app-link" href="../'+e(a['learnMoreUrl'])+'" aria-label="Learn more about '+e(a['name'])+'">Learn more <span aria-hidden="true">›</span></a>')
     actions=[x for x in actions if x]
     act='<div class="app-actions">'+''.join(actions)+'</div>' if actions else ''
-    return '<article class="app-card'+(' soon' if soon else '')+'"><div class="app-card-top">'+icon_html(a,'../')+badge(a)+'</div><h3>'+e(a['name'])+'</h3><p>'+e(a['description'])+'</p>'+act+'</article>'
+    sub='<p class="app-category">'+e(a['category'])+'</p>' if a.get('category') else ''
+    return ('<article class="app-card'+(' soon' if soon else '')+'"><div class="app-card-head">'+icon_html(a,'../')+'<div class="app-title"><h3 class="app-name">'+e(a['name'])+'</h3>'+sub+'</div>'+badge(a)+'</div>'
+            '<p class="app-desc">'+e(a['description'])+'</p>'+act+'</article>')
 
 def section(num,title,items,ident):
     return '<section class="wrap apps-section" aria-labelledby="'+ident+'"><header><span>'+num+'</span><h2 id="'+ident+'">'+title+'</h2></header><div class="app-grid">'+''.join(card(a) for a in items)+'</div></section>'
@@ -71,7 +73,7 @@ def shell_parts(shell,title,desc,url,up):
     head=re.sub(r'<script[^>]*src="\.\./assets/(toolkit-catalog|toolkit-finder|workspace-guide|toolkit-icon-motion|toolkit-enhance)\.js[^"]*"[^>]*></script>','',head)
     head=re.sub(r'<link rel="stylesheet" href="\.\./assets/workspace-guide\.css[^"]*">','',head)
     head+='<link rel="stylesheet" href="../assets/apps.css"><script src="../assets/apps-motion.js" defer></script>'
-    header=shell[shell.index('<body>'):shell.index('<main id="main">')].replace(' aria-current="page"','').replace('<a href="../apps/" >','<a href="../apps/" aria-current="page">')
+    header='<body class="apps-body">'+shell[shell.index('<body>')+6:shell.index('<main id="main">')].replace(' aria-current="page"','').replace('<a href="../apps/" >','<a href="../apps/" aria-current="page">')
     if 'aria-current="page"' not in header:raise ValueError('Navigation is missing the App Store link.')
     footer=shell[shell.index('</main>')+7:]
     if up!='../':
@@ -94,8 +96,8 @@ def render_detail(a,shell):
     body=''.join('<p>'+e(p)+'</p>' for p in a.get('details',[]))
     feats='<h2>Features</h2><ul class="app-features">'+''.join('<li>'+e(f)+'</li>' for f in a['features'])+'</ul>' if a.get('features') else ''
     main=('<main id="main" class="apps-page"><section class="wrap app-detail"><p class="eyebrow"><a class="app-link" href="../">← Back to App Store</a></p>'
-          '<article class="app-card app-detail-card"><div class="app-detail-head">'+icon_html(a,'../../',96,False)+'<div><h1>'+e(a['name'])+'</h1>'+badge(a)+'</div></div>'
-          '<p class="lede">'+e(a['description'])+'</p>'+body+feats+'<div class="app-actions">'+play(a)+'<a class="app-link" href="../">Back to App Store</a></div></article></section></main>')
+          '<article class="app-card app-detail-card"><div class="app-detail-head">'+icon_html(a,'../../',96,False)+'<div><h1 class="app-name">'+e(a['name'])+'</h1>'+('<p class="app-category">'+e(a['category'])+'</p>' if a.get('category') else '')+badge(a)+'</div></div>'
+          '<p class="lede app-desc">'+e(a['description'])+'</p>'+body+feats+'<div class="app-actions">'+play(a)+'<a class="app-link" href="../">Back to App Store</a></div></article></section></main>')
     return head+header+main+footer
 
 def build():
