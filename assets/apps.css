@@ -76,3 +76,6 @@ body.apps-body{background:#f5f5f7;min-height:100vh;--apps-accent:#0066cc}
 .apps-motion .app-detail-card.is-visible:hover{transform:none}
 @media (prefers-reduced-motion:reduce){.apps-motion .app-card,.apps-motion .apps-section>header,.apps-motion .apps-hero>*{opacity:1;transform:none;transition:none}.app-card,.app-icon,.play-button,.app-link span{transition:none!important}.app-card:hover,.apps-motion .app-card.is-visible:hover,.play-button:hover,.app-card:hover .app-icon,.app-link:hover span{transform:none!important}}
 @media (max-width:380px){.app-card{padding:20px}.app-card-head{gap:12px}.app-icon{width:64px;height:64px}.app-name{font-size:19px}}
+.app-video{margin:4px 0 6px;padding:0;border-radius:22px;overflow:hidden;background:#000;border:1px solid rgba(0,0,0,.08);box-shadow:0 12px 32px rgba(0,0,0,.12);aspect-ratio:16/9}
+.app-video video{display:block;width:100%;height:100%;object-fit:cover;background:#000}
+@media(max-width:650px){.app-video{border-radius:16px}}

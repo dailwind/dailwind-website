@@ -10,7 +10,7 @@ class AppsPage(unittest.TestCase):
         page=build_apps.build()[build_apps.ROOT/'apps/index.html']
         self.assertNotRegex(page,r'<script(?![^>]*\bsrc=)[^>]*>(?!</script>)')
         self.assertNotIn(' style="',page.split('<main')[1])
-        self.assertIn('aria-current="page">App Store</a>',page)
+        self.assertIn('aria-current="page">Apps</a>',page)
         for a in build_apps.load():
             self.assertIn(a['name'],page)
             if a.get('playStoreUrl'):self.assertIn(a['playStoreUrl'],page)
@@ -19,5 +19,11 @@ class AppsPage(unittest.TestCase):
         for p in list(root.rglob('*.html')):
             if '_site' in p.parts:continue
             s=p.read_text()
-            if '>Toolkits</a>' in s and 'Main navigation' in s:self.assertIn('>App Store</a>',s,str(p))
+            if '>Toolkits</a>' in s and 'Main navigation' in s:self.assertIn('>Apps</a>',s,str(p));self.assertNotIn('>App</a>',s,str(p));self.assertNotIn('>App Store</a>',s,str(p))
+    def test_owl_video(self):
+        page=build_apps.build()[build_apps.ROOT/'apps/owl-file-saver/index.html']
+        m=re.search(r'<video [^>]*>',page);self.assertTrue(m)
+        for att in ('muted','loop','playsinline','preload="none"','poster="'):self.assertIn(att,m[0])
+        self.assertNotIn('autoplay',m[0])
+        for f in re.findall(r'(?:src|poster)="\.\./\.\./([^"]+)"',m[0]):self.assertTrue((build_apps.ROOT/f).exists(),f)
 if __name__=='__main__':unittest.main()

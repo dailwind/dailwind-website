@@ -72,9 +72,9 @@ def shell_parts(shell,title,desc,url,up):
     # Drop toolkit-finder scripts and styles; keep shared site assets.
     head=re.sub(r'<script[^>]*src="\.\./assets/(toolkit-catalog|toolkit-finder|workspace-guide|toolkit-icon-motion|toolkit-enhance)\.js[^"]*"[^>]*></script>','',head)
     head=re.sub(r'<link rel="stylesheet" href="\.\./assets/workspace-guide\.css[^"]*">','',head)
-    head+='<link rel="stylesheet" href="../assets/apps.css"><script src="../assets/apps-motion.js" defer></script>'
+    head+='<link rel="stylesheet" href="../assets/apps.css?v=2"><script src="../assets/apps-motion.js?v=2" defer></script>'
     header='<body class="apps-body">'+shell[shell.index('<body>')+6:shell.index('<main id="main">')].replace(' aria-current="page"','').replace('<a href="../apps/" >','<a href="../apps/" aria-current="page">')
-    if 'aria-current="page"' not in header:raise ValueError('Navigation is missing the App Store link.')
+    if 'aria-current="page"' not in header:raise ValueError('Navigation is missing the Apps link.')
     footer=shell[shell.index('</main>')+7:]
     if up!='../':
         fix=lambda s:s.replace('="../','="'+up)
@@ -90,14 +90,19 @@ def render(apps,shell):
     if soon:main+=section('0'+str(n),'Coming soon',soon,'apps-soon')
     return head+header+main+'</main>'+footer
 
+def video(a,up):
+    v=a.get('video')
+    if not v:return ''
+    return ('<figure class="app-video"><video data-app-video src="'+up+e(v['src'])+'" poster="'+up+e(v['poster'])+'" width="'+str(v['width'])+'" height="'+str(v['height'])+'" muted loop playsinline preload="none" aria-label="'+e(v['label'])+'"></video></figure>')
+
 def render_detail(a,shell):
     title=a['name']+' for Android | Dailwind App Store';desc=a['description']
     head,header,footer=shell_parts(shell,title,desc,'https://dailwind.com/apps/'+a['slug']+'/','../../')
     body=''.join('<p>'+e(p)+'</p>' for p in a.get('details',[]))
     feats='<h2>Features</h2><ul class="app-features">'+''.join('<li>'+e(f)+'</li>' for f in a['features'])+'</ul>' if a.get('features') else ''
-    main=('<main id="main" class="apps-page"><section class="wrap app-detail"><p class="eyebrow"><a class="app-link" href="../">← Back to App Store</a></p>'
+    main=('<main id="main" class="apps-page"><section class="wrap app-detail"><p class="eyebrow"><a class="app-link" href="../">← Back to Apps</a></p>'
           '<article class="app-card app-detail-card"><div class="app-detail-head">'+icon_html(a,'../../',96,False)+'<div><h1 class="app-name">'+e(a['name'])+'</h1>'+('<p class="app-category">'+e(a['category'])+'</p>' if a.get('category') else '')+badge(a)+'</div></div>'
-          '<p class="lede app-desc">'+e(a['description'])+'</p>'+body+feats+'<div class="app-actions">'+play(a)+'<a class="app-link" href="../">Back to App Store</a></div></article></section></main>')
+          '<p class="lede app-desc">'+e(a['description'])+'</p>'+video(a,'../../')+body+feats+'<div class="app-actions">'+play(a)+'<a class="app-link" href="../">Back to Apps</a></div></article></section></main>')
     return head+header+main+footer
 
 def build():

@@ -21,7 +21,14 @@
       "No internet permission, no analytics and no ads. Your files never leave your device."
     ],
     "detailsSource": "Google Play listing for com.dailwind.sendtostorage (read 2026-11-04)",
-    "category": "Files & storage · Android"
+    "category": "Files & storage · Android",
+    "video": {
+      "src": "assets/apps/owl-file-saver-demo-v1.mp4",
+      "poster": "assets/apps/owl-file-saver-demo-poster-v1.webp",
+      "width": 1280,
+      "height": 720,
+      "label": "Owl File Saver demo: share, save and sort files on your device"
+    }
   },
   {
     "name": "LinguaX Arc",
