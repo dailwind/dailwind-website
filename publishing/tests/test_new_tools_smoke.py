@@ -3,7 +3,7 @@ Usage: python3 publishing/tests/test_new_tools_smoke.py [base_url] [screenshot_d
 import sys,threading,functools,http.server
 from pathlib import Path
 def grammar(pg):
-    pg.click('#wt-sample');pg.wait_for_function("document.getElementById('wt-status').textContent.startsWith('Ready')",timeout=20000);pg.wait_for_timeout(400)
+    pg.click('#wt-sample');pg.wait_for_selector('#wt-status:text("Ready.")',timeout=20000);pg.wait_for_timeout(400)
     n=pg.locator('#wt-backdrop mark').count();assert n>=8,n
     assert pg.locator('.wt-sug.c-correctness').count()>=5
     pg.locator('.wt-sug button.fix').first.click();pg.wait_for_timeout(500);assert pg.locator('#wt-backdrop mark').count()<n
