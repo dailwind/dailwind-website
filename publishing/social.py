@@ -49,15 +49,31 @@ def tracked(draw, xy, text, f, spacing, fill):
         draw.text((x,y),ch,font=f,fill=fill); x+=draw.textlength(ch,font=f)+spacing
     return x-spacing
 
+def justified(draw, x0, x1, y, text, f, fill):
+    # Spread letters so the first glyph's ink starts at x0 and the last glyph's ink ends at x1; a word space counts as two gaps.
+    words=text.split(); letters=[c for w in words for c in w]
+    ink=[draw.textbbox((0,0),c,font=f) for c in letters]
+    gaps=len(letters)-1+(len(words)-1)
+    gap=((x1-x0)-sum(b[2]-b[0] for b in ink))/gaps
+    x=x0; i=0
+    for wi,w in enumerate(words):
+        for c in w:
+            b=ink[i]; draw.text((x-b[0],y),c,font=f,fill=fill); x+=b[2]-b[0]+gap; i+=1
+        x+=gap
+
 def lockup(draw, image, logo, variant='v1', x=80, y=57, height=78):
     # Logo mark, then a stacked wordmark whose two lines fill the logo height (5:3 split, like the site header).
     mark=logo.copy(); mark.thumbnail((height,height),Image.Resampling.LANCZOS)
     image.paste(mark,(x+(height-mark.width)//2,y+(height-mark.height)//2),mark)
     top,bottom=VARIANTS[variant]; tx=x+height+20
-    big=font(round(height*.53),True); small=font(round(height*.235))
+    if variant=='v1':  # logo build of Montserrat (crossbar-less A), matching the site lockup
+        fonts=Path(__file__).with_name('fonts'); big=ImageFont.truetype(str(fonts/'dailwind-logo-800.ttf'),round(height*.5)); small=ImageFont.truetype(str(fonts/'dailwind-logo-400.ttf'),round(height*.24))
+    else: big=font(round(height*.53),True); small=font(round(height*.235))
     bb=draw.textbbox((0,0),top,font=big); sb=draw.textbbox((0,0),bottom,font=small)
-    tracked(draw,(tx,y-bb[1]+round(height*.04)),top,big,round(height*.03),'#1d1d1f')
-    tracked(draw,(tx,y+height-sb[3]-round(height*.02)),bottom,small,round(height*.075),'#3a3a3f')
+    left=draw.textbbox((0,0),top[0],font=big)[0]
+    end=tracked(draw,(tx-left,y-bb[1]+round(height*.04)),top,big,round(height*.03),'#1d1d1f')
+    last=top[-1]; end=end-draw.textlength(last,font=big)+draw.textbbox((0,0),last,font=big)[2]
+    justified(draw,tx,end,y+height-sb[3]-round(height*.02),bottom,small,'#3a3a3f')
 
 def card(path, logo, meta, variant='v1'):
     image=Image.new('RGB',(1200,630),'white'); draw=ImageDraw.Draw(image)
@@ -79,7 +95,7 @@ def card(path, logo, meta, variant='v1'):
     image.save(path,optimize=True)
 
 def prepare_social(root):
-    root=Path(root); output=root/'assets/social-v872'; output.mkdir(parents=True,exist_ok=True)
+    root=Path(root); output=root/'assets/social-v875'; output.mkdir(parents=True,exist_ok=True)
     with Image.open(root/'assets/dailwind-logo-v866.webp') as source:
         rgba=source.convert('RGBA'); logo=rgba.crop(rgba.getbbox())
     result={}
@@ -94,6 +110,6 @@ def prepare_social(root):
         digest=hashlib.sha256((meta['title']+'\n'+meta['description']).encode()).hexdigest()[:16]
         filename='share-'+digest+'.png'; target=output/filename
         if not target.exists(): card(target,logo,meta)
-        meta['image']='https://dailwind.com/assets/social-v872/'+filename
+        meta['image']='https://dailwind.com/assets/social-v875/'+filename
         result[route]=meta
     return result

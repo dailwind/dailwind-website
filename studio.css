@@ -87,6 +87,28 @@ body:has(.articles-section),body:has(.article-page){background:#f5f5f7}
 .header .brand-logo,.footer .brand-logo{display:block;width:auto!important;height:40px!important;flex:0 0 auto!important;object-fit:contain;align-self:center;transform:none;border-radius:0}
 .header .brand>.brand-stack,.footer .brand>.brand-stack{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;height:40px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1d1d1f;text-transform:uppercase;white-space:nowrap}
 .brand-stack .brand-word,.brand-stack .brand-suffix{display:block}
-.brand-stack .brand-word{height:25px;font-size:23px;line-height:25px;font-weight:800;letter-spacing:.04em}
+.brand-stack .brand-word{height:25px;font-size:23px;line-height:25px;font-weight:800;letter-spacing:.04em;margin-right:-.04em}
 .brand-stack .brand-suffix{height:15px;font-size:11px;line-height:15px;font-weight:400;letter-spacing:.47em;color:#3a3a3f}
+/* v8.7.4: line 2 is justified letter by letter to exactly DAILWIND's width (stack shrink-wraps to line 1; trailing tracking removed); the APP–STUDIO gap is two letter gaps. Real text stays for assistive tech. */
+.brand-stack .brand-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.brand-stack .brand-suffix{align-self:stretch}
+.brand-stack .brand-letters{letter-spacing:0;display:flex;justify-content:space-between;width:100%}.brand-stack .brand-letters i{font-style:normal;display:block}.brand-stack .brand-gap{width:0}
 @media(max-width:650px){.header .brand,.footer .brand{gap:8px!important}.header .brand-logo,.footer .brand-logo{height:34px!important}.header .brand>.brand-stack,.footer .brand>.brand-stack{height:34px}.brand-stack .brand-word{height:21px;font-size:19.5px;line-height:21px}.brand-stack .brand-suffix{height:13px;font-size:9.5px;line-height:13px}}
+
+/* v8.7.5 Variant 1 lockup: self-hosted Montserrat subset (OFL; logo build with a crossbar-less A), per-letter load reveal, hover/focus shimmer. Line 2 stays justified to line 1's exact width. */
+@font-face{font-family:"Dailwind Logo";src:url(assets/fonts/dailwind-logo-800.woff2) format("woff2");font-weight:800;font-display:block}
+@font-face{font-family:"Dailwind Logo";src:url(assets/fonts/dailwind-logo-400.woff2) format("woff2");font-weight:400;font-display:block}
+.brand-v1{position:relative;font-family:"Dailwind Logo",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif!important}
+.brand-v1 .brand-word{display:flex;letter-spacing:0;margin-right:0;font-size:22px}
+.brand-v1 .brand-word i,.brand-v1 .brand-letters i{font-style:normal;display:block}
+.brand-v1 .brand-word i:not(:last-child){margin-right:.045em}
+.brand-v1 .brand-suffix{font-size:10.5px;color:#1d1d1f}
+.brand-v1 .brand-word i{animation:dw-letter .55s cubic-bezier(.2,.7,.2,1) both}
+.brand-v1 .brand-word i:nth-child(2){animation-delay:.06s}.brand-v1 .brand-word i:nth-child(3){animation-delay:.12s}.brand-v1 .brand-word i:nth-child(4){animation-delay:.18s}.brand-v1 .brand-word i:nth-child(5){animation-delay:.24s}.brand-v1 .brand-word i:nth-child(6){animation-delay:.3s}.brand-v1 .brand-word i:nth-child(7){animation-delay:.36s}.brand-v1 .brand-word i:nth-child(8){animation-delay:.42s}
+.brand-v1 .brand-suffix{animation:dw-line .55s .7s cubic-bezier(.2,.7,.2,1) both}
+@keyframes dw-letter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes dw-line{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.brand:hover .brand-v1 .brand-word,.brand:hover .brand-v1 .brand-letters,.brand:focus-visible .brand-v1 .brand-word,.brand:focus-visible .brand-v1 .brand-letters{background:linear-gradient(100deg,#1d1d1f 0 42%,#a1a1a8 50%,#1d1d1f 58% 100%);background-size:280% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;color:transparent;animation:dw-shine 1s ease-in-out}
+@keyframes dw-shine{from{background-position:100% 0}to{background-position:0 0}}
+@media(max-width:650px){.brand-v1 .brand-word{font-size:18.5px}.brand-v1 .brand-suffix{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.brand-v1 .brand-word i,.brand-v1 .brand-suffix,.brand-v1 .brand-word,.brand-v1 .brand-letters{animation:none!important}.brand:hover .brand-v1 .brand-word,.brand:hover .brand-v1 .brand-letters,.brand:focus-visible .brand-v1 .brand-word,.brand:focus-visible .brand-v1 .brand-letters{background:none;color:inherit}}
