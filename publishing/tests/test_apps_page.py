@@ -26,4 +26,14 @@ class AppsPage(unittest.TestCase):
         for att in ('muted','loop','playsinline','preload="none"','poster="'):self.assertIn(att,m[0])
         self.assertNotIn('autoplay',m[0])
         for f in re.findall(r'(?:src|poster)="\.\./\.\./([^"]+)"',m[0]):self.assertTrue((build_apps.ROOT/f).exists(),f)
+    def test_name_and_icon_links(self):
+        page=build_apps.build()[build_apps.ROOT/'apps/index.html']
+        for a in build_apps.load():
+            url=build_apps.detail_url(a);n=re.escape(build_apps.e(a['name']))
+            if url:
+                self.assertRegex(page,r'<h3 class="app-name"><a class="app-name-link" href="'+re.escape(url)+'">'+n+'</a></h3>')
+                self.assertRegex(page,r'<a class="app-icon-link" href="'+re.escape(url)+'" tabindex="-1" aria-hidden="true" aria-label="'+n+' details"><(img|span) class="app-icon"')
+            else:
+                self.assertIn('<h3 class="app-name">'+build_apps.e(a['name'])+'</h3>',page)
+        self.assertIn('href="owl-file-saver/"',page);self.assertIn('href="../linguax-arc/"',page)
 if __name__=='__main__':unittest.main()

@@ -50,6 +50,12 @@ def play(a):
     if a['status']=='live':return '<span class="play-button" role="link" aria-disabled="true">'+PLAY_SVG+'<span><small>GOOGLE PLAY</small>Play Store link coming soon</span></span>'
     return ''
 
+def detail_url(a):
+    # Own detail page: generated /apps/<slug>/ first, else learnMoreUrl; none for apps without either.
+    if a.get('slug'):return e(a['slug'])+'/'
+    if a.get('learnMoreUrl'):return '../'+e(a['learnMoreUrl'])
+    return ''
+
 def card(a):
     soon=a['status']=='coming-soon'
     actions=[play(a)]
@@ -57,7 +63,13 @@ def card(a):
     actions=[x for x in actions if x]
     act='<div class="app-actions">'+''.join(actions)+'</div>' if actions else ''
     sub='<p class="app-category">'+e(a['category'])+'</p>' if a.get('category') else ''
-    return ('<article class="app-card'+(' soon' if soon else '')+'"><div class="app-card-head">'+icon_html(a,'../')+'<div class="app-title"><h3 class="app-name">'+e(a['name'])+'</h3>'+sub+badge(a)+'</div></div>'
+    url=detail_url(a)
+    icon=icon_html(a,'../');name=e(a['name'])
+    if url:
+        # Icon link duplicates the name link, so keep it out of the tab order and accessibility tree.
+        icon='<a class="app-icon-link" href="'+url+'" tabindex="-1" aria-hidden="true" aria-label="'+e(a['name'])+' details">'+icon+'</a>'
+        name='<a class="app-name-link" href="'+url+'">'+name+'</a>'
+    return ('<article class="app-card'+(' soon' if soon else '')+'"><div class="app-card-head">'+icon+'<div class="app-title"><h3 class="app-name">'+name+'</h3>'+sub+badge(a)+'</div></div>'
             '<p class="app-desc">'+e(a['description'])+'</p>'+act+'</article>')
 
 def section(num,title,items,ident):
@@ -72,7 +84,7 @@ def shell_parts(shell,title,desc,url,up):
     # Drop toolkit-finder scripts and styles; keep shared site assets.
     head=re.sub(r'<script[^>]*src="\.\./assets/(toolkit-catalog|toolkit-finder|workspace-guide|toolkit-icon-motion|toolkit-enhance)\.js[^"]*"[^>]*></script>','',head)
     head=re.sub(r'<link rel="stylesheet" href="\.\./assets/workspace-guide\.css[^"]*">','',head)
-    head+='<link rel="stylesheet" href="../assets/apps.css?v=2"><script src="../assets/apps-motion.js?v=2" defer></script>'
+    head+='<link rel="stylesheet" href="../assets/apps.css?v=3"><script src="../assets/apps-motion.js?v=2" defer></script>'
     header='<body class="apps-body">'+shell[shell.index('<body>')+6:shell.index('<main id="main">')].replace(' aria-current="page"','').replace('<a href="../apps/" >','<a href="../apps/" aria-current="page">')
     if 'aria-current="page"' not in header:raise ValueError('Navigation is missing the Apps link.')
     footer=shell[shell.index('</main>')+7:]

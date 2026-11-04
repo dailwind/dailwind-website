@@ -79,3 +79,20 @@ body.apps-body{background:#f5f5f7;min-height:100vh;--apps-accent:#0066cc}
 .app-video{margin:4px 0 6px;padding:0;border-radius:22px;overflow:hidden;background:#000;border:1px solid rgba(0,0,0,.08);box-shadow:0 12px 32px rgba(0,0,0,.12);aspect-ratio:16/9}
 .app-video video{display:block;width:100%;height:100%;object-fit:cover;background:#000}
 @media(max-width:650px){.app-video{border-radius:16px}}
+.app-card-head>.app-icon-link{display:block;flex:none;align-self:flex-start;border-radius:22.5%;text-decoration:none}
+.app-name-link,.app-name-link:visited,.app-name-link:hover{color:inherit;text-decoration:none;white-space:nowrap}
+.app-name-link:focus-visible{outline:2px solid #0066cc;outline-offset:3px;border-radius:4px}
+.app-icon-link:focus-visible{outline:2px solid #0066cc;outline-offset:3px}
+/* v3 /apps/ polish: refined icon halo (layered solid-colour shadows only), even card rhythm. */
+.apps-page .app-grid{align-items:stretch;gap:24px}
+.apps-page .app-grid .app-card{gap:18px;padding:28px 28px 24px;height:100%;box-sizing:border-box}
+.apps-page .app-grid .app-card-head{align-items:center;gap:18px;min-height:72px}
+.apps-page .app-grid .app-icon{width:72px;height:72px;border-radius:22.5%;background-clip:padding-box;box-shadow:0 0 0 .5px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06),0 6px 14px rgba(0,0,0,.07),0 12px 28px rgba(0,102,204,.07)}
+.apps-page .app-grid .app-title{gap:2px}
+.apps-page .app-grid .app-category{margin:0!important;line-height:1.35}
+.apps-page .app-grid .app-title .app-badge{margin-top:8px}
+.apps-page .app-grid .app-desc{margin:0;line-height:1.55}
+.apps-page .app-grid .app-actions{margin-top:auto;padding-top:18px;min-height:44px}
+.apps-page .apps-section>header{margin-bottom:0}
+@media (max-width:600px){.apps-page .app-grid{gap:18px}.apps-page .app-grid .app-card{padding:22px 22px 20px;gap:16px}.apps-page .app-grid .app-card-head{gap:14px;min-height:64px}.apps-page .app-grid .app-icon{width:64px;height:64px}}
+@media (max-width:380px){.apps-page .app-grid .app-card{padding:20px 18px 18px}}
