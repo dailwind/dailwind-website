@@ -16,7 +16,7 @@
  }
  function outside(e){if(pop&&!pop.contains(e.target)&&e.target!==current)close(false);}
  function onResize(){close(false);}
- function onScroll(e){if(pop&&!pop.contains(e.target))place();}
+ let scrollQueued=false;function onScroll(e){if(!pop||pop.contains(e.target)||scrollQueued)return;scrollQueued=true;requestAnimationFrame(()=>{scrollQueued=false;if(pop)place();});}
  function setActive(i,scroll){
   if(!items.length)return;i=Math.max(0,Math.min(items.length-1,i));
   items.forEach((el,n)=>el.classList.toggle('is-active',n===i));active=i;
@@ -62,7 +62,7 @@
   document.body.append(pop);s.setAttribute('aria-expanded','true');place();
   const sel=items.findIndex(el=>el.getAttribute('aria-selected')==='true');setActive(sel<0?0:sel,true);
   pop.addEventListener('keydown',key);pop.focus({preventScroll:true});
-  document.addEventListener('pointerdown',outside,true);window.addEventListener('resize',onResize);window.addEventListener('scroll',onScroll,true);
+  document.addEventListener('pointerdown',outside,true);window.addEventListener('resize',onResize);window.addEventListener('scroll',onScroll,{capture:true,passive:true});
  }
  function step(d){let i=active;do{i+=d;}while(items[i]&&items[i].getAttribute('aria-disabled')==='true');if(items[i])setActive(i,true);}
  function key(e){
