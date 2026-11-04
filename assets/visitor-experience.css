@@ -66,3 +66,6 @@
 
 .launch-statement{max-width:620px;margin:22px auto 0!important;font-size:13px!important;line-height:1.8!important;color:#536174}.launch-statement strong{display:inline-block;color:#253c58;margin-bottom:5px}.launch-statement span{display:inline-block;margin-top:9px;font-weight:550;color:#3c546e}
 .toolkit-card[data-toolkit=readability-studio]{--tool-accent:#b45309;--tool-tint:#fff3e6}.toolkit-card[data-toolkit=stylometry-lab]{--tool-accent:#5b3fc4;--tool-tint:#f0edff}.toolkit-card[data-toolkit=parallel-aligner]{--tool-accent:#0f766e;--tool-tint:#e6f7f3}.toolkit-card[data-toolkit=qualitative-coder]{--tool-accent:#be185d;--tool-tint:#fdeef4}
+
+/* Phone tour: let the screen grow with its copy instead of forcing 16:10, so the meta row, headline, link and steps never overlap. */
+@media(max-width:650px){.toolkit-tour .tour-scene{aspect-ratio:auto;justify-content:flex-start}.toolkit-tour .tour-meta{flex-wrap:wrap;row-gap:2px}.toolkit-tour .tour-content{flex:0 0 auto;align-items:flex-start;padding:12px 0 10px}.toolkit-tour .tour-content a{display:inline-block}.toolkit-tour .tour-visual{flex-wrap:wrap}.toolkit-tour .tour-visual>b{max-width:none;flex:1 1 auto;min-width:0}}
