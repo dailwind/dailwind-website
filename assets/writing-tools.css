@@ -1,7 +1,38 @@
 .wt-grid{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:22px;align-items:start}
-.wt-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:0 0 14px}
-.wt-toolbar label{display:grid;gap:5px;font-size:11px;color:#5f6b7b;font-weight:600}
-.wt-toolbar select{min-height:40px;border-radius:11px;border:1px solid #d9e0ea;background:#fff;padding:0 12px;font:inherit;font-size:13px}
+.wt-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin:0 0 14px}
+.wt-toolbar>label{display:grid;gap:5px;margin:0;font-size:11px;color:#5f6b7b;font-weight:600;min-width:0}
+html body.language-workspace .wt-toolbar select,
+html body.language-workspace .wt-mode-row select{
+  box-sizing:border-box;
+  margin:0;
+  min-height:40px!important;
+  height:40px!important;
+  border-radius:999px!important;
+  border:1px solid #d9e0ea;
+  font:inherit;
+  font-size:13px;
+  line-height:1.2;
+  color:#1d1d1f;
+  max-width:100%;
+  padding-block:0!important;
+  display:inline-flex;
+  align-items:center;
+}
+@media(max-width:760px){
+  html body.language-workspace .wt-toolbar select,
+  html body.language-workspace .wt-mode-row select{
+    height:46px!important;
+    min-height:46px!important;
+    font-size:16px!important;
+  }
+  html body.language-workspace .wt-toolbar .language-actions>:is(button,.language-upload),
+  html body.language-workspace .language-actions>:is(button,.language-upload){
+    min-height:46px!important;
+    height:46px!important;
+  }
+}
+.wt-toolbar .language-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0}
+.language-workspace .wt-toolbar .language-actions>:is(button,.language-upload){box-sizing:border-box;min-height:40px;height:40px;padding:0 18px;line-height:1;white-space:nowrap;align-items:center;justify-content:center}
 .wt-editor{position:relative;border:1px solid #d6dde8;border-radius:18px;background:#fff;overflow:hidden;contain:layout paint}
 .wt-editor:focus-within{border-color:#0071e3;box-shadow:0 0 0 4px rgba(0,113,227,.12)}
 .wt-backdrop,.language-workspace .wt-editor textarea{box-sizing:border-box;margin:0;padding:20px 22px;font:400 16px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;letter-spacing:0;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;tab-size:4}
@@ -20,10 +51,13 @@
 .wt-score small{display:block;color:#697280;font-size:12px}
 .wt-meter{height:8px;background:#eef1f6;border-radius:8px;overflow:hidden;margin-top:12px}
 .wt-meter i{display:block;height:100%;width:0;background:#0071e3;border-radius:8px;transition:width .35s ease,background-color .35s ease;transform:translateZ(0)}
-.wt-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
-.wt-tabs button{border:1px solid #dfe5ee;background:#f7f9fc;border-radius:999px;padding:7px 11px;font:inherit;font-size:12px;cursor:pointer;color:#3d4756;min-height:34px}
+.wt-tabs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 12px}
+.wt-tabs button{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid #dfe5ee;background:#f7f9fc;border-radius:999px;padding:0 14px;font:inherit;font-size:12px;font-weight:600;line-height:1;cursor:pointer;color:#3d4756;min-height:36px;height:36px;white-space:nowrap}
 .wt-tabs button[aria-pressed=true]{background:#1d1d1f;color:#fff;border-color:#1d1d1f}
-.wt-tabs .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.wt-tabs .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0;flex:0 0 auto;vertical-align:middle}
+.wt-panel-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px;margin:0 0 8px;min-width:0}
+.wt-panel-head>label{margin:0;line-height:1.2}
+.wt-panel-head .wt-tabs{margin:0}
 .dot.c-correctness{background:#e5484d}.dot.c-clarity{background:#2f7bf5}.dot.c-conciseness{background:#12a150}.dot.c-tone{background:#8e4ec6}
 .wt-cards{display:grid;gap:10px;max-height:560px;overflow:auto;overscroll-behavior:contain;padding:2px}
 .wt-sug{border:1px solid #e3e8f0;border-left:4px solid #ccc;border-radius:14px;padding:13px 14px;background:#fff;font-size:13px;line-height:1.5;transition:box-shadow .2s ease,transform .2s ease}
@@ -62,5 +96,10 @@
 .wt-wordcount{font-size:12px;color:#697280;margin:6px 0 0}
 .wt-progress{height:6px;background:#eef1f6;border-radius:6px;overflow:hidden;margin:10px 0 0}
 .wt-progress>i{display:block;height:100%;width:0;background:#0071e3;border-radius:6px;transition:width .2s ease}
-@media(max-width:650px){.wt-toolbar{gap:12px;margin-bottom:16px}.wt-toolbar .language-actions{margin:4px 0 0}.language-workspace .wt-tabs{margin-bottom:14px}.language-actions{gap:10px}}
-.wt-mode-row{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:0 0 12px}.wt-mode-row label{display:grid;gap:5px;font-size:11px;color:#5f6b7b;font-weight:600}.wt-score-tone{font-variant-numeric:tabular-nums}
+@media(max-width:650px){.wt-toolbar{gap:10px;margin-bottom:16px;align-items:stretch}.wt-toolbar>label{flex:1 1 160px}.language-workspace .wt-toolbar select{width:100%}.wt-toolbar .language-actions{margin:0;flex:1 1 100%}.language-workspace .wt-toolbar .language-actions>:is(button,.language-upload){flex:1 1 auto;min-width:calc(50% - 6px)}.language-workspace .wt-tabs{margin-bottom:12px}.language-actions{gap:10px}.wt-panel-head{align-items:flex-start}.language-workspace .language-actions>:is(button,.language-upload){box-sizing:border-box;min-height:46px;padding:0 16px;line-height:1}}
+.wt-mode-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:0 0 12px}.wt-mode-row label{display:grid;gap:5px;margin:0;font-size:11px;color:#5f6b7b;font-weight:600}.wt-score-tone{font-variant-numeric:tabular-nums}
+
+/* Shared control rhythm: keep pill buttons/selects on one baseline across writing tools */
+.language-workspace .language-actions{align-items:center}
+.language-workspace .language-actions>:is(button,.language-upload){box-sizing:border-box;min-height:40px;padding:0 18px;line-height:1;white-space:nowrap}
+.language-workspace .language-upload{margin-top:10px!important;margin-bottom:0!important;height:40px}
