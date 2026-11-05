@@ -1,0 +1,24 @@
+'use strict';
+const assert=require('assert');
+const fs=require('fs');
+const path=require('path');
+const vm=require('vm');
+const root=path.resolve(__dirname,'../..');
+const F=require('../../assets/toolkit-finder.js');
+const g={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/toolkit-catalog.js'),'utf8'),{globalThis:g});
+const C=g.DailwindCatalog;
+assert.ok(C.length>=20);
+assert.deepEqual(F.rank('',C),[]);
+assert.equal(F.rank('passport',C)[0].slug,'passport-photo-maker');
+assert.ok(!F.rank('passport',C).some(t=>t.slug==='text-humanizer'));
+assert.equal(F.rank('ai detector',C)[0].slug,'ai-text-detector');
+assert.equal(F.rank('pdf split',C)[0].slug,'pdf-tools');
+assert.ok(F.rank('pdf split',C).length<=3);
+assert.equal(F.rank('xyzzy-nope',C).length,0);
+assert.ok(F.rank('human',C).some(t=>t.slug==='text-humanizer'));
+assert.equal(F.rank('remove references',C)[0].slug,'corpus-cleaner');
+assert.ok(F.rank('Clean damaged OCR text',C).some(t=>t.slug==='corpus-cleaner'||t.slug==='english-ocr'));
+assert.ok(F.rank('text',C).length<C.length);
+// Generic one-word queries must not return the entire catalog
+assert.ok(F.rank('text',C).length<=Math.ceil(C.length*0.7));
+console.log('toolkit finder rank tests passed',C.length);
