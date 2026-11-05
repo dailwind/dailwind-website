@@ -134,6 +134,69 @@ body[data-media=tts]{
   --tool-chip:#f3edff;--tool-chip-border:#d9cef5;--tool-shadow:0 10px 28px #7c3aed14;
 }
 
+
+/* Language labs + Research desks — inside page themes (match toolkit card accents) */
+body[data-language=lexical-metrics]{
+  --tool-accent:#a14515;--tool-accent-2:#e08a4a;--tool-ink:#7a3010;--tool-soft:#fff0df;
+  --tool-page:linear-gradient(180deg,#fff0df 0%,#f5f5f7 42%,#f5f5f7 100%);
+  --tool-panel:linear-gradient(180deg,#ffffff,#fff8ef);--tool-glyph:linear-gradient(145deg,#fff0df,#fff);
+  --tool-chip:#fff5e8;--tool-chip-border:#ecd3b0;--tool-shadow:0 10px 28px #a1451514;
+}
+body[data-language=morphology-explorer]{
+  --tool-accent:#7b3bb2;--tool-accent-2:#b57de0;--tool-ink:#5a2885;--tool-soft:#f3e8ff;
+  --tool-page:linear-gradient(180deg,#f3e8ff 0%,#f5f5f7 42%,#f5f5f7 100%);
+  --tool-panel:linear-gradient(180deg,#ffffff,#f8f3ff);--tool-glyph:linear-gradient(145deg,#f3e8ff,#fff);
+  --tool-chip:#f5edff;--tool-chip-border:#dcc8f0;--tool-shadow:0 10px 28px #7b3bb214;
+}
+body[data-language=syntax-explorer]{
+  --tool-accent:#007d83;--tool-accent-2:#2dbdc4;--tool-ink:#0a5559;--tool-soft:#def8f5;
+  --tool-page:linear-gradient(180deg,#def8f5 0%,#f5f5f7 42%,#f5f5f7 100%);
+  --tool-panel:linear-gradient(180deg,#ffffff,#f1fbfa);--tool-glyph:linear-gradient(145deg,#def8f5,#fff);
+  --tool-chip:#e8faf8;--tool-chip-border:#b9e4e0;--tool-shadow:0 10px 28px #007d8314;
+}
+body[data-language=sentiment-studio]{
+  --tool-accent:#b13469;--tool-accent-2:#e078a0;--tool-ink:#7d2149;--tool-soft:#ffedf4;
+  --tool-page:linear-gradient(180deg,#ffedf4 0%,#f5f5f7 42%,#f5f5f7 100%);
+  --tool-panel:linear-gradient(180deg,#ffffff,#fff5f9);--tool-glyph:linear-gradient(145deg,#ffedf4,#fff);
+  --tool-chip:#fff0f6;--tool-chip-border:#f0c5d5;--tool-shadow:0 10px 28px #b1346914;
+}
+body[data-language=register-profile]{
+  --tool-accent:#427529;--tool-accent-2:#7cb85a;--tool-ink:#2f541c;--tool-soft:#edf8df;
+  --tool-page:linear-gradient(180deg,#edf8df 0%,#f5f5f7 42%,#f5f5f7 100%);
+  --tool-panel:linear-gradient(180deg,#ffffff,#f5faf0);--tool-glyph:linear-gradient(145deg,#edf8df,#fff);
+  --tool-chip:#f1f9e8;--tool-chip-border:#cfe3b8;--tool-shadow:0 10px 28px #42752914;
+}
+body[data-language=forensic-compare]{
+  --tool-accent:#4a4bbb;--tool-accent-2:#8586e0;--tool-ink:#33348a;--tool-soft:#eeeeff;
+  --tool-page:linear-gradient(180deg,#eeeeff 0%,#f5f5f7 42%,#f5f5f7 100%);
+  --tool-panel:linear-gradient(180deg,#ffffff,#f5f5ff);--tool-glyph:linear-gradient(145deg,#eeeeff,#fff);
+  --tool-chip:#f1f1ff;--tool-chip-border:#c9cae8;--tool-shadow:0 10px 28px #4a4bbb14;
+}
+body[data-language=readability-studio]{
+  --tool-accent:#b45309;--tool-accent-2:#f59e0b;--tool-ink:#78350f;--tool-soft:#fff3e6;
+  --tool-page:linear-gradient(180deg,#fff3e6 0%,#f5f5f7 42%,#f5f5f7 100%);
+  --tool-panel:linear-gradient(180deg,#ffffff,#fffaf2);--tool-glyph:linear-gradient(145deg,#fff3e6,#fff);
+  --tool-chip:#fff6ea;--tool-chip-border:#edd4b0;--tool-shadow:0 10px 28px #b4530914;
+}
+body[data-language=stylometry-lab]{
+  --tool-accent:#5b3fc4;--tool-accent-2:#9b87f0;--tool-ink:#3d2a8a;--tool-soft:#f0edff;
+  --tool-page:linear-gradient(180deg,#f0edff 0%,#f5f5f7 42%,#f5f5f7 100%);
+  --tool-panel:linear-gradient(180deg,#ffffff,#f6f4ff);--tool-glyph:linear-gradient(145deg,#f0edff,#fff);
+  --tool-chip:#f3f0ff;--tool-chip-border:#d4cef0;--tool-shadow:0 10px 28px #5b3fc414;
+}
+body[data-language=parallel-aligner]{
+  --tool-accent:#0f766e;--tool-accent-2:#2dd4bf;--tool-ink:#115e59;--tool-soft:#e6f7f3;
+  --tool-page:linear-gradient(180deg,#e6f7f3 0%,#f5f5f7 42%,#f5f5f7 100%);
+  --tool-panel:linear-gradient(180deg,#ffffff,#f1faf8);--tool-glyph:linear-gradient(145deg,#e6f7f3,#fff);
+  --tool-chip:#eef9f6;--tool-chip-border:#b7e0d8;--tool-shadow:0 10px 28px #0f766e14;
+}
+body[data-language=qualitative-coder]{
+  --tool-accent:#be185d;--tool-accent-2:#f472b6;--tool-ink:#9d174d;--tool-soft:#fdeef4;
+  --tool-page:linear-gradient(180deg,#fdeef4 0%,#f5f5f7 42%,#f5f5f7 100%);
+  --tool-panel:linear-gradient(180deg,#ffffff,#fff5f9);--tool-glyph:linear-gradient(145deg,#fdeef4,#fff);
+  --tool-chip:#fff0f6;--tool-chip-border:#f0c5d5;--tool-shadow:0 10px 28px #be185d14;
+}
+
 @media(prefers-reduced-motion:reduce){
   .language-workspace{background-attachment:scroll}
 }
