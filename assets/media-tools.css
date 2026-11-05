@@ -26,3 +26,10 @@
 @media(max-width:650px){.mt-row label{min-width:calc(50% - 7px)}.mt-row input[type=range]{width:100%}.mt-row input[type=number]{width:100%}.mt-files{grid-template-columns:repeat(2,minmax(0,1fr))}.mt-reader{font-size:17px}}
 @media(prefers-reduced-motion:reduce){.mt-drop{transition:none}}
 .mt-legend .l-blue{background:#0071e3}.mt-legend .l-green{background:#12a150}.mt-legend .l-red{background:#e5484d}
+
+/* tool polish */
+.mt-row{align-items:flex-end}
+.language-workspace .mt-row>:is(button,.language-actions){align-self:flex-end}
+.language-workspace .language-panel>.language-actions{margin:14px 0 0}
+.language-workspace .mt-drop{background:linear-gradient(180deg,#fff,color-mix(in srgb,var(--tool-soft,#fafcff) 70%,#fff));border-color:color-mix(in srgb,var(--tool-accent,#0071e3) 22%,#c9d3e1)}
+.language-workspace .mt-drop.over,.language-workspace .mt-drop:hover{border-color:var(--tool-accent,#0071e3);background:color-mix(in srgb,var(--tool-soft,#f0f6ff) 80%,#fff)}

@@ -1,10 +1,7 @@
-.tt-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px;align-items:start}
-.tt-area{width:100%;min-height:240px;border:1px solid #d9e0ea;border-radius:16px;padding:16px;font:inherit;font-size:16px;line-height:1.6;resize:vertical;background:#fff;color:#1d1d1f}
+.tt-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px;align-items:stretch}.tt-grid>div{display:flex;flex-direction:column;min-width:0}
+.tt-area{width:100%;min-height:240px;flex:1 1 auto;border:1px solid #d9e0ea;border-radius:16px;padding:16px;font:inherit;font-size:16px;line-height:1.6;resize:vertical;background:#fff;color:#1d1d1f}
 .tt-area:focus,.tt-search:focus{outline:3px solid rgba(0,113,227,.25);border-color:#0071e3}
-.tt-btns{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
-.tt-btns button{min-height:40px;border-radius:999px;border:1px solid #d9e0ea;background:#fff;padding:0 14px;font:inherit;font-size:14px;cursor:pointer;color:#1d1d1f}
-.tt-btns button[aria-pressed=true]{background:#1d1d1f;color:#fff;border-color:#1d1d1f}
-.tt-btns button:focus-visible{outline:3px solid rgba(0,113,227,.35)}
+.tt-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
 .tt-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
 .tt-stats div{border:1px solid #e6eaf0;border-radius:14px;padding:12px 14px;background:#fff}
 .tt-stats dt{font-size:12px;color:#697280;font-weight:600}.tt-stats dd{margin:4px 0 0;font-size:22px;font-weight:700;color:#1d1d1f;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
@@ -35,3 +32,76 @@
 .language-panel textarea.tt-authors{font-family:inherit;min-height:84px;height:96px;font-size:14px;line-height:1.5}
 .tt-sense h3{font-weight:500}
 .tt-cite:has(.tool-empty){padding:0;border:0;text-indent:0;background:none}.tt-bib .tool-empty{text-indent:0;padding-left:22px;flex:1}
+
+/* Polished control rhythm for text tools */
+.tt-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px;align-items:stretch}
+.tt-grid>div{display:flex;flex-direction:column;min-width:0}
+.tt-area{width:100%;min-height:240px;flex:1 1 auto;border:1px solid #d9e0ea;border-radius:16px;padding:16px;font:inherit;font-size:16px;line-height:1.6;resize:vertical;background:#fff;color:#1d1d1f}
+.tt-foot{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.tt-foot-meta{min-height:1.45em;margin:0;font-size:12px;color:#697280;line-height:1.45}
+.tt-foot .tt-btns,.tt-foot .language-actions{margin:0}
+.language-workspace .tt-foot .language-actions{margin:0}
+.tt-modes{
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  margin:0 0 18px;padding:8px;border-radius:18px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--tool-soft,#f2f4f8) 80%,#fff),#f2f4f8);
+  border:1px solid color-mix(in srgb,var(--tool-accent,#0071e3) 12%,#e6eaf0);
+  box-shadow:inset 0 1px 0 #ffffffa8;
+}
+.language-workspace .tt-modes button,
+.language-workspace .tt-btns[role=group] button{
+  box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;
+  min-height:38px;height:38px;padding:0 14px;margin:0;
+  border:1px solid color-mix(in srgb,var(--tool-accent,#0071e3) 14%,#d7deea);
+  border-radius:999px;
+  background:linear-gradient(180deg,#ffffff,color-mix(in srgb,var(--tool-soft,#f7f9fc) 75%,#fff));
+  font:600 13px/1.15 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  letter-spacing:-.015em;color:var(--tool-ink,#174f8c);cursor:pointer;white-space:nowrap;
+  box-shadow:0 1px 2px #15243b0a;text-shadow:none;
+}
+.language-workspace .tt-modes button:hover,
+.language-workspace .tt-btns[role=group] button:hover{
+  border-color:color-mix(in srgb,var(--tool-accent,#0071e3) 35%,#d7deea);
+  background:linear-gradient(180deg,#fff,var(--tool-soft,#eef3fb));
+  color:var(--tool-accent,#0071e3);
+  transform:translateY(-1px);
+}
+.language-workspace .tt-modes button[aria-pressed=true],
+.language-workspace .tt-btns[role=group] button[aria-pressed=true]{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--tool-accent,#0071e3) 88%,#fff),var(--tool-accent,#0071e3));
+  border-color:var(--tool-accent,#0071e3);
+  color:#fff;
+  box-shadow:0 4px 14px color-mix(in srgb,var(--tool-accent,#0071e3) 28%,transparent);
+}
+.language-workspace .tt-modes button:focus-visible,
+.language-workspace .tt-btns[role=group] button:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--tool-accent,#0071e3) 45%,transparent);outline-offset:2px
+}
+.tt-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.language-workspace .tt-btns:not([role=group]) button,
+.language-workspace .tt-btns:not([role=group]) .language-upload{
+  box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;
+  min-height:40px;height:40px;padding:0 16px;border-radius:999px;
+  border:1px solid var(--tool-chip-border,#d9e0ea);
+  background:linear-gradient(180deg,#fff,var(--tool-chip,#f7f9fc));
+  font:600 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--tool-ink,#174f8c);cursor:pointer;white-space:nowrap;box-shadow:0 1px 2px #15243b08
+}
+.language-workspace .tt-btns:not([role=group]) button.primary{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--tool-accent,#0071e3) 88%,#fff),var(--tool-accent,#0071e3));
+  border-color:var(--tool-accent,#0071e3);color:#fff;
+  box-shadow:0 6px 16px color-mix(in srgb,var(--tool-accent,#0071e3) 28%,transparent)
+}
+.language-workspace .tt-btns:not([role=group]) button:focus-visible{outline:3px solid color-mix(in srgb,var(--tool-accent,#0071e3) 40%,transparent);outline-offset:2px}
+.language-workspace .tt-grid .language-actions{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0
+}
+.language-workspace .tt-grid .language-actions>:is(button,.language-upload){
+  box-sizing:border-box;min-height:40px;height:40px;padding:0 16px;line-height:1;white-space:nowrap
+}
+@media(max-width:820px){.tt-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+  .language-workspace .tt-modes button,.language-workspace .tt-btns[role=group] button{min-height:40px;height:40px;font-size:13px}
+  .language-workspace .tt-btns:not([role=group]) button,
+  .language-workspace .tt-grid .language-actions>:is(button,.language-upload){min-height:46px;height:46px}
+}
