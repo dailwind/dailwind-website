@@ -1,0 +1,18 @@
+/* A workspace fills the browser viewport; no simulated desktop frame. */
+html{background:#f7f9fd!important}
+body{background:#f7f9fd!important}
+.desktop-wallpaper,.window-bar,.window-title,.desktop-launch{display:none!important}
+.app-window,.app-window.maximized,.toolkit-dock-auto .app-window,.toolkit-dock-auto .app-window.maximized{width:100%!important;max-width:none!important;height:calc(100dvh - 38px)!important;min-height:0!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;animation:none!important;transform:none!important;transition:none!important}
+.desktop-window,.toolkit-dock-auto .desktop-window{width:100%!important;max-width:none!important;height:calc(100dvh - 35px);margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;display:flex;flex-direction:column}
+.desktop-window>.workspace{flex:1;min-height:0;overflow:hidden}
+.desktop-window .workspace>main,.desktop-window .sidebar{overflow-y:auto;min-height:0}
+.app-window .arc-layout>main,.desktop-window .workspace>main{padding-bottom:120px}
+.toolkit-dock-auto .app-window .arc-layout>main,.toolkit-dock-auto .desktop-window .workspace>main{padding-bottom:65px}
+.system-bar{flex-shrink:0}
+@media(max-width:760px){
+ .app-window,.app-window.maximized,.toolkit-dock-auto .app-window{height:calc(100dvh - 31px)!important}
+ .app-window .arc-header{width:100%;margin:0;border-radius:0}
+ .desktop-window,.toolkit-dock-auto .desktop-window{height:auto;min-height:calc(100dvh - 35px)}
+ .desktop-window>.workspace{overflow:visible}
+ .desktop-window .workspace>main{overflow:visible}
+}

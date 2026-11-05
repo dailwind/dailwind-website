@@ -1,0 +1,2 @@
+'use strict';
+(()=>{const link=document.querySelector('.back-to-website');link?.addEventListener('click',e=>{if(e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;const unsaved=document.getElementById('files').children.length>0&&!document.getElementById('remember').checked;if(unsaved&&!confirm('Back to the website? This workspace is session-only. Export a backup or turn on Remember workspace if you want to keep it.'))e.preventDefault();});})();

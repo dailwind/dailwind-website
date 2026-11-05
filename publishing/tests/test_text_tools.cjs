@@ -1,0 +1,53 @@
+'use strict';
+const assert=require('assert'),fs=require('fs'),path=require('path'),zlib=require('zlib');
+const T=require(path.join(__dirname,'../../assets/text-tools-engine.js'));
+// Case
+assert.strictEqual(T.titleCase('the lord of the rings: a journey through middle-earth'),'The Lord of the Rings: A Journey Through Middle-Earth');
+assert.strictEqual(T.titleCase('a walk across the bridge between worlds','chicago'),'A Walk across the Bridge between Worlds');
+assert.strictEqual(T.titleCase('a walk across the bridge between worlds','apa'),'A Walk Across the Bridge Between Worlds');
+assert.strictEqual(T.titleCase('what is NASA doing with iPhone apps'),'What Is NASA Doing With iPhone Apps');
+assert.strictEqual(T.sentenceCase('hello world. this is NASA. i agree!'),'Hello world. This is NASA. I agree!');assert.strictEqual(T.sentenceCase('THIS IS A TEST. IT WORKS'),'This is a test. It works');
+assert.strictEqual(T.convertCase('Hello wonderful World',"camel"),'helloWonderfulWorld');
+assert.strictEqual(T.convertCase('Hello wonderful World','snake'),'hello_wonderful_world');
+assert.strictEqual(T.convertCase('helloWonderfulWorld','kebab'),'hello-wonderful-world');
+assert.strictEqual(T.convertCase('XMLHttpRequest id','snake'),'xml_http_request_id');
+assert.strictEqual(T.cleanSpaces('  a   b \n\n\n\n c  '),'a b\n\nc');assert.strictEqual(T.cleanSpaces('a\n b\n\nc',{lineBreaks:true}),'a b c');
+// Stats
+const s=T.stats('The quick brown fox jumps. The quick brown fox sleeps!\n\nQuick foxes are quick.');
+assert.strictEqual(s.words,14);assert.strictEqual(s.sentences,3);assert.strictEqual(s.paragraphs,2);assert.strictEqual(s.uniqueWords,8);
+assert.strictEqual(T.stats('').words,0);assert.strictEqual(T.stats(' ').sentences,0);
+const k=T.ngrams('The quick brown fox jumps. The quick brown fox sleeps!',2);assert.strictEqual(k[0].count,2);assert.ok(!k.some(r=>/^the /.test(r.phrase)));
+assert.ok(T.ngrams('the the cat',1,{stopwords:false})[0].phrase==='the');
+assert.strictEqual(T.csv([['a','b,c'],['=1+1','x"y']]),'a,"b,c"\r\n\'=1+1,"x""y"\r\n');
+assert.strictEqual(T.duration(75),'1 min 15 sec');
+// Citations
+const b={type:'book',authors:'Smith, John Adam\nDoe, Jane',title:'Learning to write well',publisher:'Oxford University Press',date:'2020',edition:'2',place:'Oxford'};
+assert.strictEqual(T.cite(b,'apa').text,'Smith, J. A., & Doe, J. (2020). Learning to write well (2nd ed.). Oxford University Press.');
+assert.ok(T.cite(b,'apa').html.includes('<i>Learning to write well</i>'));
+assert.strictEqual(T.cite(b,'mla').text,'Smith, John Adam, and Jane Doe. Learning to write well. 2nd ed., Oxford University Press, 2020.');
+assert.strictEqual(T.cite(b,'chicago').text,'Smith, John Adam, and Jane Doe. Learning to write well. 2nd ed. Oxford: Oxford University Press, 2020.');
+assert.strictEqual(T.cite(b,'harvard').text,'Smith, J.A. and Doe, J. (2020) Learning to write well. 2nd edn. Oxford: Oxford University Press.');
+const j={type:'journal',authors:'Smith, John\nDoe, Jane\nRoe, Rick',title:'A study of things',container:'Journal of Studies',volume:'12',issue:'3',pages:'45-67',date:'2019-04',doi:'https://doi.org/10.1234/abc'};
+assert.strictEqual(T.cite(j,'apa').text,'Smith, J., Doe, J., & Roe, R. (2019). A study of things. Journal of Studies, 12(3), 45–67. https://doi.org/10.1234/abc');
+assert.strictEqual(T.cite(j,'mla').text,'Smith, John, et al. “A study of things.” Journal of Studies, vol. 12, no. 3, Apr. 2019, pp. 45–67, doi.org/10.1234/abc.');
+assert.strictEqual(T.cite(j,'chicago').text,'Smith, John, Jane Doe, and Rick Roe. “A study of things.” Journal of Studies 12, no. 3 (April 2019): 45–67. https://doi.org/10.1234/abc.');
+assert.strictEqual(T.cite(j,'harvard').text,'Smith, J., Doe, J. and Roe, R. (2019) ‘A study of things’, Journal of Studies, 12(3), pp. 45–67. Available at: https://doi.org/10.1234/abc.');
+assert.strictEqual(T.cite(j,'apa').intext,'(Smith et al., 2019)');assert.strictEqual(T.cite(j,'mla').intext,'(Smith et al. 45)');
+assert.strictEqual(T.cite({type:'journal',authors:'Smith, J',title:'A Study Of Things: the NASA case',container:'journal of studies',date:'2019'},'apa',{fixCase:true}).text,'Smith, J. (2019). A study of things: The NASA case. Journal of Studies.');
+const w={type:'website',authors:'{World Health Organization}',title:'Healthy diet',container:'WHO',date:'2020-04-29',url:'https://www.who.int/x',accessed:'2026-11-05'};
+assert.strictEqual(T.cite(w,'apa').text,'World Health Organization. (2020, April 29). Healthy diet. WHO. https://www.who.int/x');
+assert.strictEqual(T.cite(w,'harvard').text,'World Health Organization (2020) Healthy diet. WHO. Available at: https://www.who.int/x (Accessed: 5 November 2026).');
+assert.ok(T.cite({type:'book',title:'<script>',authors:''},'apa').html.indexOf('<script>')<0,'escapes HTML');
+const many=Array.from({length:22},(_,i)=>'Name'+i+', A');assert.ok(T.cite({type:'book',authors:many.join('\n'),title:'X',date:'2000'},'apa').text.includes('Name18, A., . . . Name21, A.'));
+assert.strictEqual(T.normalizeDOI('https://doi.org/10.1038/nphys1170.'),'10.1038/nphys1170');assert.strictEqual(T.normalizeDOI('nope'),'');
+const cr=T.fromCrossref({type:'journal-article',author:[{given:'Ann',family:'Lee'}],title:['On <i>things</i>'],'container-title':['Nature'],issued:{'date-parts':[[2009,2,5]]},volume:'5',issue:'2',page:'1-9',DOI:'10.1/x'});
+assert.deepStrictEqual([cr.type,cr.title,cr.date,cr.authors[0].family],['journal','On things','2009-02-05','Lee']);
+// WordNet
+const gz=fs.readFileSync(path.join(__dirname,'../../assets/writing/wordnet-3.1.tsv.gz'));assert.ok(gz.length<6e6,'thesaurus stays small');
+const db=T.parseWordNet(zlib.gunzipSync(gz).toString('utf8'));assert.ok(db.lemmas>140000);
+const h=T.lookup(db,'happy');assert.ok(h.synonyms.includes('felicitous')||h.synonyms.includes('glad'),h.synonyms);assert.ok(h.antonyms.includes('unhappy'));
+const r=T.lookup(db,'running');assert.strictEqual(r.lemma,'running');const c=T.lookup(db,'children');assert.strictEqual(c.lemma,'child');
+assert.ok(T.lookup(db,'big','a').senses.every(s=>s.posCode==='a'));assert.strictEqual(T.lookup(db,'qwzxv').senses.length,0);
+assert.ok(T.suggest(db,'happ').includes('happy'));
+assert.ok(fs.readFileSync(path.join(__dirname,'../../assets/writing/LICENSE-WordNet.txt'),'utf8').includes('Princeton University'));
+console.log('text tools ok');

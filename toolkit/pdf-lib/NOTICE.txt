@@ -1,0 +1,2 @@
+pdf-lib 1.17.1 — MIT license. https://github.com/Hopding/pdf-lib
+Downloaded from the official npm package; registry SHA-512 integrity verified.

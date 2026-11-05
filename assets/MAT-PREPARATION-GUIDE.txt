@@ -1,0 +1,121 @@
+MAT Tagger Cleaner — Automatic Preparation 2.1 / Website v8.6
+Updated 30 October 2026
+
+WORKFLOW
+Select Files or Add Folder -> Prepare Files -> Download Prepared Corpus.
+For independent corpora, add their folders separately. A collection-name
+override can deliberately group files. File order inside each book is kept;
+books are processed in deterministic collection/path order.
+
+INPUT AND ENCODING
+Plain .txt only. UTF-8 and UTF-16 BOMs are recognized. BOM-less UTF-16 English
+is detected conservatively from alternating NUL bytes. UTF-8 is decoded
+strictly. Windows-1252 must be selected explicitly when known; invalid UTF-8
+is never silently interpreted as legacy text. UTF-32 is not supported.
+Save other formats/encodings as UTF-8 first. Keep all original sources.
+Files with unsafe controls, invalid encoding or no English/Latin-letter
+content are excluded and listed for review. A preparation pass is not an
+English language detector, spelling correction, OCR repair or semantic review.
+
+CONSERVATIVE FORMATTING RULES
+- Remove a leading BOM only.
+- CRLF/CR -> LF. Unicode line separators -> LF.
+- Form-feed page breaks -> two LF characters.
+- Nonbreaking/narrow nonbreaking spaces -> ordinary spaces.
+Curly quotes, dashes, ligatures, spelling, case, numbers, punctuation,
+references, repetitions and lexical content are retained. Suspected standalone
+page markers, scanning metadata and OCR notes are identified heuristically,
+recorded and RETAINED. OCR boxes/replacement characters/invisible artifacts
+are retained and flagged. Missing letters are never invented.
+
+AUTOMATIC ORGANIZATION
+The visitor does not configure part size. The default target is approximately
+3,000 whitespace-delimited tokens per part. At/after 3,000 tokens a paragraph
+boundary is preferred; sentence boundaries are accepted from 3,150; a word
+boundary fallback occurs at 3,300. A 4 MiB character buffer can end a part
+earlier. No word is deliberately split. Whitespace attaches to the preceding
+word; initial whitespace attaches to the first part. No headers or separators
+are inserted. Short final parts remain short and are not padded.
+Word = a non-whitespace run. This count is not MAT's feature/counting baseline.
+Very long individual tokens (>1 MiB characters) or whitespace runs (>4 MiB)
+are reported for source review instead of exhausting memory.
+
+ZIP CONTENTS
+MAT_Ready_Corpus/
+  Book_A/Book_A_part_001.txt ...
+  Book_B/Book_B_part_001.txt ...
+  MAT_input/Book_A__Book_A_part_001.txt ...
+  corpus_manifest.csv
+  preparation_report.txt
+For multiple collections, both book folders and MAT_input contain separate
+collection subfolders. MAT_input contains TXT only, with no reports/metadata.
+Select each appropriate MAT_input folder in MAT; do NOT select the ZIP root.
+Book copies and MAT_input copies are identical: do not analyze both sets.
+Filenames are portable ASCII, collision-resolved and mapped to original names.
+Two imports sharing the same collection name are grouped; use distinct
+collection names if these are independent corpora.
+
+VALIDATION AND AUDIT
+Each source is processed sequentially in 256 KiB byte reads by a Web Worker.
+TextDecoder handles incomplete multibyte sequences across read boundaries.
+Every exported part is checked for nonempty text, UTF-8 round-trip and word
+count. The concatenated part CRC32 and token count must match the normalized
+source stream. On a per-source failure, every partial entry for that document
+is rolled back. Failed files have manifest review rows and no MAT input.
+Source CRC32, normalized CRC32, part CRC32, source paths, original byte sizes,
+detected encodings, formatting counts and notes are recorded. CRC32 is an
+accidental-corruption check, NOT a cryptographic proof of authenticity.
+The original path/collection plus generated paths identify each source. If
+duplicate source names are deliberately selected, distinguish them by source
+CRC32 and collision-resolved output folder. Source word counts repeat on each
+part row; do not sum that column without grouping sources first.
+CSV fields beginning with a formula prefix are apostrophe-escaped for safety.
+Generated ZIP timestamps are fixed. The same selection/settings yields the
+same output bytes; source selection labels/order resolve exact name ties.
+
+PRIVACY AND CAPACITY
+Paid, operator-approved access is required to receive the toolkit code. No document content is sent for network processing, external AI or telemetry.
+The tool's files are served by the website; document processing is local.
+Where supported, Origin Private File System (OPFS) is used for temporary ZIP
+storage. Otherwise bounded memory holds the ZIP. There is no giant combined
+corpus string or ZIP-wide Uint8Array allocation. The ZIP stores text without
+deflate compression, reducing CPU overhead. Traceability/MAT input duplicate
+text uses roughly twice the prepared text size plus metadata.
+Disk budget: up to 1,500 MiB and approximately 60% of estimated available
+origin quota when known. Memory fallback: 256 MiB desktop / 128 MiB mobile.
+These are output safety budgets, not promises about device capacity. Fewer
+than 65,000 ZIP entries and up to 10,000 selected documents per batch.
+Source files are streamed; actual usable size depends on browser resources.
+Quota failures are reported. Split a very large selection into smaller batches.
+Cancellation does not export partial results. Keep the tab open. Download
+before navigating away; no session recovery is promised. Clear session after
+download to release temporary storage. If a tab/browser crashes, temporary
+origin files may remain until browser site storage is cleared.
+
+MAT AND RESEARCH LIMITS
+This utility PREPARES text. It does not run MAT, Java/Stanford tagging, POS
+annotation, 67-feature analysis or multidimensional scores. Full execution
+with MAT is unverified: MAT is not installed in the development environment.
+Use MAT's tagging workflow for the prepared plain text before counting.
+Short inputs may need suitable TTR settings; files are never padded just to
+pass a check. Segment-level ratios/scores require appropriate denominators
+and aggregation before drawing book-level conclusions. Preserve the manifest.
+No tool can guarantee every MAT analysis or every source's linguistic fitness.
+
+RETAINED SPECIALIST WORKFLOW
+The collapsed 'Specialist checks & earlier cleaning options' section retains
+the earlier raw-cleaning and already-tagged syntax/baseline preflight tools,
+their original browser download formats. The former Python download is retired from the public website. Optional
+substantive repairs require deliberate selection and have their own audit.
+That earlier Python package is not upgraded to the automatic browser engine
+by this release. Existing tagged preflight is not proof of tagging accuracy.
+
+VERIFICATION
+Automated tests exercise small/large inputs, streaming Unicode boundaries,
+UTF-8/UTF-16/Windows-1252, blank/unsupported/invalid sources, late failure
+rollback, 320 documents across four collections, deterministic segmentation,
+source/part counts and CRC checks, ZIP extraction/reproducibility, memory/OPFS
+writer parity, capacity errors and cancellation. Browser workflow/layout
+verification is described in the release README. Real device capacity varies.
+
+PAID ACCESS: The protected worker/window bundles are delivered from private Supabase Storage after verified login, operator approval and payment confirmation. This controls future delivery; authorized browsers necessarily receive executable code. Earlier public copies and already-delivered copies cannot be revoked or made impossible to copy.

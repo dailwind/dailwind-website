@@ -1,0 +1,29 @@
+{
+  "docs": [
+    {
+      "name": "teaching-2024.txt",
+      "text": "Students study language in the classroom. Language teachers support students. Students learn research methods. Corpus research helps teachers study language.",
+      "year": "2024",
+      "category": "Teaching"
+    },
+    {
+      "name": "research-2025.txt",
+      "text": "Corpus research reveals language patterns. Researchers analyze language data. Language data informs research. Corpus tools help researchers analyze data.",
+      "year": "2025",
+      "category": "Research"
+    },
+    {
+      "name": "annotated-example.conllu",
+      "text": "# Illustrative hand-annotated UD example, not automatic tagging\n1\tStudents\tstudent\tNOUN\t_\t_\t2\tnsubj\t_\t_\n2\tanalyze\tanalyze\tVERB\t_\t_\t0\troot\t_\t_\n3\tlanguage\tlanguage\tNOUN\t_\t_\t2\tobj\t_\t_\n4\tpatterns\tpattern\tNOUN\t_\t_\t3\tnmod\t_\t_\n\n1\tTeachers\tteacher\tNOUN\t_\t_\t2\tnsubj\t_\t_\n2\tanalyze\tanalyze\tVERB\t_\t_\t0\troot\t_\t_\n3\tlanguage\tlanguage\tNOUN\t_\t_\t2\tobj\t_\t_\n\n",
+      "year": "2025",
+      "category": "Annotated example"
+    }
+  ],
+  "reference": [
+    {
+      "name": "general-reference.txt",
+      "text": "The committee met to discuss roads and the budget. The community needs water and transport. Members reviewed the budget and approved the plan. The meeting ended with public questions."
+    }
+  ],
+  "parallel": "Students study language.\tطلبہ زبان کا مطالعہ کرتے ہیں۔\nTeachers analyze language.\tاساتذہ زبان کا تجزیہ کرتے ہیں۔\nResearchers analyze language data.\tمحققین زبان کے ڈیٹا کا تجزیہ کرتے ہیں۔\nTeachers teach language.\tاساتذہ زبان پڑھاتے ہیں۔\n"
+}

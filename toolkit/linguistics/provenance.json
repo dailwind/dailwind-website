@@ -1,0 +1,14 @@
+{
+  "release": "8.6.12",
+  "packages": {
+    "compromise": "14.14.4",
+    "vader-sentiment": "1.1.3",
+    "@pdf-lib/fontkit": "1.1.1"
+  },
+  "build": "esbuild 0.25.12, browser IIFE, es2020, legal comments retained",
+  "sha256": {
+    "compromise-14.14.4.js": "1a3d8028c77917bf73777a9fde66c1fdf3f3f076d06e2589b569a3aef6f59c6a",
+    "fontkit-1.1.1.js": "44d3778b954530f2244732f7066de40b661d0f5494dc099591257893642a57b0",
+    "vader-1.1.3.js": "6f69c2363fbbc7a1fd84e5031cefbf414abcde41fdfd7599ef331a70a60bdc0a"
+  }
+}
