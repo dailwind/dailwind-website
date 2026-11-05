@@ -20,7 +20,7 @@
 .wt-score small{display:block;color:#697280;font-size:12px}
 .wt-meter{height:8px;background:#eef1f6;border-radius:8px;overflow:hidden;margin-top:12px}
 .wt-meter i{display:block;height:100%;width:0;background:#0071e3;border-radius:8px;transition:width .35s ease,background-color .35s ease;transform:translateZ(0)}
-.wt-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.wt-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
 .wt-tabs button{border:1px solid #dfe5ee;background:#f7f9fc;border-radius:999px;padding:7px 11px;font:inherit;font-size:12px;cursor:pointer;color:#3d4756;min-height:34px}
 .wt-tabs button[aria-pressed=true]{background:#1d1d1f;color:#fff;border-color:#1d1d1f}
 .wt-tabs .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
@@ -57,3 +57,9 @@
 @media(max-width:650px){.wt-two{grid-template-columns:1fr}.language-workspace .wt-editor textarea{min-height:300px}.wt-backdrop,.language-workspace .wt-editor textarea{padding:16px}.wt-big b{font-size:44px}}
 @media(prefers-reduced-motion:reduce){.wt-meter i,.wt-sug{transition:none}}
 .wt-diff del+ins{margin-left:3px}
+.wt-tabs + textarea,.wt-tabs + .wt-diff,.wt-tabs + .wt-editor,.wt-tabs + .wt-cards{margin-top:0}
+.wt-view-stack{display:grid;gap:12px}
+.wt-wordcount{font-size:12px;color:#697280;margin:6px 0 0}
+.wt-progress{height:6px;background:#eef1f6;border-radius:6px;overflow:hidden;margin:10px 0 0}
+.wt-progress>i{display:block;height:100%;width:0;background:#0071e3;border-radius:6px;transition:width .2s ease}
+@media(max-width:650px){.wt-toolbar{gap:12px;margin-bottom:16px}.wt-toolbar .language-actions{margin:4px 0 0}.language-workspace .wt-tabs{margin-bottom:14px}.language-actions{gap:10px}}

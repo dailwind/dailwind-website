@@ -8,7 +8,7 @@ function readFile(input,ta,after){input.addEventListener('change',()=>{const f=i
 const SAMPLES={
  grammar:"i think their is a error in the the report. Your welcome to fix it , its not hard.He dont know nothing about the budget. The report was written by the team in order to utilize alot of new data. At the end of the day, the results are more better then last year and we have the ability to grow.",
  ai:"In today's fast-paced world, it is important to note that technology plays a crucial role in our daily lives. Furthermore, artificial intelligence has the potential to transform industries seamlessly and efficiently. Moreover, businesses must leverage robust solutions to navigate the complexities of the modern landscape. Additionally, fostering innovation is paramount for sustainable growth and long-term success. In conclusion, embracing these comprehensive tools will empower organizations to unlock their full potential and thrive.",
- human:"In today's fast-paced world, it is important to note that remote work plays a crucial role in modern careers. Furthermore, employees are able to utilize numerous digital tools that facilitate collaboration seamlessly, and managers must leverage robust processes to ensure that teams do not lose focus over time. It is not easy. It takes practice. In conclusion, organizations that commence this journey with a holistic plan will obtain sufficient results."};
+ human:"In today's fast-paced world, it is important to note that remote work plays a crucial role in modern careers. Furthermore, employees are able to utilize numerous digital tools that facilitate collaboration seamlessly, and managers must leverage robust processes to navigate the complexities of distributed teams (Jones, 2021). Moreover, a growing body of research has shown that fostering innovation is paramount for sustainable growth. It is not easy. It takes practice. In conclusion, organizations that commence this journey with a holistic plan will obtain sufficient results and unlock their full potential."};
 let dictReady=null;function loadDict(){if(!dictReady)dictReady=fetch('../assets/writing/en-words.txt').then(r=>{if(!r.ok)throw new Error(r.status);return r.text();}).then(t=>{W.loadDictionary(t);return true;}).catch(()=>{status('Spelling dictionary could not load; grammar and style checks still work.');return false;});return dictReady;}
 
 /* ===== Writing assistant / grammar checker ===== */
@@ -57,14 +57,26 @@ function detector(){const ta=$('wt-text');function run(){const r=W.detectAI(ta.v
  $('wt-humanize').addEventListener('click',()=>{try{sessionStorage.setItem('dailwind:humanize-in',ta.value.slice(0,200000));}catch(e){}location.href='../text-humanizer/';});readFile($('wt-file'),ta,run);}
 
 /* ===== Humanizer ===== */
-function humanizer(){const ta=$('wt-text'),out=$('wt-out');let seed=1;function run(){if(!ta.value.trim()){status('Add some text first.');return;}const r=W.humanize(ta.value,{tone:$('wt-tone-pick').value,seed});out.value=r.text;$('wt-results').hidden=false;
- const d=W.diff(ta.value,r.text);$('wt-diff').innerHTML=d.map(p=>p.op==='eq'?esc(p.text):p.op==='del'?'<del>'+esc(p.text)+'</del>':'<ins>'+esc(p.text)+'</ins>').join('');
- const a0=W.detectAI(ta.value),a1=W.detectAI(r.text);const c=r.changes;
- $('wt-metrics').innerHTML=[[c.phrases,'Stock phrases replaced'],[c.words,'Plainer words'],[c.contractions,'Contractions'],[c.splits+c.merges,'Sentences split / merged'],[r.before.flesch+' → '+r.after.flesch,'Flesch reading ease'],[a0.enough?a0.score+'% → '+a1.score+'%':'–','Machine-like signals (estimate)']].map(([v,l])=>'<article><strong>'+v+'</strong><span>'+l+'</span></article>').join('');
- status('Rewritten on this device. Read it through and keep what sounds like you.');}
+function humanizer(){const ta=$('wt-text'),out=$('wt-out'),wc=$('wt-wordcount'),bar=$('wt-progress'),barI=bar&&bar.querySelector('i');let seed=1,busy=false,lastSource='';
+ const soft=W.HUMANIZER_SOFT_WORDS||20000,hard=W.HUMANIZER_HARD_WORDS||35000;
+ function countWords(){const n=W.words(ta.value).length;if(wc){let note=n.toLocaleString()+' word'+(n===1?'':'s');if(n>soft)note+=' · long paper mode (chunked)';if(n>hard)note+=' · will process the first '+hard.toLocaleString()+' words';wc.textContent=note;wc.hidden=!ta.value.trim();}return n;}
+ function setBusy(on){busy=on;['wt-run','wt-again'].forEach(id=>{const b=$(id);if(b)b.disabled=on;});if(bar)bar.hidden=!on;if(barI)barI.style.width=on?'8%':'0%';}
+ function paint(r,source){out.value=r.text;$('wt-results').hidden=false;lastSource=source;
+  const d=W.diff(source,r.text);$('wt-diff').innerHTML=d.map(p=>p.op==='eq'?esc(p.text):p.op==='del'?'<del>'+esc(p.text)+'</del>':'<ins>'+esc(p.text)+'</ins>').join('');
+  const a0=W.detectAI(source),a1=W.detectAI(r.text);const c=r.changes;
+  $('wt-metrics').innerHTML=[[c.phrases,'AI-style phrases stripped'],[c.words+(c.synonyms||0),'Plain / varied wording'],[c.contractions,'Contractions adjusted'],[c.splits+c.merges,'Sentences reshaped'],[c.protected||0,'Citations & spans kept'],[r.before.flesch+' → '+r.after.flesch,'Flesch reading ease'],[a0.enough?a0.score+'% → '+(a1.enough?a1.score+'%':'–'):'–','Machine-like signals (estimate)']].map(([v,l])=>'<article><strong>'+v+'</strong><span>'+l+'</span></article>').join('');
+  let msg='Rewritten on this device with multi-pass linguistic rewriting (not a cloud AI). Read it through and keep what sounds like you.';
+  if(r.truncated)msg='Processed the first '+hard.toLocaleString()+' words of a longer paper. '+msg;
+  else if(r.wordCount>soft)msg='Long paper rewritten in chunks so the page stays responsive. '+msg;
+  status(msg);}
+ async function run(){if(busy)return;if(!ta.value.trim()){status('Add some text first.');return;}const source=ta.value;const n=countWords();setBusy(true);status(n>800?'Rewriting in chunks…':'Rewriting…');
+  try{const opts={tone:$('wt-tone-pick').value,seed,passes:2};const r=await (W.humanizeAsync?W.humanizeAsync(source,opts,p=>{if(barI)barI.style.width=Math.max(8,Math.round(p*100))+'%';}):Promise.resolve(W.humanize(source,opts)));paint(r,source);}
+  catch(e){status('Rewrite failed. Try a shorter selection.');console.error(e);}finally{setBusy(false);if(barI)barI.style.width='0%';}}
  $('wt-run').addEventListener('click',()=>{seed=1;run();});$('wt-again').addEventListener('click',()=>{seed++;run();});
- $('wt-sample').addEventListener('click',()=>{ta.value=SAMPLES.human;run();});$('wt-clear').addEventListener('click',()=>{ta.value='';out.value='';$('wt-results').hidden=true;});
+ $('wt-sample').addEventListener('click',()=>{ta.value=SAMPLES.human;countWords();run();});$('wt-clear').addEventListener('click',()=>{ta.value='';out.value='';lastSource='';$('wt-results').hidden=true;countWords();status('Cleared.');});
  $('wt-copy').addEventListener('click',e=>copy(out.value,e.currentTarget));$('wt-tone-pick').addEventListener('change',()=>{if(out.value)run();});
+ ta.addEventListener('input',()=>{clearTimeout(ta._wcTimer);ta._wcTimer=setTimeout(countWords,120);});
  const v=document.querySelectorAll('[data-view]');v.forEach(b=>b.addEventListener('click',()=>{v.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('wt-diff').hidden=b.dataset.view!=='diff';out.hidden=b.dataset.view!=='out';}));
- readFile($('wt-file'),ta,run);const pre=sessionStorage.getItem('dailwind:humanize-in');if(pre){ta.value=pre;sessionStorage.removeItem('dailwind:humanize-in');run();}}
+ readFile($('wt-file'),ta,()=>{countWords();run();});const pre=sessionStorage.getItem('dailwind:humanize-in');if(pre){ta.value=pre;sessionStorage.removeItem('dailwind:humanize-in');countWords();run();}
+ status('Ready. Paste academic or AI-sounding prose, pick a tone, then rewrite. Everything stays on this device.');countWords();}
 if(mode==='grammar')grammar();else if(mode==='detector')detector();else if(mode==='humanizer')humanizer();})();

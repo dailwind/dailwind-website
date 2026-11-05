@@ -26,4 +26,18 @@ const hu=W.humanize(ai);assert.ok(!/furthermore|moreover|it is important to note
 assert.strictEqual(W.humanize('We are able to win.',{tone:'concise'}).text,"We can win.");
 assert.ok(/do not/.test(W.humanize("We don't know.",{tone:'formal'}).text));
 const d=W.diff('a b c','a x c');assert.deepStrictEqual(d.map(p=>p.op),['eq','del','add','eq']);
-console.log('writing tools engine tests passed');
+
+const acad='Furthermore, it is important to note that the utilization of robust strategies plays a crucial role in academic writing. Moreover, a growing body of research has shown that students can navigate the complexities of citation practice seamlessly (Smith, 2020). In conclusion, future research should delve into these paradigms.';
+for(const tone of ['natural','academic','conversational','concise','elaborate','formal','friendly']){
+  const r=W.humanize(acad,{tone,seed:9});
+  assert.ok(r.text && !/it is important to note/i.test(r.text), tone+' stripped stock');
+  assert.ok(r.text.includes('(Smith, 2020)'), tone+' kept citation');
+  assert.ok(r.wordCount>20);
+}
+assert.strictEqual(W.normalizeTone('Formal academic'),'academic');
+assert.strictEqual(W.normalizeTone('academic'),'academic');
+assert.strictEqual(W.normalizeTone('conversational-academic'),'conversational');
+const long='Research shows results. '.repeat(500);
+const asyncOk=W.humanizeAsync(long,{tone:'concise',seed:2}).then(r=>{assert.ok(r.text.length>100);assert.ok(r.changes);console.log('humanizeAsync ok',r.wordCount);});
+
+Promise.resolve(asyncOk).then(()=>console.log('writing tools engine tests passed'));

@@ -129,28 +129,305 @@ function detectAI(text){const sents=sentences(text).filter(s=>words(s.text).leng
  return{enough:true,score,label,signals:sig,sentences:per,words:n,ttr:Math.round(ttr*1000)/1000};}
 
 /* ---------- humanizer ---------- */
-const STOCK=[[/\bin today's fast-paced world,?\s*/gi,''],[/\bin today’s fast-paced world,?\s*/gi,''],[/\bit is important to note that\s*/gi,''],[/\bit is worth noting that\s*/gi,''],[/\bfurthermore,\s*/gi,'Also, '],[/\bmoreover,\s*/gi,'What’s more, '],[/\badditionally,\s*/gi,'Plus, '],[/\bin conclusion,\s*/gi,'So, '],[/\bin summary,\s*/gi,'In short, '],[/\bdelve into\b/gi,'dig into'],[/\bdelves into\b/gi,'digs into'],[/\bplays a (crucial|pivotal|vital) role in\b/gi,'matters a lot for'],[/\ba myriad of\b/gi,'lots of'],[/\bnavigate the complexities of\b/gi,'work through'],[/\bharness the power of\b/gi,'use'],[/\bunlock the (full )?potential of\b/gi,'get the most from'],[/\ba testament to\b/gi,'proof of'],[/\bseamlessly\b/gi,'smoothly'],[/\bseamless\b/gi,'smooth'],[/\brobust\b/gi,'solid'],[/\bcutting-edge\b/gi,'modern'],[/\bembark on\b/gi,'start'],[/\bin the realm of\b/gi,'in'],[/\bparamount\b/gi,'key'],[/\bholistic\b/gi,'whole'],[/\bmultifaceted\b/gi,'complex'],[/\bmeticulously\b/gi,'carefully'],[/\bmeticulous\b/gi,'careful'],[/\bunderscores\b/gi,'shows'],[/\bshowcases\b/gi,'shows'],[/\bfoster\b/gi,'build'],[/\btapestry of\b/gi,'mix of'],[/\bever-evolving\b/gi,'changing'],[/\belevate\b/gi,'improve'],[/\bstreamline\b/gi,'simplify']];
-const CONTRACT=[[/\bdo not\b/gi,"don't"],[/\bdoes not\b/gi,"doesn't"],[/\bdid not\b/gi,"didn't"],[/\bis not\b/gi,"isn't"],[/\bare not\b/gi,"aren't"],[/\bwas not\b/gi,"wasn't"],[/\bcannot\b/gi,"can't"],[/\bwill not\b/gi,"won't"],[/\bit is\b/gi,"it's"],[/\bthat is\b/gi,"that's"],[/\bthere is\b/gi,"there's"],[/\byou are\b/gi,"you're"],[/\bwe are\b/gi,"we're"],[/\bthey are\b/gi,"they're"],[/\bI am\b/g,"I'm"],[/\bwould not\b/gi,"wouldn't"],[/\bshould not\b/gi,"shouldn't"],[/\bhave not\b/gi,"haven't"],[/\byou will\b/gi,"you'll"],[/\bwe will\b/gi,"we'll"],[/\blet us\b/gi,"let's"]];
-function keepCase(rep){return(m,...a)=>{const r=typeof rep==='function'?rep(m,...a):rep.replace(/\$(\d)/g,(_,i)=>a[i-1]||'');return r&&/^[A-Z]/.test(m)?r[0].toUpperCase()+r.slice(1):r;};}
-function seeded(seed){let s=seed>>>0||1;return()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return((s>>>0)%10000)/10000;};}
-function humanize(text,opts={}){const tone=opts.tone||'natural';const rnd=seeded(opts.seed||text.length*31+7);let out=text;const changes={phrases:0,words:0,contractions:0,splits:0,merges:0};
+/* Multi-pass academic rewriter: AI-cliché stripping, phrase/word paraphrase, transition
+   variation, hedge/voice/formality controls, sentence-structure burstiness, and careful
+   preservation of citations, quotes, maths, URLs and numbers. Fully on-device. */
+const HUMANIZER_SOFT_WORDS=20000;
+const HUMANIZER_HARD_WORDS=35000;
+const STOCK=[
+ [/\bin today'?s fast[- ]paced world,?\s*/gi,''],[/\bin the ever[- ]evolving (?:world|landscape) of\b/gi,'in'],
+ [/\bit is important to note that\s*/gi,''],[/\bit'?s important to note that\s*/gi,''],
+ [/\bit is worth noting that\s*/gi,''],[/\bit should be noted that\s*/gi,''],
+ [/\bit is essential to (?:understand|recognize|acknowledge) that\s*/gi,''],
+ [/\bone cannot overstate the (?:importance|significance) of\b/gi,''],
+ [/\bfurthermore,s*/gi,'In addition, '],[/\bmoreover,\s*/gi,'What is more, '],[/\badditionally,\s*/gi,'In addition, '],
+ [/\bin conclusion,\s*/gi,'Altogether, '],[/\bin summary,\s*/gi,'In short, '],[/\bto summarize,\s*/gi,'In short, '],
+ [/\bto conclude,\s*/gi,'Altogether, '],[/\boverall,\s*/gi,'On the whole, '],
+ [/\bdelve(?:s|d)? into\b/gi,'look into'],[/\bdiving deep(?:er)? into\b/gi,'looking more closely at'],
+ [/\bplays? a (crucial|pivotal|vital|significant|key) role in\b/gi,'matters for'],
+ [/\ba myriad of\b/gi,'many'],[/\ba plethora of\b/gi,'many'],[/\ba wealth of\b/gi,'a lot of'],
+ [/\bnavigating the complexities of\b/gi,'working through'],[/\bnavigates the complexities of\b/gi,'works through'],[/\bnavigated the complexities of\b/gi,'worked through'],[/\bnavigate the complexities of\b/gi,'work through'],
+ [/\bharnessing the power of\b/gi,'using'],[/\bharnesses the power of\b/gi,'uses'],[/\bharnessed the power of\b/gi,'used'],[/\bharness the power of\b/gi,'use'],[/\bunlocking the (?:full )?potential of\b/gi,'getting more from'],[/\bunlocks the (?:full )?potential of\b/gi,'gets more from'],[/\bunlocked the (?:full )?potential of\b/gi,'got more from'],[/\bunlock the (?:full )?potential of\b/gi,'get more from'],
+ [/\ba testament to\b/gi,'evidence of'],[/\bstands as a testament to\b/gi,'shows'],
+ [/\bseamlessly\b/gi,'smoothly'],[/\bseamless\b/gi,'smooth'],[/\brobust\b/gi,'solid'],
+ [/\bcutting[- ]edge\b/gi,'up-to-date'],[/\bstate[- ]of[- ]the[- ]art\b/gi,'current'],
+ [/\bembarking on\b/gi,'starting'],[/\bembarks on\b/gi,'starts'],[/\bembarked on\b/gi,'started'],[/\bembark on\b/gi,'start'],[/\bin the realm of\b/gi,'in'],[/\bin the landscape of\b/gi,'in'],
+ [/\bparamount\b/gi,'central'],[/\bholistic\b/gi,'joined-up'],[/\bmultifaceted\b/gi,'many-sided'],
+ [/\bmeticulously\b/gi,'carefully'],[/\bmeticulous\b/gi,'careful'],
+ [/\bunderscoring\b/gi,'highlighting'],[/\bunderscores\b/gi,'highlights'],[/\bunderscored\b/gi,'highlighted'],[/\bunderscore\b/gi,'highlight'],[/\bshowcasing\b/gi,'showing'],[/\bshowcases\b/gi,'shows'],[/\bshowcased\b/gi,'showed'],[/\bshowcase\b/gi,'show'],[/\bfostering\b/gi,'encouraging'],[/\bfosters\b/gi,'encourages'],[/\bfostered\b/gi,'encouraged'],[/\bfoster\b/gi,'encourage'],
+ [/\btapestry of\b/gi,'mix of'],[/\bsymphony of\b/gi,'range of'],[/\bbeacon of\b/gi,'sign of'],
+ [/\bever[- ]evolving\b/gi,'changing'],[/\belevating\b/gi,'improving'],[/\belevates\b/gi,'improves'],[/\belevated\b/gi,'improved'],[/\belevate\b/gi,'improve'],[/\bstreamlining\b/gi,'simplifying'],[/\bstreamlines\b/gi,'simplifies'],[/\bstreamlined\b/gi,'simplified'],[/\bstreamline\b/gi,'simplify'],
+ [/\bempowering\b/gi,'helping'],[/\bempowers\b/gi,'helps'],[/\bempowered\b/gi,'helped'],[/\bempower\b/gi,'help'],[/\bresonating with\b/gi,'mattering to'],[/\bresonates with\b/gi,'matters to'],[/\bresonated with\b/gi,'mattered to'],[/\bresonate with\b/gi,'matter to'],
+ [/\bleveraging\b/gi,'using'],[/\bleverages\b/gi,'uses'],[/\bleveraged\b/gi,'used'],[/\bleverage\b/gi,'use'],[/\butilizing\b/gi,'using'],[/\butilizes\b/gi,'uses'],[/\butilized\b/gi,'used'],[/\butilize\b/gi,'use'],[/\butilisation\b/gi,'use'],[/\butilization\b/gi,'use'],
+ [/\bfacilitating\b/gi,'helping'],[/\bfacilitates\b/gi,'helps'],[/\bfacilitated\b/gi,'helped'],[/\bfacilitate\b/gi,'help'],[/\bcommencing\b/gi,'beginning'],[/\bcommences\b/gi,'begins'],[/\bcommenced\b/gi,'began'],[/\bcommence\b/gi,'begin'],
+ [/\bascertaining\b/gi,'finding out'],[/\bascertains\b/gi,'finds out'],[/\bascertained\b/gi,'found out'],[/\bascertain\b/gi,'find out'],[/\bendeavoring\b/gi,'trying'],[/\bendeavors\b/gi,'tries'],[/\bendeavored\b/gi,'tried'],[/\bendeavor\b/gi,'try'],[/\bendeavouring\b/gi,'trying'],[/\bendeavours\b/gi,'tries'],[/\bendeavoured\b/gi,'tried'],[/\bendeavour\b/gi,'try'],
+ [/\bin light of the fact that\b/gi,'because'],[/\bgiven the fact that\b/gi,'because'],
+ [/\bnot only\b/gi,'both'],[/\bbut also\b/gi,'and'],
+ [/\bwhether you'?re\b/gi,'whether you are'],[/\bas an ai\b/gi,''],[/\bi hope this helps\.?\s*/gi,''],
+ [/\bdive(?:s|d)? into\b/gi,'examine'],[/\bdive deep(?:er)?\b/gi,'look more closely'],
+ [/\bjourney (?:into|through|of|toward)\b/gi,'path through'],[/\bin this paper,? we (?:will |shall )?/gi,'This paper '],
+ [/\bthe present study (?:aims?|seeks?|attempts?) to\b/gi,'This study tries to '],[/\bthe current study\b/gi,'this study'],
+ [/\bit can be argued that\s*/gi,''],[/\bit could be suggested that\s*/gi,''],
+ [/\ba growing body of (?:research|literature|evidence) (?:has |have )?(?:shown|demonstrated|suggested) that\s*/gi,'Research suggests that '],
+ [/\bscholars have long (?:argued|debated|noted) that\s*/gi,''],
+ [/\bin recent years,?\s*/gi,''],[/\bover the past (?:few |several )?(?:years|decades),?\s*/gi,''],
+ [/\bwith the advent of\b/gi,'with'],[/\bin an increasingly\b/gi,'in a more'],
+ [/\bpivotal\b/gi,'important'],[/\bcrucial\b/gi,'important'],[/\bvital\b/gi,'important'],
+ [/\bessential\b/gi,'important'],[/\bcomprehensive\b/gi,'thorough'],[/\bintricate\b/gi,'detailed'],
+ [/\bnuanced\b/gi,'careful'],[/\bvibrant\b/gi,'lively'],[/\bbustling\b/gi,'busy'],
+ [/\brealm\b/gi,'area'],[/\blandscape\b/gi,'field'],[/\bparadigm\b/gi,'model'],
+ [/\bgame[- ]changer\b/gi,'major shift'],[/\btransformative\b/gi,'far-reaching'],
+ [/\bunprecedented\b/gi,'unusual'],[/\brevolutionary\b/gi,'major'],
+ [/\bat the forefront of\b/gi,'central to'],[/\bat the heart of\b/gi,'central to'],
+ [/\bin and of itself\b/gi,'itself'],[/\bin its own right\b/gi,''],
+ [/\bneedless to say,?\s*/gi,''],[/\bas previously mentioned,?\s*/gi,''],[/\bas mentioned (?:above|earlier),?\s*/gi,''],
+ [/\blast but not least,?\s*/gi,''],[/\bfirst and foremost,?\s*/gi,'First, '],
+ [/\bin order for\b/gi,'so that'],[/\bfor the purpose of\b/gi,'to'],
+ [/\bwith a view to\b/gi,'to'],[/\bwith the aim of\b/gi,'to'],
+ [/\bin the context of\b/gi,'in'],[/\bin terms of\b/gi,'for'],
+ [/\bas a means of\b/gi,'for'],[/\bas a means to\b/gi,'to'],
+ [/\bserve(?:s|d)? as a\b/gi,'act as a'],[/\bplays? an important part in\b/gi,'helps'],
+ [/\bbring(?:s|ing)? to the fore\b/gi,'highlight'],[/\bshedding light on\b/gi,'clarifying'],[/\bsheds light on\b/gi,'clarifies'],[/\bshed light on\b/gi,'clarify'],
+ [/\bopen(?:s|ed|ing)? up new avenues\b/gi,'create new options'],
+ [/\ba double[- ]edged sword\b/gi,'mixed'],[/\ba mixed bag\b/gi,'uneven'],
+ [/\bwarrant(?:s|ed|ing)? further (?:investigation|research|attention)\b/gi,'deserve more study'],
+ [/\bfuture research should\b/gi,'later work should'],[/\bfurther research is needed\b/gi,'more work is needed'],[/\bunlock(?:s|ed|ing)? their (?:full )?potential\b/gi,'make the most of what they can do'],[/\bunlock(?:s|ed|ing)? its (?:full )?potential\b/gi,'make the most of it'],[/\bthe elucidation of\b/gi,'clarify'],[/\belucidation\b/gi,'clarification'],[/\bhas the potential to\b/gi,'can'],[/\bhave the potential to\b/gi,'can'],[/\bin our daily lives\b/gi,'day to day'],[/\blong-term success\b/gi,'lasting success'],[/\bsustainable growth\b/gi,'steady growth'],[/\btransform industries seamlessly\b/gi,'reshape industries'],[/\btransform industries\b/gi,'reshape industries'],
+ [/\bthis paper (?:seeks|aims|attempts) to\b/gi,'This paper tries to '],[/\bthis article (?:seeks|aims|attempts) to\b/gi,'This article tries to '],
+ [/\bin this section,? we (?:will |shall )?/gi,'This section '],[/\bthe remainder of this (?:paper|article|chapter)\b/gi,'the rest of this paper']
+];
+const ACADEMIC_WORD={
+ utilize:'use',utilise:'use',utilization:'use',utilisation:'use',commence:'begin',facilitate:'help',
+ endeavor:'try',endeavour:'try',ascertain:'establish',demonstrate:'show',approximately:'about',
+ purchase:'buy',sufficient:'enough',numerous:'many',assist:'help',additional:'further',obtain:'obtain',
+ require:'need',terminate:'end',subsequently:'later',therefore:'so',however:'however',nevertheless:'still',
+ individuals:'people',regarding:'about',inquire:'ask',initiate:'begin',implement:'carry out',optimal:'best',
+ leverage:'use',endeavors:'efforts',endeavours:'efforts',aforementioned:'earlier',herein:'here',
+ heretofore:'until now',thereafter:'after that',whereby:'by which',wherein:'in which',thereof:'of it',
+ henceforth:'from now on',amidst:'amid',amongst:'among',whilst:'while',
+ methodology:'method',methodologies:'methods',utilize:'use',prioritize:'give priority to',prioritise:'give priority to',
+ conceptualization:'idea',conceptualisation:'idea',operationalize:'put into practice',operationalise:'put into practice',
+ problematize:'question',problematise:'question',interrogates:'examines',interrogating:'examining',
+ elucidate:'clarify',elucidates:'clarifies',elucidating:'clarifying',explicate:'explain',explicates:'explains',
+ posit:'argue',posits:'argues',postulate:'propose',postulates:'proposes',contend:'argue',contends:'argues',
+ maintain:'argue',maintains:'argues',assert:'claim',asserts:'claims',substantiate:'support',substantiates:'supports',
+ corroborate:'support',corroborates:'supports',delineate:'outline',delineates:'outlines',
+ encapsulate:'capture',encapsulates:'captures',epitomize:'represent',epitomises:'represents',epitomizes:'represents',
+ underscore:'stress',underscores:'stresses',accentuate:'stress',accentuates:'stresses',
+ ameliorate:'improve',ameliorates:'improves',augment:'increase',augments:'increases',
+ diminish:'reduce',diminishes:'reduces',exacerbate:'worsen',exacerbates:'worsens',
+ mitigate:'ease',mitigates:'eases',alleviate:'ease',alleviates:'eases',
+ preclude:'rule out',precludes:'rules out',necessitate:'require',necessitates:'requires',
+ pertain:'relate',pertains:'relates',pertaining:'relating',vis:'via',visavis:'compared with',
+ extant:'existing',nascent:'emerging',burgeoning:'growing',salient:'notable',salience:'importance',
+ concomitant:'accompanying',juxtaposition:'contrast',juxtapose:'contrast',juxtaposes:'contrasts',
+ aforementioned:'above',afore:'before',hence:'so',thus:'so',ergo:'so',
+ commence:'start',commences:'starts',ceases:'stops',cease:'stop',
+ employment:'use',employ:'use',employs:'uses',employed:'used',employing:'using',
+ deployment:'use',deploy:'use',deploys:'uses',deployed:'used',
+ manifestation:'form',manifestations:'forms',manifest:'show',manifests:'shows',
+ implication:'effect',implications:'effects',ramification:'effect',ramifications:'effects',
+ contribution:'input',contributions:'inputs',significance:'importance',significant:'important',
+ substantially:'largely',considerably:'greatly',markedly:'clearly',notably:'notably',
+ particularly:'especially',specifically:'in particular',respectively:'respectively',
+ ultimately:'in the end',initially:'at first',previously:'earlier',currently:'now',
+ subsequently:'later',consequently:'as a result',accordingly:'so',hence:'so'
+};
+const ACADEMIC_SYNONYMS={
+ important:['important','central','notable','key','consequential'],
+ significant:['important','notable','sizeable','meaningful','consequential'],
+ show:['show','indicate','suggest','point to','reveal'],
+ shows:['shows','indicates','suggests','points to','reveals'],
+ showed:['showed','indicated','suggested','pointed to','revealed'],
+ shown:['shown','indicated','suggested','revealed'],
+ suggest:['suggest','indicate','point to','imply'],
+ suggests:['suggests','indicates','points to','implies'],
+ examine:['examine','consider','look at','analyse','review'],
+ examines:['examines','considers','looks at','analyses','reviews'],
+ examined:['examined','considered','looked at','analysed','reviewed'],
+ analysis:['analysis','examination','review','study','account'],
+ study:['study','paper','work','investigation','research'],
+ research:['research','work','inquiry','scholarship','investigation'],
+ findings:['findings','results','evidence','outcomes'],
+ results:['results','findings','outcomes','data'],
+ argue:['argue','claim','contend','maintain','propose'],
+ argues:['argues','claims','contends','maintains','proposes'],
+ argued:['argued','claimed','contended','maintained','proposed'],
+ provide:['provide','offer','give','supply','present'],
+ provides:['provides','offers','gives','supplies','presents'],
+ provided:['provided','offered','gave','supplied','presented'],
+ approach:['approach','method','way','framework','perspective'],
+ approaches:['approaches','methods','ways','frameworks','perspectives'],
+ framework:['framework','model','approach','lens','scheme'],
+ impact:['impact','effect','influence','consequence'],
+ impacts:['impacts','effects','influences','consequences'],
+ issue:['issue','problem','question','concern','matter'],
+ issues:['issues','problems','questions','concerns','matters'],
+ process:['process','procedure','course','sequence'],
+ processes:['processes','procedures','courses'],
+ understanding:['understanding','account','reading','grasp','picture'],
+ knowledge:['knowledge','understanding','evidence','learning'],
+ literature:['literature','scholarship','prior work','published work'],
+ evidence:['evidence','support','data','indications'],
+ data:['data','evidence','material','observations'],
+ participants:['participants','respondents','subjects','people in the study'],
+ method:['method','approach','procedure','technique'],
+ methods:['methods','approaches','procedures','techniques'],
+ theory:['theory','account','framework','model'],
+ theories:['theories','accounts','frameworks','models'],
+ concept:['concept','idea','notion','construct'],
+ concepts:['concepts','ideas','notions','constructs'],
+ context:['context','setting','background','situation'],
+ contexts:['contexts','settings','backgrounds','situations'],
+ perspective:['perspective','view','angle','stance'],
+ perspectives:['perspectives','views','angles','stances'],
+ challenge:['challenge','difficulty','problem','obstacle'],
+ challenges:['challenges','difficulties','problems','obstacles'],
+ opportunity:['opportunity','chance','opening','scope'],
+ opportunities:['opportunities','chances','openings'],
+ develop:['develop','build','form','shape'],
+ develops:['develops','builds','forms','shapes'],
+ developed:['developed','built','formed','shaped'],
+ increase:['increase','rise','growth','gain'],
+ increase_v:['increase','raise','grow','expand'],
+ decrease:['decrease','fall','drop','decline'],
+ relationship:['relationship','link','association','connection'],
+ relationships:['relationships','links','associations','connections'],
+ difference:['difference','contrast','gap','variation'],
+ differences:['differences','contrasts','gaps','variations'],
+ similar:['similar','comparable','related','alike'],
+ different:['different','distinct','separate','unlike'],
+ clear:['clear','plain','evident','obvious'],
+ clearly:['clearly','plainly','evidently'],
+ however:['however','yet','still','even so','all the same'],
+ therefore:['therefore','so','as a result','for that reason'],
+ because:['because','since','as','given that'],
+ although:['although','though','even though','while'],
+ while:['while','whereas','as'],
+ also:['also','as well','too','likewise'],
+ many:['many','numerous','a large number of','plenty of'],
+ most:['most','the majority of','nearly all'],
+ some:['some','several','a number of','certain'],
+ often:['often','frequently','in many cases','commonly'],
+ usually:['usually','typically','in most cases','generally'],
+ generally:['generally','broadly','on the whole','in general'],
+ particularly:['particularly','especially','in particular','notably'],
+ specifically:['specifically','in particular','namely'],
+ finally:['finally','lastly','in the end','to finish'],
+ first:['first','to begin with','at the outset','initially'],
+ second:['second','next','then'],
+ third:['third','then','next']
+};
+const TRANSITIONS={
+ furthermore:['Also','In addition','Beyond that','What is more','Along the same lines'],
+ moreover:['What is more','In addition','Also','Beyond this'],
+ additionally:['In addition','Also','On top of that','Besides'],
+ however:['However','Yet','Even so','Still','That said'],
+ therefore:['Therefore','So','As a result','For that reason','Hence'],
+ consequently:['As a result','So','For that reason','Consequently'],
+ nevertheless:['Still','Even so','Nevertheless','All the same'],
+ meanwhile:['Meanwhile','At the same time','In the meantime'],
+ similarly:['Similarly','Likewise','In the same way','By the same token'],
+ conversely:['Conversely','By contrast','On the other hand'],
+ indeed:['Indeed','In fact','Certainly'],
+ thus:['So','Thus','In this way','As a result'],
+ hence:['So','Hence','For that reason'],
+ ultimately:['In the end','Ultimately','Taken together'],
+ notably:['Notably','In particular','Of note'],
+ specifically:['Specifically','In particular','Namely'],
+ subsequently:['Later','Afterwards','Then','Following this'],
+ previously:['Earlier','Before this','Previously'],
+ initially:['At first','Initially','To begin with'],
+ finally:['Finally','Lastly','To finish'],
+ overall:['On the whole','Overall','Taken together'],
+ likewise:['Likewise','Similarly','In the same way']
+};
+const NOMINAL=[[/\bthe (?:utilization|utilisation|use) of\b/gi,'using'],[/\bthe analysis of\b/gi,'analysing'],[/\bthe examination of\b/gi,'examining'],[/\bthe investigation of\b/gi,'investigating'],[/\bthe consideration of\b/gi,'considering'],[/\bthe implementation of\b/gi,'implementing'],[/\bthe development of\b/gi,'developing'],[/\bthe application of\b/gi,'applying'],[/\bthe identification of\b/gi,'identifying'],[/\bthe evaluation of\b/gi,'evaluating'],[/\bthe assessment of\b/gi,'assessing'],[/\bthe exploration of\b/gi,'exploring'],[/\bthe introduction of\b/gi,'introducing'],[/\bthe creation of\b/gi,'creating'],[/\bthe production of\b/gi,'producing'],[/\bthe provision of\b/gi,'providing'],[/\bthe inclusion of\b/gi,'including'],[/\bthe exclusion of\b/gi,'excluding'],[/\bthe comparison of\b/gi,'comparing'],[/\bthe measurement of\b/gi,'measuring'],[/\bthe observation of\b/gi,'observing'],[/\bthe recognition of\b/gi,'recognising'],[/\bthe understanding of\b/gi,'understanding'],[/\bthe discussion of\b/gi,'discussing'],[/\bthe presentation of\b/gi,'presenting'],[/\bmake(?:s|ing)? (?:a |an )?(?:decision|decisions)\b/gi,'decide'],[/\bmake(?:s|ing)? (?:an? )?argument\b/gi,'argue'],[/\bconduct(?:s|ed|ing)? (?:an? )?analysis\b/gi,'analyse'],[/\bcarry(?:ies|ying)? out (?:an? )?(?:analysis|study|investigation)\b/gi,'analyse'],[/\bgive(?:s|ing)? consideration to\b/gi,'consider'],[/\btake(?:s|ing)? into account\b/gi,'consider'],[/\btake(?:s|ing)? into consideration\b/gi,'consider'],[/\bcome(?:s|ing)? to (?:the )?conclusion\b/gi,'conclude'],[/\breach(?:es|ed|ing)? (?:a |the )?conclusion\b/gi,'conclude'],[/\bplace(?:s|d|ing)? emphasis on\b/gi,'emphasise'],[/\bput(?:s|ting)? emphasis on\b/gi,'emphasise'],[/\bhave(?:s|ing)? an effect on\b/gi,'affect'],[/\bhave(?:s|ing)? an impact on\b/gi,'affect'],[/\bis indicative of\b/gi,'indicates'],[/\bare indicative of\b/gi,'indicate'],[/\bis suggestive of\b/gi,'suggests'],[/\bare suggestive of\b/gi,'suggest']];
+const CONTRACT=[[/\bdo not\b/gi,"don't"],[/\bdoes not\b/gi,"doesn't"],[/\bdid not\b/gi,"didn't"],[/\bis not\b/gi,"isn't"],[/\bare not\b/gi,"aren't"],[/\bwas not\b/gi,"wasn't"],[/\bwere not\b/gi,"weren't"],[/\bcannot\b/gi,"can't"],[/\bwill not\b/gi,"won't"],[/\bit is\b/gi,"it's"],[/\bthat is\b/gi,"that's"],[/\bthere is\b/gi,"there's"],[/\bthere are\b/gi,"there're"],[/\byou are\b/gi,"you're"],[/\bwe are\b/gi,"we're"],[/\bthey are\b/gi,"they're"],[/\bI am\b/g,"I'm"],[/\bwould not\b/gi,"wouldn't"],[/\bshould not\b/gi,"shouldn't"],[/\bcould not\b/gi,"couldn't"],[/\bhave not\b/gi,"haven't"],[/\bhas not\b/gi,"hasn't"],[/\bhad not\b/gi,"hadn't"],[/\byou will\b/gi,"you'll"],[/\bwe will\b/gi,"we'll"],[/\bthey will\b/gi,"they'll"],[/\blet us\b/gi,"let's"],[/\bwho is\b/gi,"who's"],[/\bwhat is\b/gi,"what's"],[/\bwhere is\b/gi,"where's"]];
+const HEDGE_ADD=[['It is clear that ','It seems that '],['This shows that ','This suggests that '],['This proves that ','This indicates that '],['We can conclude that ','One reading is that '],['This demonstrates that ','This points to '],['Clearly, ','Arguably, '],['Obviously, ','It appears that '],['Without doubt, ','On this evidence, '],['Certainly, ','Quite possibly, ']];
+const HEDGE_STRIP=[/\bit seems (?:that|as though|as if)\s*/gi,/\bit appears (?:that|as though)\s*/gi,/\bit would (?:appear|seem) that\s*/gi,/\bone might (?:argue|say|suggest) that\s*/gi,/\barguably,?\s*/gi,/\bperhaps\s+/gi,/\bmaybe\s+/gi,/\bpossibly\s+/gi,/\bin some (?:sense|ways?),?\s*/gi,/\bto some extent,?\s*/gi,/\bit could be argued that\s*/gi];
+const ELABORATE=[[/^(.{40,120}\.)$/,(s,rnd)=>rnd()<0.35?s.slice(0,-1)+', which helps to clarify the point.':s],[/^(.{30,90})\.$/,(s,rnd)=>rnd()<0.25?s.slice(0,-1)+' in this context.':s]];
+const PROTECT_RE=/(\$\$.*?\$\$|\$(?:\\\$|[^$])+\$|\\\((?:\\\)|[^)])+\\\)|\\\[(?:\\\]|[^\]])+\\\]|https?:\/\/\S+|www\.\S+|doi:\s*\S+|10\.\d{4,9}\/[-._;()\/:A-Z0-9]+|\[[0-9,\s–-]+\]|\((?:[A-Z][A-Za-z'’-]+(?:,?\s+(?:&|and)\s+[A-Z][A-Za-z'’-]+)*(?: et al\.?)?,?\s*\d{4}[a-z]?(?:,\s*p+\.?\s*\d+(?:[-–]\d+)?)?)\)|"[^"\n]{1,400}"|'[^'\n]{1,200}'|`[^`\n]{1,200}`)/gs;
+function keepCase(rep){return(m,...a)=>{const r=typeof rep==='function'?rep(m,...a):String(rep).replace(/\$(\d)/g,(_,i)=>a[i-1]||'');if(!r)return r;if(/^[A-Z]/.test(m)&&/^[a-z]/.test(r))return r[0].toUpperCase()+r.slice(1);if(m===m.toUpperCase()&&m.length>1)return r.toUpperCase();return r;};}
+function seeded(seed){let s=(seed>>>0)||1;return()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return((s>>>0)%10000)/10000;};}
+function protectSpans(text){const slots=[];const out=text.replace(PROTECT_RE,(m)=>{const i=slots.length;slots.push(m);return '\uE000'+i+'\uE001';});return{text:out,slots};}
+function restoreSpans(text,slots){return text.replace(/\uE000(\d+)\uE001/g,(_,i)=>slots[+i]||'');}
+function pick(arr,rnd){return arr[Math.floor(rnd()*arr.length)%arr.length];}
+function applySynonymMap(text,rnd,rate,tone){const skip=new Set(['also','too','so','yet','still','however','therefore','thus','hence','then','next','first','second','third','finally','overall','indeed','meanwhile','similarly','conversely','specifically','notably','subsequently','previously','initially','because','although','while','many','most','some','often','usually','generally','particularly','clear','clearly','different','similar']);
+ return text.replace(/(^|[.!?\n]\s*)(\b[A-Za-z][A-Za-z'’-]{2,}\b)|\b([A-Za-z][A-Za-z'’-]{2,})\b/g,(full,lead,startWord,mid)=>{
+  const m=startWord||mid;if(!m)return full;const low=m.toLowerCase().replace(/’/g,"'");
+  if(skip.has(low))return full;const opts=ACADEMIC_SYNONYMS[low];if(!opts||opts.length<2)return full;if(rnd()>rate)return full;
+  if(startWord)return full; /* keep sentence openers stable */
+  let choice=pick(opts.filter(x=>x.toLowerCase()!==low&&x.indexOf(' ')===-1),rnd)||opts[0];
+  if(tone==='formal'||tone==='academic'){if(/n't|'re|'ll|'ve|'m/.test(choice)||choice.indexOf(' ')>=0)return full;}
+  return (lead||'')+matchCase(m,choice);});}
+function rewriteTransitions(text,rnd){return text.replace(/(^|[.!?]\s+)(Furthermore|Moreover|Additionally|However|Therefore|Consequently|Nevertheless|Meanwhile|Similarly|Conversely|Indeed|Thus|Hence|Ultimately|Notably|Specifically|Subsequently|Previously|Initially|Finally|Overall|Likewise)\b/g,(full,lead,word)=>{const key=word.toLowerCase();const opts=TRANSITIONS[key];if(!opts||rnd()<0.2)return full;return lead+pick(opts,rnd);});}
+function varyOpeners(paragraph,rnd){const ss=sentences(paragraph).map(s=>s.text);if(ss.length<3)return paragraph;const starts=ss.map(s=>(words(s)[0]||{w:''}).w.toLowerCase());const res=[];for(let i=0;i<ss.length;i++){let s=ss[i];if(i>0&&starts[i]&&starts[i]===starts[i-1]&&rnd()<0.7){if(/^(this|these|that|it|the|a|an|in|on|for|with|by)\b/i.test(s)){const alts={this:'That',these:'Those',that:'This',it:'This',the:'A',a:'The',an:'The',in:'Within',on:'Upon',for:'Regarding',with:'Using',by:'Through'};const w=words(s)[0].w;const rep=alts[w.toLowerCase()];if(rep)s=matchCase(w,rep)+s.slice(w.length);}}res.push(s);}return res.join(' ');}
+function splitMerge(paragraph,tone,rnd,changes){let ss=sentences(paragraph).map(s=>s.text);const res=[];for(let i=0;i<ss.length;i++){let s=ss[i];const wc=words(s).length;
+ if(wc>28){const m=s.match(/^(.{45,}?)[,;]\s+(and|but|which|while|whereas|so|yet|although|though)\s+(.{20,})$/i);if(m&&rnd()<0.75){const head=m[1].replace(/[,;]$/,'')+'.';let lead={and:'And',but:'But',which:'That',while:'Meanwhile,',whereas:'By contrast,',so:'So',yet:'Yet',although:'Still,',though:'Still,'}[m[2].toLowerCase()]||'Also,';let tail=m[3];if(!/^[A-Z]/.test(tail))tail=lead+' '+(lead.endsWith(',')?tail:tail[0].toUpperCase()+tail.slice(1));else if(!lead.endsWith(','))tail=lead+' '+tail[0].toLowerCase()+tail.slice(1);else tail=lead+' '+tail;res.push(head,tail);changes.splits++;continue;}}
+ const nx=ss[i+1];if(nx&&wc<=8&&words(nx).length<=9&&rnd()<(tone==='elaborate'?0.15:0.45)&&/\.$/.test(s)&&tone!=='formal'&&tone!=='academic'){const join=rnd()<0.5?', and ':(rnd()<0.5?'; ':'. ');if(join==='. '){res.push(s);continue;}const joined=s.replace(/\.$/,'')+join+(/^[A-Z]/.test(nx)&&!/^I\b/.test(nx)?nx[0].toLowerCase()+nx.slice(1):nx);res.push(joined);i++;changes.merges++;continue;}
+ res.push(s);}return res.join(' ');}
+function tonePass(text,tone,rnd,changes){let out=text;
+ if(tone==='concise'){for(const[p,r]of WORDY){if(r)continue;out=out.replace(new RegExp('\\b'+p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b,?\\s*','gi'),()=>{changes.words++;return '';});}out=out.replace(/\b(very|really|quite|just|basically|actually|literally|simply|clearly|obviously|essentially)\s+/gi,()=>{changes.words++;return '';});}
+ if(tone==='friendly'||tone==='conversational'){out=out.replace(/\bHello\b/g,'Hi');for(const[a,b]of HEDGE_ADD){if(rnd()<0.2)out=out.replace(a,()=>{changes.hedges=(changes.hedges||0)+1;return b;});}}
+ if(tone==='formal'||tone==='academic'){for(const re of HEDGE_STRIP)out=out.replace(re,()=>{changes.hedges=(changes.hedges||0)+1;return '';});out=out.replace(/\b\w+(n't|'re|'ll|'ve|'m)\b/gi,m=>{const e=expandContraction(m);if(e!==m)changes.contractions++;return e;});}
+ if(tone==='elaborate'){out=out.split(/(?<=[.!?])\s+/).map(s=>{if(words(s).length<8||words(s).length>28)return s;if(rnd()<0.22&&/\.$/.test(s)&&!/\bwhich\b/i.test(s)){changes.words++;return s.slice(0,-1)+', which clarifies the claim.';}return s;}).join(' ');}
+ if(tone==='natural'||tone==='conversational'||tone==='friendly'){for(const[re,r]of CONTRACT){out=out.replace(re,m=>{const p=tone==='natural'?0.55:0.8;if(rnd()>p)return m;changes.contractions++;return matchCase(m,r);});}}
+ return out;}
+function wordify(text,rnd,tone,changes){let out=text;
+ for(const[p,r]of WORDY){if(!r)continue;out=out.replace(new RegExp('\\b'+p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','gi'),m=>{changes.words++;return matchCase(m,r);});}
+ for(const[re,r]of NOMINAL){out=out.replace(re,m=>{changes.words++;return matchCase(m,r);});}
+ const formalSkip=tone==='formal'||tone==='academic'?new Set(['however','therefore','regarding','obtain','demonstrate','significant','analysis','methodology']):new Set(['however','therefore']);
+ for(const k in ACADEMIC_WORD){if(formalSkip.has(k))continue;const re=new RegExp('\\b'+k+'\\b','gi');out=out.replace(re,m=>{if(rnd()<0.25&&(tone==='natural'))return m;changes.words++;return matchCase(m,ACADEMIC_WORD[k]);});}
+ const rate=tone==='concise'?0.12:tone==='elaborate'?0.28:tone==='academic'?0.18:tone==='formal'?0.15:0.22;
+ const before=out;out=applySynonymMap(out,rnd,rate,tone);if(out!==before)changes.synonyms=(changes.synonyms||0)+1;
+ return out;}
+function humanizeChunk(text,opts,rnd,changes){let out=text;
  for(const[re,r]of STOCK){out=out.replace(re,(...a)=>{changes.phrases++;return keepCase(r)(...a);});}
- for(const[p,r]of WORDY){if(!r)continue;out=out.replace(new RegExp('\\b'+p+'\\b','gi'),m=>{changes.words++;return matchCase(m,r);});}
- if(tone!=='formal'){for(const k in FORMAL){const re=new RegExp('\\b'+k+'\\b','gi');out=out.replace(re,m=>{if(['however','therefore'].includes(k)&&tone==='natural')return m;changes.words++;return matchCase(m,FORMAL[k]);});}
-  for(const[re,r]of CONTRACT){out=out.replace(re,m=>{if(tone==='natural'&&rnd()<0.25)return m;changes.contractions++;return matchCase(m,r);});}}
- else{out=out.replace(/\b\w+(n't|'re|'ll|'ve|'m)\b/gi,m=>{const e=expandContraction(m);if(e!==m)changes.contractions++;return e;});}
- /* vary sentence length: split long sentences at a conjunction, merge consecutive short ones */
- const paras=out.split(/(\n+)/);out=paras.map(par=>{if(/^\n+$/.test(par)||!par.trim())return par;let ss=sentences(par).map(s=>s.text);const res=[];for(let i=0;i<ss.length;i++){let s=ss[i];const wc=words(s).length;
-   if(wc>26){const m=s.match(/^(.{40,}?),\s+(and|but|which|while|so)\s+(.{25,})$/);if(m){const head=m[1].replace(/[,;]$/,'')+'.';let tail=m[3];const lead={and:'And',but:'But',which:'That',while:'Meanwhile,',so:'So'}[m[2].toLowerCase()];tail=lead+' '+tail;res.push(head,tail);changes.splits++;continue;}}
-   const nx=ss[i+1];if(nx&&wc<=7&&words(nx).length<=7&&rnd()<0.5&&/\.$/.test(s)&&tone!=='formal'){const joined=s.replace(/\.$/,'')+(rnd()<0.5?', and ':' — ')+nx[0].toLowerCase()+nx.slice(1);if(!/^I\b/.test(nx)){res.push(joined);i++;changes.merges++;continue;}}
-   res.push(s);}return res.join(' ');}).join('');
- if(tone==='concise'){for(const[p,r]of WORDY){if(r)continue;out=out.replace(new RegExp('\\b'+p+'\\b,?\\s*','gi'),()=>{changes.words++;return '';});}out=out.replace(/\b(very|really|quite|just|basically|actually|literally)\s+/gi,()=>{changes.words++;return '';});}
- if(tone==='friendly')out=out.replace(/\bHello\b/g,'Hi');
- out=out.replace(/ {2,}/g,' ').replace(/\s+([,.!?;:])/g,'$1').replace(/(^|[.!?]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase());
- return{text:out,changes,before:readability(text),after:readability(out)};}
-
+ out=wordify(out,rnd,opts.tone,changes);
+ out=rewriteTransitions(out,rnd);
+ out=tonePass(out,opts.tone,rnd,changes);
+ const paras=out.split(/(\n+)/);out=paras.map(par=>{if(/^\n+$/.test(par)||!par.trim())return par;let p=varyOpeners(par,rnd);p=splitMerge(p,opts.tone,rnd,changes);return p;}).join('');
+ out=out.replace(/ {2,}/g,' ').replace(/\s+([,.!?;:])/g,'$1').replace(/([.!?])([A-Za-z])/g,'$1 $2').replace(/(^|[.!?]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase());
+ out=out.replace(/\b(And|But|So|Yet) and\b/g,'$1').replace(/\s+,/g,',');
+ out=out.replace(/\b((?:In addition|What is more|What's more|Beyond that|On top of that|Along the same lines|By contrast|On the whole|In short|Altogether|For that reason|As a result|Even so|All the same|By the same token|Besides|Also),)\s+(This|That|These|Those)\b/g,(m,a,w)=>a+' '+w.toLowerCase());
+ return out;}
+function normalizeTone(t){t=(t||'natural').toLowerCase();
+ if(t==='formal & clear'||t==='formal academic'||t==='formal-academic'||t==='formal_academic')return 'academic';
+ if(t==='conversational academic'||t==='conversational-academic'||t==='conversational_academic')return 'conversational';
+ if(t==='formal')return 'formal';
+ if(t==='friendly')return 'friendly';
+ if(t==='concise')return 'concise';
+ if(t==='elaborate')return 'elaborate';
+ if(t==='academic')return 'academic';
+ if(t==='conversational')return 'conversational';
+ return 'natural';}
+function humanize(text,opts={}){const tone=normalizeTone(opts.tone);const rnd=seeded(opts.seed||(text.length*31+7));
+ const changes={phrases:0,words:0,contractions:0,splits:0,merges:0,synonyms:0,hedges:0,protected:0};
+ const wc=words(text).length;let truncated=false;let src=text;
+ if(wc>HUMANIZER_HARD_WORDS){const toks=words(text);const cut=toks[HUMANIZER_HARD_WORDS-1].end;src=text.slice(0,cut);truncated=true;}
+ const {text:masked,slots}=protectSpans(src);changes.protected=slots.length;
+ /* paragraph-aware multi-pass */
+ const parts=masked.split(/(\n{2,})/);
+ let out=parts.map((part,idx)=>{if(/^\n+$/.test(part)||!part.trim())return part;let chunk=part;for(let pass=0;pass<(opts.passes||2);pass++){chunk=humanizeChunk(chunk,{tone},rnd,changes);}return chunk;}).join('');
+ out=restoreSpans(out,slots);
+ out=out.replace(/ {2,}/g,' ').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim()+(src.endsWith('\n')?'\n':'');
+ return{text:out,changes,before:readability(text),after:readability(out),wordCount:wc,truncated,softLimit:HUMANIZER_SOFT_WORDS,hardLimit:HUMANIZER_HARD_WORDS,tone};}
+function humanizeAsync(text,opts={},onProgress){const tone=normalizeTone(opts.tone);const rnd=seeded(opts.seed||(text.length*31+7));
+ const changes={phrases:0,words:0,contractions:0,splits:0,merges:0,synonyms:0,hedges:0,protected:0};
+ const wc=words(text).length;let truncated=false;let src=text;
+ if(wc>HUMANIZER_HARD_WORDS){const toks=words(text);src=text.slice(0,toks[HUMANIZER_HARD_WORDS-1].end);truncated=true;}
+ const {text:masked,slots}=protectSpans(src);changes.protected=slots.length;
+ const parts=masked.split(/(\n{2,})/);const outParts=new Array(parts.length);let i=0;
+ return new Promise(resolve=>{
+  function step(){const start=performance.now?performance.now():Date.now();
+   while(i<parts.length&&((performance.now?performance.now():Date.now())-start)<12){const part=parts[i];if(/^\n+$/.test(part)||!part.trim())outParts[i]=part;else{let chunk=part;for(let pass=0;pass<(opts.passes||2);pass++)chunk=humanizeChunk(chunk,{tone},rnd,changes);outParts[i]=chunk;}i++;}
+   if(onProgress)onProgress(Math.min(1,i/Math.max(1,parts.length)));
+   if(i<parts.length){setTimeout(step,0);return;}
+   let out=restoreSpans(outParts.join(''),slots);out=out.replace(/ {2,}/g,' ').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim()+(src.endsWith('\n')?'\n':'');
+   resolve({text:out,changes,before:readability(text),after:readability(out),wordCount:wc,truncated,softLimit:HUMANIZER_SOFT_WORDS,hardLimit:HUMANIZER_HARD_WORDS,tone});}
+  step();});}
 /* ---------- diff (word-level LCS) ---------- */
 function diff(a,b){const A=a.split(/(\s+)/),B=b.split(/(\s+)/);const n=A.length,m=B.length;if(n*m>4e6)return[{op:'del',text:a},{op:'add',text:b}];const dp=Array.from({length:n+1},()=>new Uint32Array(m+1));for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=A[i]===B[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);const out=[];let i=0,j=0;const push=(op,t)=>{const l=out[out.length-1];if(l&&l.op===op)l.text+=t;else out.push({op,text:t});};while(i<n&&j<m){if(A[i]===B[j]){push('eq',A[i]);i++;j++;}else if(dp[i+1][j]>=dp[i][j+1]){push('del',A[i]);i++;}else{push('add',B[j]);j++;}}while(i<n)push('del',A[i++]);while(j<m)push('add',B[j++]);return out;}
 
-return{sentences,words,syllables,readability,fleschLabel,loadDictionary,addWords,hasDictionary,known,suggest,check,applyFix,detectTone,detectAI,humanize,diff,expandContraction,mtld};
+return{sentences,words,syllables,readability,fleschLabel,loadDictionary,addWords,hasDictionary,known,suggest,check,applyFix,detectTone,detectAI,humanize,humanizeAsync,HUMANIZER_SOFT_WORDS,HUMANIZER_HARD_WORDS,normalizeTone,diff,expandContraction,mtld,protectSpans,restoreSpans};
 });
