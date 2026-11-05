@@ -103,30 +103,107 @@ function detectTone(text){const t=text.toLowerCase();const w=Math.max(1,words(te
 /* ---------- AI-likeness heuristic ---------- */
 function mean(a){return a.reduce((x,y)=>x+y,0)/Math.max(1,a.length);}function sd(a){const m=mean(a);return Math.sqrt(mean(a.map(x=>(x-m)**2)));}
 function mtld(tokens,th=0.72){function pass(arr){let f=0,types=new Set(),n=0;for(const t of arr){n++;types.add(t);if(types.size/n<=th){f++;types=new Set();n=0;}}if(n>0){const ttr=types.size/n;f+=ttr>=1?0:(1-ttr)/(1-th);}return f?arr.length/f:arr.length;}if(tokens.length<10)return 0;return(pass(tokens)+pass([...tokens].reverse()))/2;}
-function detectAI(text){const sents=sentences(text).filter(s=>words(s.text).length>=3);const toks=words(text).map(x=>x.w.toLowerCase());const n=toks.length;
- if(n<40||sents.length<3)return{enough:false,score:null,signals:[],sentences:[],words:n};
- const lens=sents.map(s=>words(s.text).length);const cv=sd(lens)/Math.max(1,mean(lens));/* burstiness: human text varies more */
- const ttr=new Set(toks).size/n;const mt=mtld(toks);
- const low=' '+text.toLowerCase()+' ';let phraseHits=0;const found=[];for(const p of AI_PHRASES){const re=new RegExp('(^|[^a-z])'+p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=[^a-z]|$)','g');const k=(low.match(re)||[]).length;if(k){phraseHits+=k;found.push(p);}}
- const phraseRate=phraseHits/n*100;
- /* repetition: share of repeated word trigrams */const tri=new Map();for(let i=0;i+2<n;i++){const k=toks[i]+' '+toks[i+1]+' '+toks[i+2];tri.set(k,(tri.get(k)||0)+1);}let rep=0;tri.forEach(v=>{if(v>1)rep+=v;});const repRate=rep/Math.max(1,n-2);
- /* perplexity proxy: average unigram rank in commonness list (AI text favours common-but-polished words) and contraction/first-person rate */
- const contractions=(text.match(/\b\w+(n't|'re|'ll|'ve|'m|'d)\b/gi)||[]).length/Math.max(1,sents.length);const personal=(text.match(/\b(i|me|my|lol|honestly|guess|kinda|yeah)\b/gi)||[]).length/n*100;
- const starters=new Map();sents.forEach(s=>{const f=words(s.text)[0];if(f){const k=f.w.toLowerCase();starters.set(k,(starters.get(k)||0)+1);}});const starterRep=Math.max(...starters.values())/sents.length;
- const commas=(text.match(/,/g)||[]).length/sents.length;
+const DETECTOR_SOFT_WORDS=20000;
+const DETECTOR_HARD_WORDS=50000;
+const DETECTOR_MIN_WORDS=40;
+const AI_PHRASE_EXTRA=["in today's digital age","in this day and age","at the end of the day","it goes without saying","needless to say","a double-edged sword","opens up new avenues","shed light on","sheds light on","bring to the fore","stands as a testament","growing body of research","growing body of literature","scholars have long","in recent years","with the advent of","in an increasingly","at the forefront of","at the heart of","in and of itself","in its own right","as previously mentioned","as mentioned above","last but not least","first and foremost","in the context of","in terms of","as a means of","serve as a","plays an important part","warrant further","future research should","further research is needed","the present study","the current study","this paper aims","this paper seeks","this article aims","in this paper we will","the remainder of this","to conclude","to summarise","to summarize","in closing","taken together","it can be argued that","it could be suggested that","one cannot overstate","cannot be overstated","of paramount importance","highly significant","significantly enhance","significantly enhance","significantly improve","deep dive","dive deeper","game changing","paradigm shift","best practices","moving forward","going forward","circle back","touch base","low-hanging fruit","think outside the box","unlock new","pave the way","paves the way","lay the foundation","lays the foundation","bring about","brings about","in light of","given the fact that","due to the fact that","has the ability to","have the ability to","a large number of","a wide range of","a wide variety of","in order to","with regard to","with respect to","prior to","subsequent to","make a decision","come to a conclusion","take into consideration","each and every","end result","past history","free gift","advance planning","close proximity","the reason why is because","in my opinion i think","as an ai language model","as a language model","i'm happy to help","i hope this helps","let me know if","certainly!","of course!","great question","delve deeper","tapestry of","beacon of","symphony of","intricate web","rich tapestry","ever-changing","rapidly evolving","digital landscape","modern landscape","competitive landscape","holistic approach","multifaceted nature","nuanced understanding","seamless integration","robust framework","comprehensive overview","cutting edge","state of the art","groundbreaking","revolutionary","transformative impact","unprecedented opportunities","empower individuals","empower organizations","foster collaboration","foster innovation","drive innovation","drive growth","enhance outcomes","optimize performance","streamline processes","leverage technology","leverage data","harness data","navigate challenges","address the challenges","tackle the challenges","crucial role","pivotal role","vital role","essential role","significant role","plays a key role","in conclusion it is clear","in summary it is evident","overall it is clear"];
+const AI_PHRASES_ALL=(typeof AI_PHRASES!=='undefined'?AI_PHRASES:[]).concat(AI_PHRASE_EXTRA);
+const AI_TRANSITION_WORDS=['furthermore','moreover','additionally','in addition','in conclusion','in summary','to summarize','to summarise','to conclude','overall','consequently','nonetheless','nevertheless','hence','thus','therefore','accordingly','similarly','likewise','conversely','notably','specifically','subsequently','ultimately','firstly','secondly','thirdly','lastly'];
+const EMPTY_INTENSIFIERS=['crucial','pivotal','vital','paramount','essential','comprehensive','robust','seamless','cutting-edge','groundbreaking','transformative','unprecedented','holistic','multifaceted','nuanced','meticulous','intricate','vibrant','bustling','leveraging','fostering','empowering','streamlining','elevating','underscoring','showcasing'];
+
+function detectRegister(text,toks,sents){
+ const low=text.toLowerCase();
+ const cite=(text.match(/\([A-Z][A-Za-z'’-]+(?:,?\s+(?:&|and)\s+[A-Z][A-Za-z'’-]+)*(?: et al\.?)?,?\s*\d{4}[a-z]?\)|\[[0-9,\s–-]+\]|doi:\s*\S+|10\.\d{4,9}\//gi)||[]).length;
+ const acadMark=(low.match(/\b(however|therefore|thus|whereas|hypothesis|participants|methodology|literature|findings|analysis|study|research|significant|respectively|et al)\b/g)||[]).length;
+ const casual=(low.match(/\b(lol|kinda|gonna|wanna|yeah|ok|okay|hey|guys|awesome|cool|honestly|gotta)\b/g)||[]).length+(text.match(/\b\w+(n't|'re|'ll|'ve|'m)\b/gi)||[]).length;
+ const longWord=toks.filter(w=>w.length>=10).length/Math.max(1,toks.length);
+ let score=0;score+=Math.min(3,cite)*1.2;score+=Math.min(8,acadMark)*0.35;score+=longWord*8;score-=Math.min(4,casual)*0.8;
+ if(cite>=1&&acadMark>=2)return 'academic';if(score>=1.8)return 'academic';if(score<=-0.5||casual>=4)return 'casual';return 'mixed';
+}
+function phraseHitsIn(text){
+ const low=' '+String(text).toLowerCase()+' ';const found=[];let hits=0;const seen=new Set();
+ for(const p of AI_PHRASES_ALL){const re=new RegExp('(^|[^a-z0-9])'+p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=[^a-z0-9]|$)','g');const k=(low.match(re)||[]).length;if(k){hits+=k;if(!seen.has(p)){seen.add(p);found.push(p);}}}
+ return{hits,found};
+}
+function detectAI(text,opts={}){
  const clamp=x=>Math.max(0,Math.min(1,x));
+ const allSents=sentences(text);const sents=allSents.filter(s=>words(s.text).length>=3);
+ const toks=words(text).map(x=>x.w.toLowerCase());let n=toks.length;let truncated=false;let src=text;
+ if(n>DETECTOR_HARD_WORDS){const cut=words(text)[DETECTOR_HARD_WORDS-1].end;const r=detectAI(text.slice(0,cut),Object.assign({},opts,{_skipHard:true}));r.truncated=true;r.fullWords=n;return r;}
+ if(n<DETECTOR_MIN_WORDS||sents.length<3)return{enough:false,score:null,signals:[],sentences:[],words:n,minWords:DETECTOR_MIN_WORDS,softLimit:DETECTOR_SOFT_WORDS,hardLimit:DETECTOR_HARD_WORDS,truncated:false,register:null,confidence:null,topPhrases:[],label:null};
+ const lens=sents.map(s=>words(s.text).length);const cv=sd(lens)/Math.max(1,mean(lens));
+ const ttr=new Set(toks).size/n;const mt=mtld(toks);
+ const ph=phraseHitsIn(src);const phraseRate=ph.hits/n*100;
+ const tri=new Map();for(let i=0;i+2<n;i++){const k=toks[i]+' '+toks[i+1]+' '+toks[i+2];tri.set(k,(tri.get(k)||0)+1);}let rep=0;tri.forEach(v=>{if(v>1)rep+=v;});const repRate=rep/Math.max(1,n-2);
+ const contractions=(src.match(/\b\w+(n't|'re|'ll|'ve|'m|'d)\b/gi)||[]).length/Math.max(1,sents.length);
+ const personal=(src.match(/\b(i|me|my|lol|honestly|guess|kinda|yeah|we|our|us)\b/gi)||[]).length/n*100;
+ const starters=new Map();sents.forEach(s=>{const f=words(s.text)[0];if(f){const k=f.w.toLowerCase();starters.set(k,(starters.get(k)||0)+1);}});
+ const starterRep=Math.max(0,...starters.values())/sents.length;
+ const commas=(src.match(/,/g)||[]).length/sents.length;
+ const register=opts.mode==='academic'?'academic':opts.mode==='casual'?'casual':detectRegister(src,toks,sents);
+ /* transition stacking: density of AI-favourite connectors */
+ const low=' '+src.toLowerCase()+' ';let transHits=0;const transFound=[];
+ for(const w of AI_TRANSITION_WORDS){const re=new RegExp('(^|[^a-z])'+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=[^a-z]|$)','g');const k=(low.match(re)||[]).length;if(k){transHits+=k;transFound.push(w+'(×'+k+')');}}
+ const transPerSent=transHits/Math.max(1,sents.length);
+ /* empty intensifier / AI adjective rate */
+ let inten=0;const intenFound=[];for(const w of EMPTY_INTENSIFIERS){const re=new RegExp('\\b'+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','gi');const k=(src.match(re)||[]).length;if(k){inten+=k;intenFound.push(w);}}
+ const intenRate=inten/n*100;
+ /* sentence-length "AI sweet spot" share (15–28 words, low variance) */
+ const sweet=lens.filter(l=>l>=15&&l<=28).length/sents.length;
+ /* paragraph burstiness */
+ const paras=src.split(/\n{2,}/).map(p=>p.trim()).filter(Boolean);const pLens=paras.map(p=>words(p).length).filter(x=>x>=20);
+ const pCv=pLens.length>=3?sd(pLens)/Math.max(1,mean(pLens)):null;
+ /* function-word rhythm: AI tends to steadier the/a/of/to rates across sentences */
+ const FW=new Set(['the','a','an','of','to','in','for','on','with','as','by','at','from','that','this','is','are','was','were','be','and','or']);
+ const fwRates=sents.map(s=>{const ws=words(s.text).map(x=>x.w.toLowerCase());if(!ws.length)return 0;return ws.filter(w=>FW.has(w)).length/ws.length;});
+ const fwCv=sd(fwRates)/Math.max(0.01,mean(fwRates));
+ /* punctuation uniformity: similar comma counts */
+ const commaCounts=sents.map(s=>(s.text.match(/,/g)||[]).length);const commaCv=sd(commaCounts)/Math.max(0.5,mean(commaCounts)+0.01);
+
+ let voiceWeight=0.14,burstW=0.18,phraseW=0.22,mtldW=0.08,repW=0.06,uniW=0.08,transW=0.12,intenW=0.08,sweetW=0.04;
+ let voiceAi=clamp(1-(contractions*1.5+personal/2.5));
+ if(register==='academic'){
+  /* Academic prose rarely uses contractions; do not treat that as AI by itself. */
+  voiceWeight=0.05;voiceAi=clamp(1-(contractions*0.4+personal/3))*0.45;
+  phraseW=0.24;transW=0.16;intenW=0.10;burstW=0.16;mtldW=0.06;
+ }else if(register==='casual'){voiceWeight=0.20;phraseW=0.20;transW=0.08;}
+
  const sig=[
-  {key:'burstiness',label:'Sentence-length variation (burstiness)',value:Math.round(cv*100)/100,weight:0.24,ai:clamp((0.55-cv)/0.35),note:'Human writing usually mixes short and long sentences (coefficient of variation ≳ 0.5).'},
-  {key:'phrases',label:'Stock “AI-style” phrases per 100 words',value:Math.round(phraseRate*100)/100,weight:0.26,ai:clamp(phraseRate/2.2),note:found.length?'Found: '+found.slice(0,10).join(', '):'None found.'},
-  {key:'mtld',label:'Lexical diversity (MTLD)',value:Math.round(mt*10)/10,weight:0.12,ai:clamp((mt-60)/50),note:'Very even, polished vocabulary scores high; casual human text is often lower.'},
-  {key:'repetition',label:'Repeated 3-word sequences',value:Math.round(repRate*1000)/10+'%',weight:0.08,ai:clamp(repRate/0.08),note:'Template-like repetition raises this.'},
-  {key:'voice',label:'Contractions & personal voice',value:Math.round(contractions*100)/100+' / sentence',weight:0.18,ai:clamp(1-(contractions*1.5+personal/2)),note:'Generated prose tends to avoid contractions and first-person asides.'},
-  {key:'uniform',label:'Uniform structure (starters & commas)',value:Math.round(starterRep*100)+'% same opener',weight:0.12,ai:clamp((commas-0.6)/1.6*0.6+starterRep*0.8),note:'Evenly comma-balanced, similarly opened sentences.'}];
- let score=sig.reduce((a,s)=>a+s.ai*s.weight,0)/sig.reduce((a,s)=>a+s.weight,0);score=Math.round(score*100);
+  {key:'burstiness',label:'Sentence-length variation (burstiness)',value:Math.round(cv*100)/100,weight:burstW,ai:clamp((0.55-cv)/0.35),note:'Human writing usually mixes short and long sentences (coefficient of variation ≳ 0.5). Formal essays can look steadier without being generated.'},
+  {key:'phrases',label:'Stock “AI-style” phrases per 100 words',value:Math.round(phraseRate*100)/100,weight:phraseW,ai:clamp(phraseRate/2.0),note:ph.found.length?'Found: '+ph.found.slice(0,12).join(', '):'None of the watched stock phrases found.'},
+  {key:'transitions',label:'Formulaic transitions per sentence',value:Math.round(transPerSent*100)/100,weight:transW,ai:clamp((transPerSent-0.15)/0.55),note:transFound.length?'Seen: '+transFound.slice(0,8).join(', '):'Few stacked furthermore/moreover/additionally-style openers.'},
+  {key:'intensifiers',label:'Empty AI intensifiers per 100 words',value:Math.round(intenRate*100)/100,weight:intenW,ai:clamp(intenRate/1.8),note:intenFound.length?'e.g. '+intenFound.slice(0,8).join(', '):'Few of the watched buzzwords (crucial, robust, seamless…).'},
+  {key:'mtld',label:'Lexical diversity (MTLD)',value:Math.round(mt*10)/10,weight:mtldW,ai:clamp((mt-70)/55),note:'Very even, polished vocabulary can score higher; specialised academic jargon also raises MTLD, so this is only one signal.'},
+  {key:'repetition',label:'Repeated 3-word sequences',value:Math.round(repRate*1000)/10+'%',weight:repW,ai:clamp(repRate/0.08),note:'Template-like repetition raises this.'},
+  {key:'voice',label:'Contractions & personal voice',value:Math.round(contractions*100)/100+' / sentence',weight:voiceWeight,ai:voiceAi,note:register==='academic'?'Academic register detected: missing contractions are normal and barely count against the text.':'Generated prose often avoids contractions and first-person asides.'},
+  {key:'uniform',label:'Uniform structure (starters & commas)',value:Math.round(starterRep*100)+'% same opener',weight:uniW,ai:clamp((commas-0.6)/1.6*0.45+starterRep*0.85+(1-Math.min(1,commaCv))*0.2),note:'Evenly comma-balanced, similarly opened sentences look template-like.'},
+  {key:'sweetspot',label:'Mid-length sentence share (15–28 words)',value:Math.round(sweet*100)+'%',weight:sweetW,ai:clamp((sweet-0.45)/0.4)*clamp(1-cv/0.45),note:'Generated drafts often cluster in a narrow mid-length band when burstiness is also low.'}
+ ];
+ if(pCv!==null){sig.push({key:'paragraphs',label:'Paragraph-length variation',value:Math.round(pCv*100)/100,weight:0.04,ai:clamp((0.45-pCv)/0.35),note:'Human sections often vary in paragraph size; even blocks can look machine-planned.'});}
+ sig.push({key:'function',label:'Function-word rhythm variation',value:Math.round(fwCv*100)/100,weight:0.04,ai:clamp((0.25-fwCv)/0.25),note:'Very steady the/a/of/to rates across sentences can look generated; noisy rhythm looks more human.'});
+
+ const wsum=sig.reduce((a,s)=>a+s.weight,0);
+ let score=sig.reduce((a,s)=>a+s.ai*s.weight,0)/wsum;score=Math.round(score*100);
  const avg=mean(lens);
- const per=sents.map(s=>{const sl=' '+s.text.toLowerCase()+' ';let h=0;for(const p of AI_PHRASES)if(sl.includes(p))h++;const wl=words(s.text).length;const c=/\b\w+(n't|'re|'ll|'ve|'m)\b/i.test(s.text)?1:0;const v=clamp(0.25+h*0.22+(Math.abs(wl-avg)<avg*0.25?0.15:-0.1)-c*0.25+(/[,;]/.test(s.text)&&wl>18?0.1:0));return{text:s.text,start:s.start,end:s.end,score:Math.round(v*100)};});
+ const per=sents.map(s=>{const phs=phraseHitsIn(s.text);const wl=words(s.text).length;const c=/\b\w+(n't|'re|'ll|'ve|'m)\b/i.test(s.text)?1:0;
+  const tr=AI_TRANSITION_WORDS.some(w=>new RegExp('^\\s*'+w+'\\b','i').test(s.text))?1:0;
+  const intenLocal=EMPTY_INTENSIFIERS.reduce((a,w)=>a+((s.text.match(new RegExp('\\b'+w+'\\b','i'))||[]).length),0);
+  let v=0.18+phs.hits*0.18+tr*0.16+Math.min(0.2,intenLocal*0.08)+(Math.abs(wl-avg)<avg*0.22?0.12:-0.08)-c*(register==='academic'?0.05:0.22)+(/[,;]/.test(s.text)&&wl>18?0.06:0);
+  return{text:s.text,start:s.start,end:s.end,score:Math.round(clamp(v)*100),phrases:phs.found.slice(0,4)};});
  const label=score>=70?'Many machine-like patterns':score>=45?'Mixed signals':'Mostly human-like patterns';
- return{enough:true,score,label,signals:sig,sentences:per,words:n,ttr:Math.round(ttr*1000)/1000};}
+ /* confidence grows with length and sentence count; academic caveats */
+ let confidence=clamp((n-40)/400*0.45+(sents.length-3)/20*0.25+(n>=120?0.2:0)+(ph.found.length?0.1:0));
+ if(register==='academic')confidence=clamp(confidence*0.9);
+ if(n<80)confidence=clamp(confidence*0.7);
+ const confLabel=confidence>=0.65?'Moderate':confidence>=0.4?'Limited':'Low';
+ return{enough:true,score,label,signals:sig,sentences:per,words:n,ttr:Math.round(ttr*1000)/1000,register,confidence:Math.round(confidence*100),confidenceLabel:confLabel,topPhrases:ph.found.slice(0,15),transitionHits:transHits,intensifierHits:inten,softLimit:DETECTOR_SOFT_WORDS,hardLimit:DETECTOR_HARD_WORDS,minWords:DETECTOR_MIN_WORDS,truncated:!!opts._truncated||truncated,fullWords:opts._fullWords||n};
+}
+function detectAIAsync(text,opts={},onProgress){
+ return new Promise(resolve=>{
+  if(onProgress)onProgress(0.15);
+  setTimeout(()=>{try{const r=detectAI(text,opts);if(onProgress)onProgress(1);resolve(r);}catch(e){resolve({enough:false,score:null,signals:[],sentences:[],words:0,error:String(e)});}},0);
+ });
+}
 
 /* ---------- humanizer ---------- */
 /* Multi-pass academic rewriter: AI-cliché stripping, phrase/word paraphrase, transition
@@ -429,5 +506,5 @@ function humanizeAsync(text,opts={},onProgress){const tone=normalizeTone(opts.to
 /* ---------- diff (word-level LCS) ---------- */
 function diff(a,b){const A=a.split(/(\s+)/),B=b.split(/(\s+)/);const n=A.length,m=B.length;if(n*m>4e6)return[{op:'del',text:a},{op:'add',text:b}];const dp=Array.from({length:n+1},()=>new Uint32Array(m+1));for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=A[i]===B[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);const out=[];let i=0,j=0;const push=(op,t)=>{const l=out[out.length-1];if(l&&l.op===op)l.text+=t;else out.push({op,text:t});};while(i<n&&j<m){if(A[i]===B[j]){push('eq',A[i]);i++;j++;}else if(dp[i+1][j]>=dp[i][j+1]){push('del',A[i]);i++;}else{push('add',B[j]);j++;}}while(i<n)push('del',A[i++]);while(j<m)push('add',B[j++]);return out;}
 
-return{sentences,words,syllables,readability,fleschLabel,loadDictionary,addWords,hasDictionary,known,suggest,check,applyFix,detectTone,detectAI,humanize,humanizeAsync,HUMANIZER_SOFT_WORDS,HUMANIZER_HARD_WORDS,normalizeTone,diff,expandContraction,mtld,protectSpans,restoreSpans};
+return{sentences,words,syllables,readability,fleschLabel,loadDictionary,addWords,hasDictionary,known,suggest,check,applyFix,detectTone,detectAI,detectAIAsync,detectRegister,DETECTOR_SOFT_WORDS,DETECTOR_HARD_WORDS,DETECTOR_MIN_WORDS,humanize,humanizeAsync,HUMANIZER_SOFT_WORDS,HUMANIZER_HARD_WORDS,normalizeTone,diff,expandContraction,mtld,protectSpans,restoreSpans};
 });

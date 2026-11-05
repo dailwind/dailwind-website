@@ -40,4 +40,14 @@ assert.strictEqual(W.normalizeTone('conversational-academic'),'conversational');
 const long='Research shows results. '.repeat(500);
 const asyncOk=W.humanizeAsync(long,{tone:'concise',seed:2}).then(r=>{assert.ok(r.text.length>100);assert.ok(r.changes);console.log('humanizeAsync ok',r.wordCount);});
 
+
+const acadH='This study examines how undergraduate writers revise literature-review paragraphs. Drawing on notes from 18 students in Lahore (Khan & Ali, 2020), we track where citation blocks interrupt argument flow. Several participants began with a broad claim, then inserted three summaries that barely connected. Others opened with a narrow gap statement and kept quotations short. The uneven pacing best predicted later grades in the cohort.';
+const acadA="Furthermore, it is important to note that academic writing plays a crucial role in higher education. Moreover, students must leverage robust strategies to navigate the complexities of scholarly discourse. Additionally, fostering critical thinking is paramount for sustainable academic growth. In conclusion, a comprehensive approach will empower learners to unlock their full potential.";
+const ah=W.detectAI(acadH), aa=W.detectAI(acadA);
+assert.ok(ah.enough&&aa.enough);assert.ok(ah.score<=40,'academic human '+ah.score);assert.ok(aa.score>=70,'academic AI '+aa.score);
+assert.ok(ah.register==='academic'||ah.register==='mixed');
+assert.ok(Array.isArray(aa.topPhrases)&&aa.topPhrases.length>=3);
+assert.ok(aa.signals.some(s=>s.key==='transitions'));
+assert.ok(W.DETECTOR_SOFT_WORDS>=10000);
+
 Promise.resolve(asyncOk).then(()=>console.log('writing tools engine tests passed'));

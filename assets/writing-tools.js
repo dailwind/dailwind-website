@@ -46,15 +46,38 @@ function grammar(){const ta=$('wt-text'),bd=$('wt-backdrop'),cards=$('wt-cards')
  run();status('Checking grammar and style as you type. Loading the spelling dictionary…');idle(()=>loadDict().then(ok=>{if(ok){if(learned.size)W.addWords([...learned]);status('Ready. Spelling, grammar, clarity and tone are checked on this device as you type.');run();}}));}
 
 /* ===== AI text detector ===== */
-function detector(){const ta=$('wt-text');function run(){const r=W.detectAI(ta.value);$('wt-results').hidden=false;
- if(!r.enough){$('wt-big').innerHTML='<p class="wt-empty">Add at least 40 words and 3 sentences for a meaningful estimate (now '+r.words+' words).</p>';$('wt-signals').innerHTML='';$('wt-sents').innerHTML='';return;}
- $('wt-big').innerHTML='<b>'+r.score+'%</b><div><strong>'+r.label+'</strong><p class="language-help">Estimated AI-likeness from '+r.words+' words. An estimate, not proof.</p></div>';
- $('wt-signals').innerHTML=r.signals.map(s=>'<article><header><span>'+esc(s.label)+'</span><span>'+esc(String(s.value))+'</span></header><div class="wt-meter"><i data-w="'+Math.round(s.ai*100)+'"></i></div><p>'+esc(s.note)+'</p></article>').join('');
- requestAnimationFrame(()=>document.querySelectorAll('#wt-signals i').forEach(i=>{i.style.width=i.dataset.w+'%';i.style.backgroundColor=+i.dataset.w>=65?'#e5484d':+i.dataset.w>=40?'#f5a524':'#12a150';}));
- const t=ta.value;let h='',pos=0;r.sentences.forEach(s=>{h+=esc(t.slice(pos,s.start))+'<span class="'+(s.score>=65?'h3':s.score>=40?'h2':'h1')+'" title="'+s.score+'% machine-like signals">'+esc(t.slice(s.start,s.end))+'</span>';pos=s.end;});$('wt-sents').innerHTML=h+esc(t.slice(pos));
- status('Analysis finished locally. Treat the result as one signal among many.');}
- $('wt-run').addEventListener('click',run);$('wt-sample').addEventListener('click',()=>{ta.value=SAMPLES.ai;run();});$('wt-clear').addEventListener('click',()=>{ta.value='';$('wt-results').hidden=true;});
- $('wt-humanize').addEventListener('click',()=>{try{sessionStorage.setItem('dailwind:humanize-in',ta.value.slice(0,200000));}catch(e){}location.href='../text-humanizer/';});readFile($('wt-file'),ta,run);}
+function detector(){const ta=$('wt-text'),wc=$('wt-wordcount'),bar=$('wt-progress'),barI=bar&&bar.querySelector('i');let busy=false;
+ const soft=W.DETECTOR_SOFT_WORDS||20000,hard=W.DETECTOR_HARD_WORDS||50000,minW=W.DETECTOR_MIN_WORDS||40;
+ const SAMPLES_DET={ai:SAMPLES.ai,human:'I rewrote the methods section twice last night. The first draft listed every step like a recipe; the second cut the list and just explained why we dropped two participants who never finished the survey. My supervisor circled three hedges and wrote "commit" in the margin. It still doesn\'t sing, but at least it sounds like something I would say in a meeting.',academic:'This study examines how undergraduate writers revise literature-review paragraphs under timed conditions. Drawing on think-aloud notes and draft histories from 18 students in Lahore (Khan & Ali, 2020), we track where citation blocks interrupt argument flow. Several participants began with a broad claim, then inserted three summaries that barely connected. Others opened with a narrow gap statement and kept quotations short. The uneven pacing — not surface polish — best predicted later grades.'};
+ function countWords(){const n=W.words(ta.value).length;if(wc){let note=n.toLocaleString()+' word'+(n===1?'':'s');if(n>0&&n<minW)note+=' · need '+minW+'+ for an estimate';if(n>soft)note+=' · long-paper mode';if(n>hard)note+=' · will analyse the first '+hard.toLocaleString()+' words';wc.textContent=note;wc.hidden=!ta.value.trim();}return n;}
+ function setBusy(on){busy=on;const b=$('wt-run');if(b)b.disabled=on;if(bar)bar.hidden=!on;if(barI)barI.style.width=on?'12%':'0%';}
+ function paint(r){$('wt-results').hidden=false;
+  if(!r.enough){$('wt-big').innerHTML='<p class="wt-empty">Add at least '+minW+' words and 3 sentences for a meaningful estimate (now '+r.words+' words).</p>';$('wt-signals').innerHTML='';$('wt-sents').innerHTML='';if($('wt-metrics'))$('wt-metrics').innerHTML='';if($('wt-phrases'))$('wt-phrases').innerHTML='';status('Need a longer sample for a stable estimate.');return;}
+  const tone=r.score>=70?'#e5484d':r.score>=45?'#f5a524':'#12a150';
+  $('wt-big').innerHTML='<b style="color:'+tone+'">'+r.score+'%</b><div><strong>'+esc(r.label)+'</strong><p class="language-help">Heuristic AI-likeness from '+r.words.toLocaleString()+' words'+(r.register?' · detected register: '+r.register:'')+(r.confidenceLabel?' · confidence: '+r.confidenceLabel:'')+'. An estimate, never proof.</p></div>';
+  if($('wt-metrics'))$('wt-metrics').innerHTML=[[r.score+'%','Machine-like score'],[r.register||'–','Register'],[r.confidenceLabel||'–','Confidence'],[r.topPhrases.length,'Stock phrases hit'],[r.sentences.filter(s=>s.score>=65).length,'High-signal sentences'],[r.words.toLocaleString(),'Words analysed']].map(([v,l])=>'<article><strong>'+v+'</strong><span>'+l+'</span></article>').join('');
+  if($('wt-phrases'))$('wt-phrases').innerHTML=r.topPhrases.length?'<div class="wt-chips">'+r.topPhrases.slice(0,12).map(p=>'<span>'+esc(p)+'</span>').join('')+'</div>':'<p class="wt-empty">No watched stock phrases found in this sample.</p>';
+  $('wt-signals').innerHTML=r.signals.map(s=>'<article><header><span>'+esc(s.label)+'</span><span>'+esc(String(s.value))+'</span></header><div class="wt-meter"><i data-w="'+Math.round(s.ai*100)+'"></i></div><p>'+esc(s.note)+'</p></article>').join('');
+  requestAnimationFrame(()=>document.querySelectorAll('#wt-signals i').forEach(i=>{i.style.width=i.dataset.w+'%';i.style.backgroundColor=+i.dataset.w>=65?'#e5484d':+i.dataset.w>=40?'#f5a524':'#12a150';}));
+  const t=ta.value;let h='',pos=0;r.sentences.forEach(s=>{h+=esc(t.slice(pos,s.start))+'<span class="'+(s.score>=65?'h3':s.score>=40?'h2':'h1')+'" title="'+s.score+'% machine-like'+(s.phrases&&s.phrases.length?' · '+s.phrases.join(', '):'')+'">'+esc(t.slice(s.start,s.end))+'</span>';pos=s.end;});$('wt-sents').innerHTML=h+esc(t.slice(pos));
+  let msg='Local heuristic finished. Treat this as one signal among many — not a verdict.';
+  if(r.truncated)msg='Analysed the first '+hard.toLocaleString()+' words of a longer paper. '+msg;
+  else if(r.words>soft)msg='Long paper analysed with the academic-aware heuristic. '+msg;
+  if(r.register==='academic')msg+=' Academic register: missing contractions are treated as normal.';
+  status(msg);}
+ async function run(){if(busy)return;countWords();if(!ta.value.trim()){status('Paste some text first.');return;}setBusy(true);status('Estimating…');
+  try{const mode=($('wt-mode')&&$('wt-mode').value)||'auto';const r=await (W.detectAIAsync?W.detectAIAsync(ta.value,{mode},p=>{if(barI)barI.style.width=Math.max(12,Math.round(p*100))+'%';}):Promise.resolve(W.detectAI(ta.value,{mode})));paint(r);}
+  catch(e){status('Analysis failed. Try a shorter selection.');console.error(e);}finally{setBusy(false);if(barI)barI.style.width='0%';}}
+ $('wt-run').addEventListener('click',run);
+ const sampleBtn=$('wt-sample');if(sampleBtn)sampleBtn.addEventListener('click',()=>{ta.value=SAMPLES_DET.ai;countWords();run();});
+ const sh=$('wt-sample-human');if(sh)sh.addEventListener('click',()=>{ta.value=SAMPLES_DET.human;countWords();run();});
+ const sa=$('wt-sample-academic');if(sa)sa.addEventListener('click',()=>{ta.value=SAMPLES_DET.academic;countWords();run();});
+ $('wt-clear').addEventListener('click',()=>{ta.value='';$('wt-results').hidden=true;countWords();status('Cleared.');});
+ $('wt-humanize').addEventListener('click',()=>{try{sessionStorage.setItem('dailwind:humanize-in',ta.value.slice(0,200000));}catch(e){}location.href='../text-humanizer/';});
+ if($('wt-mode'))$('wt-mode').addEventListener('change',()=>{if(ta.value.trim())run();});
+ ta.addEventListener('input',()=>{clearTimeout(ta._wcTimer);ta._wcTimer=setTimeout(countWords,120);});
+ readFile($('wt-file'),ta,()=>{countWords();run();});
+ status('Ready. Paste academic or other prose for a transparent, on-device estimate — never a proof of authorship.');countWords();}
 
 /* ===== Humanizer ===== */
 function humanizer(){const ta=$('wt-text'),out=$('wt-out'),wc=$('wt-wordcount'),bar=$('wt-progress'),barI=bar&&bar.querySelector('i');let seed=1,busy=false,lastSource='';

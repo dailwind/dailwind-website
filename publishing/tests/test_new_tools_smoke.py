@@ -9,8 +9,14 @@ def grammar(pg):
     pg.locator('.wt-sug button.fix').first.click();pg.wait_for_timeout(500);assert pg.locator('#wt-backdrop mark').count()<n
     assert pg.text_content('#wt-score').strip().isdigit()
 def detector(pg):
-    pg.click('#wt-sample');assert int(pg.text_content('#wt-big b').rstrip('%'))>=60;assert pg.locator('#wt-sents span').count()==5
+    assert pg.locator('#wt-mode').count()==1
+    pg.click('#wt-sample');pg.wait_for_selector('#wt-big b',timeout=20000);pg.wait_for_timeout(200)
+    assert int(pg.text_content('#wt-big b').rstrip('%'))>=60;assert pg.locator('#wt-sents span').count()>=5
     assert 'not proof' in pg.text_content('.wt-disclaimer')
+    assert pg.locator('#wt-metrics article').count()>=4
+    assert pg.locator('#wt-phrases .wt-chips span').count()>=1
+    pg.click('#wt-sample-academic');pg.wait_for_selector('#wt-big b',timeout=20000);pg.wait_for_timeout(200)
+    assert int(pg.text_content('#wt-big b').rstrip('%'))<=45
 def humanizer(pg):
     pg.click('#wt-sample');out=pg.input_value('#wt-out');assert out and 'Furthermore' not in out;pg.click('[data-view=diff]');assert pg.locator('#wt-diff ins').count()>3
 CHECKS={'grammar-checker/':grammar,'ai-text-detector/':detector,'text-humanizer/':humanizer}
