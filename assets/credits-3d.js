@@ -42,6 +42,10 @@
     }
     var block = document.createElement('div');
     block.className = 'credits-block';
+    var role = document.createElement('p');
+    role.className = 'credits-role';
+    role.textContent = 'Tested and recommended by';
+    block.appendChild(role);
     order.forEach(function (name) {
       var line = document.createElement('p');
       line.className = 'credits-line';
