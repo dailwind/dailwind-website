@@ -1,4 +1,5 @@
-/* Credits dialog: names orbit in tilted 3D rings. Drag to spin. Plain lists stay for screen readers and reduced motion. */
+/* Recommended-by dialog: names roll upward like end credits, in a fresh random order every round.
+   The plain list stays for screen readers and reduced-motion users. */
 (function () {
   'use strict';
   var dlg = document.getElementById('credits-dialog');
@@ -8,29 +9,23 @@
   var root = document.documentElement;
   var stage = dlg.querySelector('.credits-stage');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var PERSPECTIVE = 1400;
-  var TILT = 0.2;
 
   var people = [];
   Array.prototype.forEach.call(dlg.querySelectorAll('.credits-list li'), function (li) {
-    people.push({ text: li.textContent.trim() });
+    people.push(li.textContent.trim());
   });
 
-  var nodes = [];
-  var rings = [];
-  var dims = { w: 0, h: 0, R: 0 };
+  var roll = null;
+  var blocks = [];
+  var y = 0;
   var raf = 0;
   var lastTime = 0;
   var dragging = false;
-  var lastX = 0;
-  var spin = 0;
-  var built = false;
-  var order = [];
-  var jitter = [];
-  var bob = [];
-  var clock = 0;
+  var lastY = 0;
+  var coast = 0;
 
   function shuffle(a) {
+    a = a.slice();
     for (var i = a.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
       var t = a[i]; a[i] = a[j]; a[j] = t;
@@ -38,87 +33,48 @@
     return a;
   }
 
-  // New random arrangement every time the dialog opens: nobody is first.
-  function reshuffle() {
-    order = shuffle(nodes.map(function (_, i) { return i; }));
-    jitter = nodes.map(function () { return (Math.random() - 0.5) * 0.5; });
-    bob = nodes.map(function () {
-      return { phase: Math.random() * Math.PI * 2, freq: 0.5 + Math.random() * 0.9, amp: 5 + Math.random() * 9 };
-    });
-    rings = [];
-  }
-
-  function build() {
-    if (built || !stage) return;
-    built = true;
-    people.forEach(function (p) {
-      var el = document.createElement('span');
-      el.className = 'credits-name';
-      el.textContent = p.text;
-      stage.appendChild(el);
-      nodes.push(el);
-    });
-  }
-
-  function layout() {
-    if (!stage) return;
-    var w = stage.clientWidth;
-    var h = stage.clientHeight;
-    if (!w || !h) return;
-    var small = w < 600;
-    var ringCount = small ? 6 : 3;
-    var widths = nodes.map(function (n) { return n.offsetWidth; });
-    var half = Math.max.apply(null, widths) / 2;
-    var desired = small ? w * 0.33 : Math.min(w * 0.35, 300);
-    var fitX = (w / 2 - half * 1.1 - 8) / 1.25;
-    var R = Math.max(w * 0.22, Math.min(desired, fitX));
-    var sFront = PERSPECTIVE / (PERSPECTIVE - R);
-    var gapFit = ((h / 2 - 28) / sFront - R * Math.sin(TILT)) / (Math.cos(TILT) * (ringCount - 1) / 2);
-    var gap = Math.min(110, Math.max(30, gapFit));
-    dims = { w: w, h: h, R: R, widths: widths };
-
-    var old = rings;
-    rings = [];
-    var idx = 0;
-    var total = nodes.length;
-    for (var i = 0; i < ringCount; i++) {
-      var count = Math.floor(total / ringCount) + (i < total % ringCount ? 1 : 0);
-      var members = [];
-      for (var k = 0; k < count; k++) members.push(order[idx++]);
-      rings.push({
-        members: members,
-        y: (i - (ringCount - 1) / 2) * gap,
-        dir: old[i] ? old[i].dir : (Math.random() < 0.5 ? -1 : 1),
-        speed: old[i] ? old[i].speed : 0.14 + Math.random() * 0.26,
-        angle: old[i] ? old[i].angle : Math.random() * Math.PI * 2
-      });
+  function addBlock() {
+    var order = shuffle(people);
+    // Do not start a round with the name that just ended the previous one.
+    if (blocks.length) {
+      var prev = blocks[blocks.length - 1].lastChild.textContent;
+      if (order[0] === prev) { var t = order[0]; order[0] = order[1]; order[1] = t; }
     }
+    var block = document.createElement('div');
+    block.className = 'credits-block';
+    order.forEach(function (name) {
+      var line = document.createElement('p');
+      line.className = 'credits-line';
+      line.textContent = name;
+      block.appendChild(line);
+    });
+    roll.appendChild(block);
+    blocks.push(block);
   }
 
-  function render() {
-    var R = dims.R;
-    if (!R) return;
-    var cosT = Math.cos(TILT);
-    var sinT = Math.sin(TILT);
-    rings.forEach(function (ring) {
-      var m = ring.members.length;
-      ring.members.forEach(function (n, k) {
-        var theta = ring.angle + (k * Math.PI * 2) / m + jitter[n];
-        var x0 = R * Math.sin(theta);
-        var z0 = R * Math.cos(theta);
-        var wob = Math.sin(clock * bob[n].freq + bob[n].phase) * bob[n].amp;
-        var y = (ring.y + wob) * cosT + z0 * sinT;
-        var z = -(ring.y + wob) * sinT + z0 * cosT;
-        var s = PERSPECTIVE / (PERSPECTIVE - z);
-        var depth = (z + R) / (2 * R);
-        var el = nodes[n];
-        var maxX = Math.max(0, dims.w / 2 - (dims.widths[n] * s) / 2 - 6);
-        var px = Math.max(-maxX, Math.min(maxX, x0 * s));
-        el.style.transform = 'translate(-50%,-50%) translate(' + px.toFixed(1) + 'px,' + (y * s).toFixed(1) + 'px) scale(' + s.toFixed(3) + ')';
-        el.style.opacity = (0.16 + 0.84 * Math.pow(depth, 1.3)).toFixed(3);
-        el.style.zIndex = String(Math.round(depth * 100));
-      });
-    });
+  function reset() {
+    if (!stage) return;
+    stage.innerHTML = '';
+    roll = document.createElement('div');
+    roll.className = 'credits-roll';
+    stage.appendChild(roll);
+    blocks = [];
+    y = stage.clientHeight;
+    coast = 0;
+    addBlock();
+    addBlock();
+    roll.style.transform = 'translateY(' + y + 'px)';
+  }
+
+  function maintain() {
+    var h = stage.clientHeight;
+    while (blocks.length > 1 && y + blocks[0].offsetHeight < -10) {
+      y += blocks[0].offsetHeight;
+      roll.removeChild(blocks[0]);
+      blocks.shift();
+    }
+    while (y + roll.offsetHeight < h + 400) addBlock();
+    if (y > h) y = h;
   }
 
   function frame(t) {
@@ -126,18 +82,18 @@
     var dt = Math.min(0.05, (t - lastTime) / 1000 || 0);
     lastTime = t;
     var paused = root.classList.contains('toolkit-motion-paused') || document.hidden;
-    if (!dragging) spin *= Math.pow(0.04, dt);
-    if (!paused) clock += dt;
-    if (!paused || dragging || Math.abs(spin) > 0.001) {
-      rings.forEach(function (ring) {
-        ring.angle += (paused ? 0 : ring.dir * ring.speed * dt) + spin * dt;
-      });
-      render();
+    var speed = stage.clientWidth < 600 ? 40 : 52;
+    if (!dragging) {
+      coast *= Math.pow(0.05, dt);
+      y += coast * dt;
+      if (!paused) y -= speed * dt;
     }
+    maintain();
+    roll.style.transform = 'translateY(' + y.toFixed(1) + 'px)';
   }
 
   function start() {
-    if (raf || !dlg.classList.contains('credits-3d-ready')) return;
+    if (raf || !dlg.classList.contains('credits-roll-ready')) return;
     lastTime = performance.now();
     raf = requestAnimationFrame(frame);
   }
@@ -147,17 +103,14 @@
     raf = 0;
   }
 
-  function enable3d() {
-    if (reduce.matches || !stage) {
-      dlg.classList.remove('credits-3d-ready');
+  function enable() {
+    if (reduce.matches || !stage || !people.length) {
+      dlg.classList.remove('credits-roll-ready');
       stop();
       return;
     }
-    build();
-    if (!order.length || !dlg.classList.contains('credits-3d-ready')) reshuffle();
-    dlg.classList.add('credits-3d-ready');
-    layout();
-    render();
+    dlg.classList.add('credits-roll-ready');
+    if (!roll || !roll.parentNode) reset();
     if (dlg.open) start();
   }
 
@@ -165,19 +118,20 @@
     if (typeof dlg.showModal === 'function') dlg.showModal();
     else dlg.setAttribute('open', '');
     root.classList.add('credits-lock');
-    order = [];
-    enable3d();
+    dlg.classList.remove('credits-roll-ready');
+    roll = null;
+    enable();
+  }
+
+  function onClosed() {
+    stop();
+    root.classList.remove('credits-lock');
   }
 
   function closeDialog() {
     if (typeof dlg.close === 'function') dlg.close();
     else dlg.removeAttribute('open');
     onClosed();
-  }
-
-  function onClosed() {
-    stop();
-    root.classList.remove('credits-lock');
   }
 
   openBtn.addEventListener('click', openDialog);
@@ -192,17 +146,19 @@
   if (stage) {
     stage.addEventListener('pointerdown', function (e) {
       dragging = true;
-      lastX = e.clientX;
+      lastY = e.clientY;
+      coast = 0;
       stage.classList.add('is-dragging');
       try { stage.setPointerCapture(e.pointerId); } catch (err) { /* not critical */ }
     });
     stage.addEventListener('pointermove', function (e) {
-      if (!dragging) return;
-      var dx = e.clientX - lastX;
-      lastX = e.clientX;
-      spin = Math.max(-6, Math.min(6, dx * 0.12));
-      rings.forEach(function (ring) { ring.angle += dx * 0.008; });
-      render();
+      if (!dragging || !roll) return;
+      var dy = e.clientY - lastY;
+      lastY = e.clientY;
+      y += dy;
+      coast = Math.max(-900, Math.min(900, dy * 30));
+      maintain();
+      roll.style.transform = 'translateY(' + y.toFixed(1) + 'px)';
     });
     var endDrag = function () {
       dragging = false;
@@ -213,15 +169,7 @@
     stage.addEventListener('lostpointercapture', endDrag);
   }
 
-  var resizeTimer = 0;
-  window.addEventListener('resize', function () {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () {
-      if (dlg.open && dlg.classList.contains('credits-3d-ready')) { layout(); render(); }
-    }, 80);
-  });
-
-  var onMotionChange = function () { if (dlg.open) enable3d(); };
+  var onMotionChange = function () { if (dlg.open) enable(); };
   if (reduce.addEventListener) reduce.addEventListener('change', onMotionChange);
   else if (reduce.addListener) reduce.addListener(onMotionChange);
 })();
