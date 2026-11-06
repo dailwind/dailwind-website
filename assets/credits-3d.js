@@ -33,6 +33,8 @@
   var nextDrift = 0;
   var clock = 0;
   var built = false;
+  var motionOn = !reduce.matches;
+  var motionBtn = dlg.querySelector('[data-credits-motion]');
 
   function shuffle(a) {
     a = a.slice();
@@ -120,7 +122,7 @@
     raf = requestAnimationFrame(frame);
     var dt = Math.min(0.05, (t - lastTime) / 1000 || 0);
     lastTime = t;
-    var paused = root.classList.contains('toolkit-motion-paused') || document.hidden;
+    var paused = !motionOn || document.hidden || userPaused();
     if (!paused) clock += dt;
     if (!dragging) {
       if (clock >= nextDrift) {
@@ -153,7 +155,7 @@
   }
 
   function enable() {
-    if (reduce.matches || !stage || !people.length) {
+    if (!stage || !people.length) {
       dlg.classList.remove('credits-cloud-ready');
       stop();
       return;
@@ -162,7 +164,22 @@
     if (!built) build();
     measure();
     render();
+    syncMotionButton();
     if (dlg.open) start();
+  }
+
+  // Motion starts off only if the device asks for reduced motion; the viewer can always switch it on.
+  function userPaused() {
+    var btns = document.querySelectorAll('[data-motion-toggle]');
+    for (var i = 0; i < btns.length; i++) {
+      if (/^Resume/i.test(btns[i].textContent.trim())) return true;
+    }
+    return false;
+  }
+
+  function syncMotionButton() {
+    if (!motionBtn) return;
+    motionBtn.textContent = motionOn ? 'Pause motion' : 'Play motion';
   }
 
   function openDialog() {
@@ -170,6 +187,7 @@
     else dlg.setAttribute('open', '');
     root.classList.add('credits-lock');
     built = false; // fresh random arrangement on every open
+    motionOn = !reduce.matches;
     enable();
   }
 
@@ -234,7 +252,10 @@
     }, 80);
   });
 
-  var onMotionChange = function () { if (dlg.open) enable(); };
-  if (reduce.addEventListener) reduce.addEventListener('change', onMotionChange);
-  else if (reduce.addListener) reduce.addListener(onMotionChange);
+  if (motionBtn) {
+    motionBtn.addEventListener('click', function () {
+      motionOn = !motionOn;
+      syncMotionButton();
+    });
+  }
 })();
