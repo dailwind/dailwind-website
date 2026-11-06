@@ -12,11 +12,8 @@
   var TILT = 0.2;
 
   var people = [];
-  Array.prototype.forEach.call(dlg.querySelectorAll('.credits-doctors li'), function (li) {
-    people.push({ text: li.textContent.trim(), doctor: true });
-  });
-  Array.prototype.forEach.call(dlg.querySelectorAll('.credits-scholars li'), function (li) {
-    people.push({ text: li.textContent.trim(), doctor: false });
+  Array.prototype.forEach.call(dlg.querySelectorAll('.credits-list li'), function (li) {
+    people.push({ text: li.textContent.trim() });
   });
 
   var nodes = [];
@@ -28,13 +25,35 @@
   var lastX = 0;
   var spin = 0;
   var built = false;
+  var order = [];
+  var jitter = [];
+  var bob = [];
+  var clock = 0;
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // New random arrangement every time the dialog opens: nobody is first.
+  function reshuffle() {
+    order = shuffle(nodes.map(function (_, i) { return i; }));
+    jitter = nodes.map(function () { return (Math.random() - 0.5) * 0.5; });
+    bob = nodes.map(function () {
+      return { phase: Math.random() * Math.PI * 2, freq: 0.5 + Math.random() * 0.9, amp: 5 + Math.random() * 9 };
+    });
+    rings = [];
+  }
 
   function build() {
     if (built || !stage) return;
     built = true;
     people.forEach(function (p) {
       var el = document.createElement('span');
-      el.className = 'credits-name' + (p.doctor ? ' is-doctor' : '');
+      el.className = 'credits-name';
       el.textContent = p.text;
       stage.appendChild(el);
       nodes.push(el);
@@ -65,13 +84,13 @@
     for (var i = 0; i < ringCount; i++) {
       var count = Math.floor(total / ringCount) + (i < total % ringCount ? 1 : 0);
       var members = [];
-      for (var k = 0; k < count; k++) members.push(idx++);
+      for (var k = 0; k < count; k++) members.push(order[idx++]);
       rings.push({
         members: members,
         y: (i - (ringCount - 1) / 2) * gap,
-        dir: i % 2 ? -1 : 1,
-        speed: 0.2 + i * 0.045,
-        angle: old[i] ? old[i].angle : i * 0.9
+        dir: old[i] ? old[i].dir : (Math.random() < 0.5 ? -1 : 1),
+        speed: old[i] ? old[i].speed : 0.14 + Math.random() * 0.26,
+        angle: old[i] ? old[i].angle : Math.random() * Math.PI * 2
       });
     }
   }
@@ -84,11 +103,12 @@
     rings.forEach(function (ring) {
       var m = ring.members.length;
       ring.members.forEach(function (n, k) {
-        var theta = ring.angle + (k * Math.PI * 2) / m;
+        var theta = ring.angle + (k * Math.PI * 2) / m + jitter[n];
         var x0 = R * Math.sin(theta);
         var z0 = R * Math.cos(theta);
-        var y = ring.y * cosT + z0 * sinT;
-        var z = -ring.y * sinT + z0 * cosT;
+        var wob = Math.sin(clock * bob[n].freq + bob[n].phase) * bob[n].amp;
+        var y = (ring.y + wob) * cosT + z0 * sinT;
+        var z = -(ring.y + wob) * sinT + z0 * cosT;
         var s = PERSPECTIVE / (PERSPECTIVE - z);
         var depth = (z + R) / (2 * R);
         var el = nodes[n];
@@ -107,6 +127,7 @@
     lastTime = t;
     var paused = root.classList.contains('toolkit-motion-paused') || document.hidden;
     if (!dragging) spin *= Math.pow(0.04, dt);
+    if (!paused) clock += dt;
     if (!paused || dragging || Math.abs(spin) > 0.001) {
       rings.forEach(function (ring) {
         ring.angle += (paused ? 0 : ring.dir * ring.speed * dt) + spin * dt;
@@ -133,6 +154,7 @@
       return;
     }
     build();
+    if (!order.length || !dlg.classList.contains('credits-3d-ready')) reshuffle();
     dlg.classList.add('credits-3d-ready');
     layout();
     render();
@@ -143,6 +165,7 @@
     if (typeof dlg.showModal === 'function') dlg.showModal();
     else dlg.setAttribute('open', '');
     root.classList.add('credits-lock');
+    order = [];
     enable3d();
   }
 
