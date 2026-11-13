@@ -16,7 +16,7 @@ const make=(handler)=>Auth.create(config,handler);
  await client.verify(user.email,'123456');
  assert.equal(JSON.parse(calls.at(-1).options.body).type,'email');
  await client.send(user.email,false);
- assert.equal(new URL(calls.at(-1).url).searchParams.get('redirect_to'),'https://dailwind.com/pmc/account/');
+ assert.equal(new URL(calls.at(-1).url).searchParams.get('redirect_to'),'https://dailwind.com/manage/');
  assert.equal(JSON.parse(calls.at(-1).options.body).create_user,false);
  await assert.rejects(()=>client.resume({error_code:'otp_expired',error_description:'<script>bad</script>'}),/invalid, expired or already used/);
  await assert.rejects(()=>client.resume({access_token:'invalid'}),/invalid/);
@@ -37,7 +37,7 @@ const make=(handler)=>Auth.create(config,handler);
   vm.runInNewContext(source,{URLSearchParams,location,window,history:{replaceState:(a,b,url)=>result.cleaned=url},Object});
   return {...result,payload:window.DailwindAuthReturn};
  }
- assert.equal(bridge('/','#access_token=signed.payload.signature&refresh_token=secret').redirect,'/pmc/account/#access_token=signed.payload.signature&refresh_token=secret');
+ assert.equal(bridge('/','#access_token=signed.payload.signature&refresh_token=secret').redirect,'/manage/#access_token=signed.payload.signature&refresh_token=secret');
  const returned=bridge('/pmc/','#access_token=signed.payload.signature&refresh_token=secret','?utm_source=test');
  assert.equal(returned.cleaned,'/pmc/?utm_source=test');
  assert.equal(returned.payload.access_token,'signed.payload.signature');

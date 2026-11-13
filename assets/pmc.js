@@ -18,6 +18,5 @@
  document.querySelectorAll('[data-pmc-example]').forEach(b=>b.addEventListener('click',()=>{$('pmc-query').value=b.dataset.pmcExample;run();}));
  for(const id of ['pmc-genre','pmc-window','pmc-case','pmc-ngram'])$(id).addEventListener('change',run);
  $('pmc-more').addEventListener('click',()=>{shown+=20;render();});$('pmc-chart-toggle').addEventListener('click',()=>{showChart=!showChart;chart();});
- if(location.hash==='#pmc-members')$('pmc-account-drawer').open=true;
  run();
 })();

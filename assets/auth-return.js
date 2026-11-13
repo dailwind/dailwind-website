@@ -7,7 +7,7 @@
  if(!payload.access_token&&!payload.token_hash&&!payload.error&&!payload.error_code&&!payload.code)return;
  const callbackPaths=['/pmc/','/pmc/index.html','/pmc/account/','/pmc/account/index.html','/manage/','/manage/index.html','/mat-cleaner/','/mat-cleaner/index.html'];
  if(!callbackPaths.includes(location.pathname)){
-  location.replace('/pmc/account/#'+new URLSearchParams(payload).toString());return;
+  location.replace('/manage/#'+new URLSearchParams(payload).toString());return;
  }
  // Remove credentials immediately; the account controller consumes them once.
  for(const key of keys)query.delete(key);
