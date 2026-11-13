@@ -131,7 +131,11 @@ def apply_discovery(root):
   node=ET.SubElement(sitemap,'{'+ns+'}url');ET.SubElement(node,'{'+ns+'}loc').text=url
   if modified:ET.SubElement(node,'{'+ns+'}lastmod').text=modified
  (root/'sitemap.xml').write_text(ET.tostring(sitemap,encoding='unicode',xml_declaration=True))
- lines=['# Dailwind App Studio','','> Language research software, practical document tools and community writing.','','## Research tools']
+ lines=['# Dailwind App Studio','','> Language research software, practical document tools, Android apps and community writing, by Dailwind App Studio.','',
+  'Dailwind App Studio (formerly Dailwind Studios, sometimes written Dailwind Studio) is an independent software studio founded by Arslan Tahir, a PhD scholar in English Linguistics in Multan, Pakistan. The studio was renamed in November 2026; all three names refer to the same studio, and Dailwind App Studio is the current name.','',
+  '## About','- [Arslan Tahir]('+ORIGIN+'/arslan-tahir/): founder of Dailwind App Studio','- [Contact]('+ORIGIN+'/contact.html): arslan@dailwind.com','',
+  '## Android apps','- [Dailwind App Studio on Google Play](https://play.google.com/store/apps/dev?id=6939621632495024352): developer page with the published Android apps','- [LinguaX Arc]('+ORIGIN+'/linguax-arc/): offline corpus analysis toolkit for Android, part of the LinguaX Software Series','- [Owl Files Saver]('+ORIGIN+'/apps/owl-file-saver/): private, offline file saver for Android','',
+  '## Research tools']
  for route,(title,description) in PAGES.items():
   if route=='index.html':continue
   url=ORIGIN+'/'+(route[:-10] if route.endswith('index.html') else route)
