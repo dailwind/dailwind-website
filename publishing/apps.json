@@ -1,6 +1,6 @@
 [
   {
-    "name": "Owl File Saver",
+    "name": "Owl Files Saver",
     "status": "live",
     "description": "A private, offline file saver for Android. Save shared files in one tap, organise them and keep them on your device.",
     "icon": "assets/apps/owl-file-saver-icon-v1-256.webp",
@@ -9,7 +9,7 @@
     "slug": "owl-file-saver",
     "learnMoreUrl": "apps/owl-file-saver/",
     "details": [
-      "Owl File Saver is a private, offline file saver, storage organiser and status vault for Android. Save, organise and safeguard shared files, photos, videos and statuses directly on your device, with no internet access required."
+      "Owl Files Saver is a private, offline file saver, storage organiser and status vault for Android. Save, organise and safeguard shared files, photos, videos and statuses directly on your device, with no internet access required."
     ],
     "features": [
       "One-tap save from the Android share sheet to the storage folder you choose.",
@@ -27,7 +27,7 @@
       "poster": "assets/apps/owl-file-saver-demo-poster-v1.webp",
       "width": 1280,
       "height": 720,
-      "label": "Owl File Saver demo: share, save and sort files on your device"
+      "label": "Owl Files Saver demo: share, save and sort files on your device"
     }
   },
   {

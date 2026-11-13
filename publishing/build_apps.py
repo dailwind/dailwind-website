@@ -9,7 +9,7 @@ from html import escape
 import json,re,sys
 ROOT=Path(__file__).resolve().parent.parent
 TITLE='Dailwind App Store | Android Apps by Dailwind App Studio'
-DESC='Browse Android apps from Dailwind App Studio, including Owl File Saver and LinguaX Arc, plus apps coming soon.'
+DESC='Browse Android apps from Dailwind App Studio, including Owl Files Saver and LinguaX Arc, plus apps coming soon.'
 PLAY_SVG='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4 2.8v18.4c0 .5.5.8.9.6L20.6 12.6c.5-.3.5-.9 0-1.2L4.9 2.2c-.4-.2-.9.1-.9.6Z"/></svg>'
 STATUS={'live','coming-soon'}
 e=lambda s:escape(s,quote=True)
