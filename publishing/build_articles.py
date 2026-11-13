@@ -95,10 +95,13 @@ def slug_for(path):
     return (slug or 'article')+'-'+hashlib.sha256(path.name.encode()).hexdigest()[:8]
 
 def page_title(meta):
-    # Search titles stay unique and close to 50-60 characters.
+    # One pattern for every article: "Title by Author: Category | Dailwind Reading Room",
+    # dropping the author, then the category, to stay near 60 characters. The brand is always kept.
     title=meta['title'];author=meta.get('author','');category=meta.get('category','')
-    options=[title+' by '+author+' | '+category+' | Dailwind Reading Room' if author and category else '',title+' | '+category+' | Dailwind Reading Room' if category else '',title+' | Dailwind Reading Room',title+' | Dailwind']
-    return next((o for o in options if o and len(o)<=62),title)
+    category=' '.join(w[:1].upper()+w[1:] for w in category.split())
+    brand=' | Dailwind Reading Room'
+    options=[title+' by '+author+': '+category+brand if author and category else '',title+': '+category+brand if category else '',title+brand]
+    return next((o for o in options if o and len(o)<=62),title+brand)
 
 def meta_description(meta,summary):
     if len(summary)>=120:return summary
