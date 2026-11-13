@@ -15,13 +15,11 @@ def harden_html(text,path,root,social=None):
     if re.search(r'<script[^>]+src="(?:\.\./)*app\.js',text):
         policy=policy.replace("script-src 'self' 'wasm-unsafe-eval'", "script-src 'self' 'wasm-unsafe-eval' https://www.googletagmanager.com").replace("connect-src 'self'", "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com")
     route=path.relative_to(root).as_posix()
-    if route in {'pmc/index.html','pmc/account/index.html','manage/index.html','mat-cleaner/index.html'}:
+    if route in {'pmc/index.html','manage/index.html'}:
         policy=policy.replace("connect-src 'self'", "connect-src 'self' https://kotxgvwbffengeuvaoca.supabase.co")
     if route=='citation-generator/index.html':
         # DOI lookup only: the public Crossref REST API, nothing else.
         policy=policy.replace("connect-src 'self'", "connect-src 'self' https://api.crossref.org")
-    if route=='mat-cleaner/index.html':
-        policy=policy.replace("script-src 'self'", "script-src 'self' blob:").replace("worker-src 'self'", "worker-src 'self' blob:")
     hashes=['\'sha256-'+base64.b64encode(hashlib.sha256(code.encode()).digest()).decode()+'\'' for code in re.findall(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>',text,re.S)]
     if hashes:policy=policy.replace("script-src 'self'","script-src 'self' "+' '.join(hashes))
     # Keep the supplied studio mark consistent in headers, footers and launchers.
@@ -84,7 +82,7 @@ def harden_html(text,path,root,social=None):
     text=re.sub(r'<link\b[^>]*\bdata-dailwind-controls(?:="[^"]*")?[^>]*>','',text,flags=re.I)
     controls=posixpath.relpath('assets/form-controls.css',posixpath.dirname(route) or '.')
     text=text.replace('</head>','<link rel="stylesheet" data-dailwind-controls href="'+controls+'"></head>',1)
-    tool_routes={'grammar-checker','corpus-toolkit','stylistic-toolkit','corpus-cleaner','mat-cleaner','corpus-merger','file-converter','english-ocr','pdf-tools','image-tools','metadata-studio','lexical-metrics','morphology-explorer','syntax-explorer','sentiment-studio','register-profile','forensic-compare','readability-studio','stylometry-lab','parallel-aligner','qualitative-coder'}
+    tool_routes={'grammar-checker','corpus-toolkit','stylistic-toolkit','corpus-cleaner','corpus-merger','file-converter','english-ocr','pdf-tools','image-tools','metadata-studio','lexical-metrics','morphology-explorer','syntax-explorer','sentiment-studio','register-profile','forensic-compare','readability-studio','stylometry-lab','parallel-aligner','qualitative-coder'}
     tool=route.split('/')[0]
     if tool in tool_routes and route==tool+'/index.html':
         def workspace_body(m):
