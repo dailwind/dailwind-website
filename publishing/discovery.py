@@ -7,9 +7,9 @@ from datetime import date
 from social import page_metadata
 
 PAGES={
- 'index.html':('Dailwind Studio | Corpus Tools, PDF Utilities & LinguaX Arc','Explore browser-based corpus analysis, text cleaning, English OCR, PDF utilities and LinguaX Arc, the offline Android corpus toolkit.'),
+ 'index.html':('Dailwind App Studio | Corpus Tools, PDF Utilities & LinguaX Arc','Explore browser-based corpus analysis, text cleaning, English OCR, PDF utilities and LinguaX Arc, the offline Android corpus toolkit.'),
  'toolkits/index.html':('Dailwind Research Toolkits | Corpus, Text, PDF & Image Tools','Find the right tool for corpus analysis, text cleaning, English OCR, PDF conversion, file merging and metadata reports. Most tools run on your device.'),
- 'apps/index.html':('Dailwind App Store | Android Apps by Dailwind Studio','Browse Android apps from Dailwind Studio, including Owl File Saver and LinguaX Arc, plus apps coming soon.'),
+ 'apps/index.html':('Dailwind App Store | Android Apps by Dailwind App Studio','Browse Android apps from Dailwind App Studio, including Owl File Saver and LinguaX Arc, plus apps coming soon.'),
  'apps/owl-file-saver/index.html':('Owl File Saver for Android | Dailwind App Store','A private, offline file saver for Android. Save shared files in one tap, organise them and keep them on your device.'),
  'corpus-toolkit/index.html':('Corpus Analysis Online | Dailwind Corpus Toolkit','Explore KWIC concordance, word frequencies, collocations, keyness and charts with your own texts. Analyze corpora locally in your browser.'),
  'corpus-cleaner/index.html':('Corpus Cleaner for Books, Theses & OCR Text | Dailwind','Clean books, theses, articles and damaged OCR text. Remove chosen words or phrases, review an audit and download copies. Files stay on your device.'),
@@ -45,12 +45,12 @@ PAGES={
  'linguax-arc/index.html':('LinguaX Arc: Corpus Toolkit | Offline Android Corpus Analysis','Discover LinguaX Arc for Android: offline concordance, collocations, word frequencies and visual text analysis. Explore real app screenshots and features.'),
  'pmc/index.html':('Pakistan Medical Corpus (PMC) | Medical Discourse Research','Explore Pakistan Medical Corpus, a medical-discourse research project. Analyze the PMC preview without signing in. Full access by enquiry.'),
  'articles/index.html':('Reading Room | Poetry, Fiction, Essays & Research | Dailwind','Read poetry, short fiction, essays, research and teaching perspectives from the Dailwind community. Find writing by title, author or topic.'),
- 'arslan-tahir/index.html':('Arslan Tahir | Researcher, Educator & Developer | Dailwind','Meet Arslan Tahir, the researcher, educator and software developer behind Dailwind Studio. Explore his work in language, teaching and research software.'),
- 'privacy.html':('Privacy Policy | How Dailwind Studio Handles Your Data','How Dailwind Studio handles browsing, local preferences, cookies, browser toolkits, LinguaX Arc files, optional accounts and the Reading Room.'),
- 'terms.html':('Terms & Conditions | Dailwind Studio Website and Tools','Terms for using Dailwind Studio: website use, content ownership, software licences, research use, PMC accounts, paid research access and shared articles.'),
+ 'arslan-tahir/index.html':('Arslan Tahir | Researcher, Educator & Developer | Dailwind','Meet Arslan Tahir, the researcher, educator and software developer behind Dailwind App Studio. Explore his work in language, teaching and research software.'),
+ 'privacy.html':('Privacy Policy | How Dailwind App Studio Handles Your Data','How Dailwind App Studio handles browsing, local preferences, cookies, browser toolkits, LinguaX Arc files, optional accounts and the Reading Room.'),
+ 'terms.html':('Terms & Conditions | Dailwind App Studio Website and Tools','Terms for using Dailwind App Studio: website use, content ownership, software licences, research use, PMC accounts, paid research access and shared articles.'),
  'corpus-toolkit/coverage.html':('Corpus Toolkit Features, Methods & Limits | Dailwind','See what Dailwind Corpus Toolkit supports: concordance, a CQL subset, word lists, n-grams, statistics and exports, with documented methods and current limits.'),
  'toolkit/linguistics/methods.html':('Research Lab Methods: TTR, Entropy & Tagging | Dailwind','How Dailwind Research Labs calculate lexical diversity, entropy, MATTR and sentence boundaries, plus the scope and limits of the English tagging models.'),
- 'contact.html':('Contact Dailwind Studio | Collaboration & Research Services','Contact Dailwind Studio about collaboration, writing, research tools, paid OCR services and access to protected research resources.')}
+ 'contact.html':('Contact Dailwind App Studio | Collaboration & Research Services','Contact Dailwind App Studio about collaboration, writing, research tools, paid OCR services and access to protected research resources.')}
 TOOLS={name.split('/')[0] for name in PAGES if name.split('/')[0] in {'grammar-checker','corpus-toolkit','corpus-cleaner','stylistic-toolkit','mat-cleaner','file-converter','corpus-merger','english-ocr','pdf-tools','image-tools','metadata-studio','lexical-metrics','morphology-explorer','syntax-explorer','sentiment-studio','register-profile','forensic-compare','readability-studio','stylometry-lab','parallel-aligner','qualitative-coder'}}
 ORIGIN='https://dailwind.com'
 
@@ -99,10 +99,10 @@ def apply_discovery(root):
   if not private and not alias:urls.add((m['url'],lastmod(root,route,catalog.get(path.stem) if route.startswith('articles/read/') else None)))
   if primary=='articles/index.html':name='Reading Room'
   elif primary=='pmc/index.html':name='Pakistan Medical Corpus (PMC)'
-  elif primary=='index.html':name='Dailwind Studio'
+  elif primary=='index.html':name='Dailwind App Studio'
   else:name=m['title'].split(' | ')[0]
-  org={'@type':'Organization','@id':ORIGIN+'/#organization','name':'Dailwind Studio','url':ORIGIN+'/','logo':ORIGIN+'/assets/dailwind-logo-v866.webp'}
-  website={'@type':'WebSite','@id':ORIGIN+'/#website','name':'Dailwind Studio','url':ORIGIN+'/','publisher':{'@id':org['@id']}}
+  org={'@type':'Organization','@id':ORIGIN+'/#organization','name':'Dailwind App Studio','url':ORIGIN+'/','logo':ORIGIN+'/assets/dailwind-logo-v866.webp'}
+  website={'@type':'WebSite','@id':ORIGIN+'/#website','name':'Dailwind App Studio','url':ORIGIN+'/','publisher':{'@id':org['@id']}}
   page={'@type':'CollectionPage' if primary in {'articles/index.html','toolkits/index.html','apps/index.html'} else 'WebPage','@id':m['url']+'#page','url':m['url'],'name':name,'description':m['description'],'isPartOf':{'@id':website['@id']},'inLanguage':'en'}
   graph=[org,website,page]
   if route.split('/')[0] in TOOLS and route.endswith('/index.html'):
@@ -130,7 +130,7 @@ def apply_discovery(root):
   node=ET.SubElement(sitemap,'{'+ns+'}url');ET.SubElement(node,'{'+ns+'}loc').text=url
   if modified:ET.SubElement(node,'{'+ns+'}lastmod').text=modified
  (root/'sitemap.xml').write_text(ET.tostring(sitemap,encoding='unicode',xml_declaration=True))
- lines=['# Dailwind Studio','','> Language research software, practical document tools and community writing.','','## Research tools']
+ lines=['# Dailwind App Studio','','> Language research software, practical document tools and community writing.','','## Research tools']
  for route,(title,description) in PAGES.items():
   if route=='index.html':continue
   url=ORIGIN+'/'+(route[:-10] if route.endswith('index.html') else route)

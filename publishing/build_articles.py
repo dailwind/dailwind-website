@@ -128,8 +128,8 @@ def build(site,template):
         if meta['category'].casefold() in {'poetry','poem','poems'}:body='<div class="poem-body">'+body+'</div>'
         body=''.join(notices)+body
         byline=' · '.join(filter(None,[escape(meta['author']),escape(meta['date']),{'md':'Online reading','txt':'Text','pdf':'PDF'}[meta['format']]]))
-        summary=meta['summary'] or ('A shared PDF document.' if meta['format']=='pdf' else 'An article from the Dailwind Studio reading room.')
-        mapping={'__ARTICLE_PAGE_TITLE__':escape(page_title(meta),quote=True),'__ARTICLE_META_DESCRIPTION__':escape(meta_description(meta,summary),quote=True),'__ARTICLE_TITLE__':escape(meta['title'],quote=True),'__ARTICLE_DESCRIPTION__':escape(meta['summary'] or ('A shared PDF document.' if meta['format']=='pdf' else 'An article from the Dailwind Studio reading room.'),quote=True),'__ARTICLE_CATEGORY__':escape(meta['category']),'__ARTICLE_BYLINE__':byline,'__ARTICLE_SLUG__':slug,'__ARTICLE_BODY__':body}
+        summary=meta['summary'] or ('A shared PDF document.' if meta['format']=='pdf' else 'An article from the Dailwind App Studio reading room.')
+        mapping={'__ARTICLE_PAGE_TITLE__':escape(page_title(meta),quote=True),'__ARTICLE_META_DESCRIPTION__':escape(meta_description(meta,summary),quote=True),'__ARTICLE_TITLE__':escape(meta['title'],quote=True),'__ARTICLE_DESCRIPTION__':escape(meta['summary'] or ('A shared PDF document.' if meta['format']=='pdf' else 'An article from the Dailwind App Studio reading room.'),quote=True),'__ARTICLE_CATEGORY__':escape(meta['category']),'__ARTICLE_BYLINE__':byline,'__ARTICLE_SLUG__':slug,'__ARTICLE_BODY__':body}
         page=re.sub(r'__ARTICLE_(?:PAGE_TITLE|META_DESCRIPTION|TITLE|DESCRIPTION|CATEGORY|BYLINE|SLUG|BODY)__',lambda m:mapping[m[0]],shell)
         pages.append((slug+'.html',page));entries.append(meta)
     entries.sort(key=lambda e:(e['date'],e['title'].casefold()),reverse=True)

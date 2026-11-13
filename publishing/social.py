@@ -20,11 +20,11 @@ class Metadata(HTMLParser):
 
 def page_metadata(text, route):
     p=Metadata(); p.feed(text)
-    title=re.sub(r'\s*[—–|]\s*Dailwind Studio\s*$','',p.title).strip() or 'Dailwind Studio'
-    if route=='index.html': title='Dailwind Studio'
+    title=re.sub(r'\s*[—–|]\s*Dailwind App Studio\s*$','',p.title).strip() or 'Dailwind App Studio'
+    if route=='index.html': title='Dailwind App Studio'
     names={'pmc/index.html':'Pakistan Medical Corpus (PMC)','corpus-toolkit/index.html':'Dailwind Corpus Toolkit','stylistic-toolkit/index.html':'Dailwind Stylistic Toolkit','mat-cleaner/index.html':'MAT Tagger Cleaner','english-ocr/index.html':'Dailwind English OCR','metadata-studio/index.html':'Dailwind Metadata Studio','pdf-tools/index.html':'Dailwind PDF Tools','image-tools/index.html':'Dailwind Image Studio'}
     title=names.get(route,title)
-    description=p.description.strip() or 'Research tools, writing and software from Dailwind Studio.'
+    description=p.description.strip() or 'Research tools, writing and software from Dailwind App Studio.'
     return {'title':title,'description':description,'url':p.canonical or 'https://dailwind.com/'+route,
             'type':'article' if route.startswith('articles/read/') else 'website'}
 

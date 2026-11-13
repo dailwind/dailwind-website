@@ -9196,7 +9196,7 @@ function vSettings(){
   </section>
   <section class="card glass">
     <h2>${I.info} About &amp; Version Details</h2>
-    <p class="sub">LinguaX Arc ${APP_VERSION} · Dailwind Studios</p>
+    <p class="sub">LinguaX Arc ${APP_VERSION} · Dailwind App Studio</p>
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
       <button class="btn ghost" onclick="document.getElementById('aboutModal').classList.add('open')">View credits and details</button>
     </div>
