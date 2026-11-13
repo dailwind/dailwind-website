@@ -24,7 +24,7 @@ Resend is one option with a documented Supabase SMTP integration and a free plan
 ## Numeric-code email body
 
 ```html
-<!doctype html><html lang="en"><body style="margin:0;background:#f5f5f7;font-family:Arial,sans-serif;color:#1d1d1f"><main style="max-width:480px;margin:40px auto;padding:32px;background:white;border-radius:20px"><p>DAILWIND STUDIO</p><h1>Your verification code</h1><p>Enter this code in the Dailwind website tab where you requested it.</p><p style="font-size:34px;font-weight:bold;letter-spacing:6px">{{ .Token }}</p><p>If you did not request this code, you can ignore this email. Never share your code.</p></main></body></html>
+<!doctype html><html lang="en"><body style="margin:0;background:#f5f5f7;font-family:Arial,sans-serif;color:#1d1d1f"><main style="max-width:480px;margin:40px auto;padding:32px;background:white;border-radius:20px"><p>DAILWIND APP STUDIO</p><h1>Your verification code</h1><p>Enter this code in the Dailwind website tab where you requested it.</p><p style="font-size:34px;font-weight:bold;letter-spacing:6px">{{ .Token }}</p><p>If you did not request this code, you can ignore this email. Never share your code.</p></main></body></html>
 ```
 
 The website uses tab-memory-only sessions, so refreshing or changing pages requires a new login. A longer-lived cross-page login is a separate feature, not part of this repair. Do not paste an email-link token into chat or remove script integrity attributes to make configuration changes work; the restored GitHub Actions workflow handles integrity on deployment.

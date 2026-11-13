@@ -8,8 +8,8 @@ from pathlib import Path
 from html import escape
 import json,re,sys
 ROOT=Path(__file__).resolve().parent.parent
-TITLE='Dailwind App Store | Android Apps by Dailwind Studio'
-DESC='Browse Android apps from Dailwind Studio, including Owl File Saver and LinguaX Arc, plus apps coming soon.'
+TITLE='Dailwind App Store | Android Apps by Dailwind App Studio'
+DESC='Browse Android apps from Dailwind App Studio, including Owl File Saver and LinguaX Arc, plus apps coming soon.'
 PLAY_SVG='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4 2.8v18.4c0 .5.5.8.9.6L20.6 12.6c.5-.3.5-.9 0-1.2L4.9 2.2c-.4-.2-.9.1-.9.6Z"/></svg>'
 STATUS={'live','coming-soon'}
 e=lambda s:escape(s,quote=True)
@@ -96,7 +96,7 @@ def shell_parts(shell,title,desc,url,up):
 def render(apps,shell):
     head,header,footer=shell_parts(shell,TITLE,DESC,'https://dailwind.com/apps/','../')
     live=[a for a in apps if a['status']=='live'];soon=[a for a in apps if a['status']=='coming-soon']
-    main='<main id="main" class="apps-page"><section class="wrap apps-hero"><p class="eyebrow">DAILWIND APPS / ANDROID</p><h1>Dailwind App Store</h1><p class="lede">Apps by Arslan Tahir and Dailwind Studio.<br>Available now on Google Play, with more on the way.</p></section>'
+    main='<main id="main" class="apps-page"><section class="wrap apps-hero"><p class="eyebrow">DAILWIND APPS / ANDROID</p><h1>Dailwind App Store</h1><p class="lede">Apps by Arslan Tahir and Dailwind App Studio.<br>Available now on Google Play, with more on the way.</p></section>'
     n=1
     if live:main+=section('0'+str(n),'Available now',live,'apps-live');n+=1
     if soon:main+=section('0'+str(n),'Coming soon',soon,'apps-soon')
