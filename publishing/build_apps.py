@@ -84,10 +84,14 @@ def shell_parts(shell,title,desc,url,up):
     # Drop toolkit-finder scripts and styles; keep shared site assets.
     head=re.sub(r'<script[^>]*src="\.\./assets/(toolkit-catalog|toolkit-finder|workspace-guide|toolkit-icon-motion|toolkit-enhance)\.js[^"]*"[^>]*></script>','',head)
     head=re.sub(r'<link rel="stylesheet" href="\.\./assets/workspace-guide\.css[^"]*">','',head)
+    # Toolkits-only extras (icon motion styles, Recommended-by dialog) do not belong on app pages.
+    head=re.sub(r'<script[^>]*src="\.\./assets/credits-3d\.js[^"]*"[^>]*></script>','',head)
+    head=re.sub(r'<link rel="stylesheet" href="\.\./assets/(academic-review|credits-3d)\.css[^"]*">','',head)
     head+='<link rel="stylesheet" href="../assets/apps.css?v=3"><script src="../assets/apps-motion.js?v=2" defer></script>'
     header='<body class="apps-body">'+shell[shell.index('<body>')+6:shell.index('<main id="main">')].replace(' aria-current="page"','').replace('<a href="../apps/" >','<a href="../apps/" aria-current="page">')
     if 'aria-current="page"' not in header:raise ValueError('Navigation is missing the Apps link.')
     footer=shell[shell.index('</main>')+7:]
+    footer=re.sub(r'<dialog id="credits-dialog".*?</dialog>','',footer,flags=re.S)
     if up!='../':
         fix=lambda s:s.replace('="../','="'+up)
         head,header,footer=fix(head),fix(header),fix(footer)
