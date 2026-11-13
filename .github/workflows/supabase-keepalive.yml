@@ -1,0 +1,36 @@
+# Keeps the free-tier Supabase project (PMC accounts and corpus) from being
+# paused for inactivity. Twice a week it makes one small read-only request:
+# the public PMC preview summary, which writes nothing and does not count
+# against the visitors' preview limit. If the request fails, the run fails and
+# GitHub emails the repository owner.
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: '17 3 * * 1,4'   # Mondays and Thursdays, 03:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Query the public PMC summary
+        env:
+          # The publishable key is already public in assets/pmc-auth-config.js.
+          SUPABASE_URL: https://kotxgvwbffengeuvaoca.supabase.co
+          SUPABASE_KEY: sb_publishable_NS7Ijr-YsQkVykQNG79wnw_2fFbncG7
+        run: |
+          for attempt in 1 2 3; do
+            code=$(curl -sS -o response.json -w '%{http_code}' -X POST \
+              "$SUPABASE_URL/rest/v1/rpc/dw_pmc_public_summary" \
+              -H "apikey: $SUPABASE_KEY" -H "Content-Type: application/json" -d '{}' || echo 000)
+            echo "Attempt $attempt: HTTP $code"
+            if [ "$code" = "200" ]; then cat response.json; echo; exit 0; fi
+            sleep 30
+          done
+          echo "::error::Supabase did not answer. The project may be paused: open https://supabase.com/dashboard and restore it."
+          exit 1
