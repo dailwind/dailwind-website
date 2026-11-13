@@ -1,0 +1,68 @@
+# Dailwind App Studio
+
+> Dailwind App Studio (formerly Dailwind Studios) is an independent software studio founded by Arslan Tahir, a PhD scholar in English Linguistics in Multan, Pakistan. It builds free research tools for corpus linguistics and text analysis, writing and file utilities that run in the browser, and Android apps. Website: https://dailwind.com
+
+Name note: the studio was called "Dailwind Studios" (sometimes "Dailwind Studio") until November 2026. "Dailwind App Studio" is the current and correct name. All three refer to the same studio.
+
+Most browser tools process files and text on the user's own device; nothing is uploaded unless a page says otherwise. Contact: arslan@dailwind.com
+
+## About
+
+- [Arslan Tahir](https://dailwind.com/arslan-tahir/): founder of Dailwind App Studio; researcher, educator and software developer
+- [Contact](https://dailwind.com/contact.html): collaboration, research services, paid OCR and access to protected resources
+- [Privacy policy](https://dailwind.com/privacy.html)
+- [Terms and conditions](https://dailwind.com/terms.html)
+
+## Android apps
+
+- [Dailwind App Store](https://dailwind.com/apps/): all Android apps by Dailwind App Studio
+- [LinguaX Arc](https://dailwind.com/linguax-arc/): offline corpus analysis toolkit for Android (concordance, collocations, word frequencies), part of the LinguaX Software Series
+- [Owl File Saver](https://dailwind.com/apps/owl-file-saver/): private, offline file saver for Android
+
+## Corpus and linguistics research tools
+
+- [All toolkits](https://dailwind.com/toolkits/): directory of every tool
+- [Corpus Toolkit](https://dailwind.com/corpus-toolkit/): KWIC concordance, word lists, collocations, keyness and charts in the browser
+- [Corpus Toolkit features and limits](https://dailwind.com/corpus-toolkit/coverage.html)
+- [Corpus Cleaner](https://dailwind.com/corpus-cleaner/): clean books, theses and OCR text
+- [Corpus Merger](https://dailwind.com/corpus-merger/): combine text files into one TXT or Word file
+- [Metadata Studio](https://dailwind.com/metadata-studio/): corpus metadata with Excel and CSV reports
+- [Register Profile](https://dailwind.com/register-profile/): feature counts per 1,000 words for register and multidimensional-analysis preparation
+- [Lexical Metrics](https://dailwind.com/lexical-metrics/): lexical diversity, TTR and frequency
+- [Readability Studio](https://dailwind.com/readability-studio/): six readability formulas plus MTLD and HD-D
+- [Stylistic Toolkit](https://dailwind.com/stylistic-toolkit/): parallelism and deviation across linguistic levels
+- [Stylometry Lab](https://dailwind.com/stylometry-lab/): Burrows' Delta authorship comparison
+- [Forensic Text Compare](https://dailwind.com/forensic-compare/): descriptive comparison of two texts
+- [Morphology Explorer](https://dailwind.com/morphology-explorer/): English word forms and inflection
+- [Syntax Explorer](https://dailwind.com/syntax-explorer/): sentence profiles and CoNLL-U dependencies
+- [Sentiment Studio](https://dailwind.com/sentiment-studio/): VADER sentiment analysis
+- [Parallel Text Aligner](https://dailwind.com/parallel-aligner/): sentence alignment with TSV, CSV and TMX export
+- [Qualitative Coder](https://dailwind.com/qualitative-coder/): code survey and interview responses with Cohen's kappa
+- [Research Lab methods](https://dailwind.com/toolkit/linguistics/methods.html): how the calculations work
+- [MAT Tagger Cleaner](https://dailwind.com/mat-cleaner/): corpus preparation for MAT tagging (paid, approval required)
+- [Pakistan Medical Corpus (PMC)](https://dailwind.com/pmc/): medical-discourse research corpus with a public preview
+
+## Writing tools
+
+- [Grammar Checker](https://dailwind.com/grammar-checker/)
+- [Citation Generator](https://dailwind.com/citation-generator/): APA 7, MLA 9, Chicago and Harvard with DOI lookup
+- [Synonym and Word Explorer](https://dailwind.com/synonym-explorer/): WordNet thesaurus
+- [Word Counter and Text Statistics](https://dailwind.com/text-statistics/)
+- [Case Converter](https://dailwind.com/case-converter/)
+- [Text to Speech with IPA](https://dailwind.com/text-to-speech/)
+- [AI Text Detector](https://dailwind.com/ai-text-detector/): a heuristic estimate, never proof
+- [Text Humanizer](https://dailwind.com/text-humanizer/)
+
+## File, PDF and image tools
+
+- [English OCR](https://dailwind.com/english-ocr/): scanned books and PDFs to editable text
+- [File Converter](https://dailwind.com/file-converter/): PDF, Word and text
+- [PDF Tools](https://dailwind.com/pdf-tools/): split and optimise PDFs
+- [Image Tools](https://dailwind.com/image-tools/): PDF to images, images to PDF, compression
+- [Image Converter](https://dailwind.com/image-converter/)
+- [Image Resizer](https://dailwind.com/image-resizer/)
+- [Passport and Visa Photo Maker](https://dailwind.com/passport-photo-maker/)
+
+## Reading Room
+
+- [Reading Room](https://dailwind.com/articles/): poetry, short fiction, essays and research writing from the Dailwind community
