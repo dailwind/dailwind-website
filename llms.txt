@@ -16,6 +16,7 @@ Most browser tools process files and text on the user's own device; nothing is u
 ## Android apps
 
 - [Dailwind App Store](https://dailwind.com/apps/): all Android apps by Dailwind App Studio
+- [Dailwind App Studio on Google Play](https://play.google.com/store/apps/developer?id=Dailwind+App+Studio%E2%84%A2): developer page listing the published Android apps
 - [LinguaX Arc](https://dailwind.com/linguax-arc/): offline corpus analysis toolkit for Android (concordance, collocations, word frequencies), part of the LinguaX Software Series
 - [Owl File Saver](https://dailwind.com/apps/owl-file-saver/): private, offline file saver for Android
 
