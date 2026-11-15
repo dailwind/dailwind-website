@@ -1,0 +1,28 @@
+/* "Cite this tool" button and dialog on every tool page. */
+.dw-cite-open{display:inline-flex;align-items:center;gap:6px;flex:none;min-height:34px;margin-left:auto;padding:6px 14px;border:1px solid #d2d2d7;border-radius:999px;background:#fff;color:#1d1d1f;font:600 13px/1.2 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;cursor:pointer;white-space:nowrap;transition:background-color .2s ease,border-color .2s ease}
+.dw-cite-open span{font-size:16px;line-height:1;color:#0071e3}
+.dw-cite-open:hover{background:#f5f5f7;border-color:#b8b8bf}
+.dw-cite-open:focus-visible{outline:2px solid #0071e3;outline-offset:2px}
+.dw-cite-open.is-floating{position:fixed;left:16px;bottom:16px;z-index:60;box-shadow:0 6px 20px #0000001f}
+
+.dw-cite-dialog{width:min(720px,calc(100vw - 24px));max-width:none;max-height:calc(100dvh - 24px);margin:auto;padding:0;border:1px solid #e5e5ea;border-radius:22px;background:#fff;color:#1d1d1f;box-shadow:0 30px 80px #0000003d;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,sans-serif}
+.dw-cite-dialog::backdrop{background:#0000005c;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.dw-cite-panel{position:relative;max-height:calc(100dvh - 26px);overflow:auto;padding:clamp(20px,4vw,30px)}
+.dw-cite-close{position:absolute;top:14px;right:14px;width:36px;height:36px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:#f2f2f7;color:#1d1d1f;font:400 22px/1 system-ui,sans-serif;cursor:pointer}
+.dw-cite-close:hover{background:#e5e5ea}
+.dw-cite-eyebrow{margin:0;font-size:11px;font-weight:650;letter-spacing:.12em;color:#0071e3}
+.dw-cite-dialog h2{margin:6px 44px 6px 0;font-size:clamp(20px,3vw,24px);font-weight:650;letter-spacing:-.02em;line-height:1.2}
+.dw-cite-lede{margin:0 0 18px;font-size:14px;line-height:1.55;color:#6e6e73}
+.dw-cite-list{display:grid;gap:10px}
+.dw-cite-item{padding:12px 14px;border:1px solid #e5e5ea;border-radius:14px;background:#fbfbfd}
+.dw-cite-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.dw-cite-row h3{margin:0;font-size:12px;font-weight:650;letter-spacing:.04em;color:#6e6e73;text-transform:uppercase}
+.dw-cite-copy{min-height:30px;padding:4px 14px;border:1px solid #d2d2d7;border-radius:999px;background:#fff;color:#0071e3;font:600 12.5px/1.2 inherit;font-family:inherit;cursor:pointer}
+.dw-cite-copy:hover{background:#f0f6ff;border-color:#9fc4f2}
+.dw-cite-copy:focus-visible,.dw-cite-close:focus-visible{outline:2px solid #0071e3;outline-offset:2px}
+.dw-cite-text{margin:0;font-size:14px;line-height:1.6;color:#1d1d1f;overflow-wrap:anywhere;user-select:text;-webkit-user-select:text}
+.dw-cite-code{white-space:pre-wrap;font:12.5px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#1d1d1f}
+.dw-cite-note{margin:14px 0 0;font-size:12px;line-height:1.5;color:#86868b}
+.dw-cite-status{min-height:1em;margin:6px 0 0;font-size:12.5px;color:#1f7a3a}
+@media(max-width:560px){.dw-cite-open{padding:6px 11px}.dw-cite-text{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.dw-cite-open{transition:none}}

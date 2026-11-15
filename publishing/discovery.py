@@ -74,8 +74,22 @@ def lastmod(root,route,article=None):
  if article and article.get('date'):return article['date']
  return date.today().isoformat()
 
+def cite_tools(root):
+ # Tool name per slug from the toolkit catalog; every tool page gets a "Cite" button (paid services excluded).
+ src=(root/'assets/toolkit-catalog.js').read_text(encoding='utf-8')
+ items=json.loads(src[src.index('['):src.rindex(']')+1])
+ return {i['slug']:i['name'] for i in items if i['slug']!='mat-cleaner'}
+
+def add_citation(text,route,tools):
+ slug=route.split('/')[0]
+ if route!=slug+'/index.html' or slug not in tools or 'id="dw-cite"' in text:return text
+ tag='<div id="dw-cite" hidden data-tool="'+escape(tools[slug],quote=True)+'" data-url="'+ORIGIN+'/'+slug+'/" data-year="2026"></div>'
+ text=text.replace('</head>','<link rel="stylesheet" href="../assets/cite-tool.css"><script defer src="../assets/cite-tool.js"></script></head>',1)
+ return re.sub(r'(<body\b[^>]*>)',lambda m:m[1]+tag,text,count=1,flags=re.I)
+
 def apply_discovery(root):
  root=Path(root);catalog={}
+ tools=cite_tools(root)
  if (root/'articles/catalog.json').exists():catalog={item['slug']:item for item in json.loads((root/'articles/catalog.json').read_text())}
  urls=set()
  for path in sorted(root.rglob('*.html')):
@@ -85,6 +99,7 @@ def apply_discovery(root):
    # The legacy copy has no canonical link; point it at the maintained page so it is not indexed twice.
    if not re.search(r'<link[^>]*rel="canonical"',text):text=text.replace('</head>','<link rel="canonical" href="https://dailwind.com/corpus-toolkit/coverage.html"></head>',1)
   text=re.sub(r'(<a\b[^>]*href="[^"]*(?:articles/|articles\.html)"[^>]*>)Articles(</a>)',r'\1Reading Room\2',text)
+  text=add_citation(text,route,tools)
   m=page_metadata(text,route);primary=canonical_route(m['url'])
   if primary in PAGES:
    title,description=PAGES[primary];text=re.sub(r'<title>.*?</title>','<title>'+escape(title)+'</title>',text,count=1,flags=re.S|re.I);text=setmeta(text,'description',description)
@@ -134,7 +149,8 @@ def apply_discovery(root):
  lines=['# Dailwind App Studio','','> Language research software, practical document tools, Android apps and community writing, by Dailwind App Studio.','',
   'Dailwind App Studio (formerly Dailwind Studios, sometimes written Dailwind Studio) is an independent software studio founded by Arslan Tahir, a PhD scholar in English Linguistics in Multan, Pakistan. The studio was renamed in November 2026; all three names refer to the same studio, and Dailwind App Studio is the current name.','',
   '## About','- [Arslan Tahir]('+ORIGIN+'/arslan-tahir/): founder of Dailwind App Studio','- [Contact]('+ORIGIN+'/contact.html): arslan@dailwind.com','',
-  '## Android apps','- [Dailwind App Studio on Google Play](https://play.google.com/store/apps/dev?id=6939621632495024352): developer page with the published Android apps','- [LinguaX Arc]('+ORIGIN+'/linguax-arc/): offline corpus analysis toolkit for Android, part of the LinguaX Software Series','- [Owl Files Saver]('+ORIGIN+'/apps/owl-file-saver/): private, offline file saver for Android','',
+  '## Android apps','- [Dailwind App Studio on Google Play](https://play.google.com/store/apps/dev?id=6939621632495024352): developer page with the published Android apps','- [LinguaX Arc]('+ORIGIN+'/linguax-arc/): offline corpus analysis toolkit for Android, part of the LinguaX Software Series; nominated for the Honhaar Punjab Innovation and Technology (PiNTECH) Expo 2026, organised by the Punjab Higher Education Commission','- [Owl Files Saver]('+ORIGIN+'/apps/owl-file-saver/): private, offline file saver for Android','',
+  'Every web tool page has a Cite button with APA 7, MLA 9, Chicago 17, Harvard and BibTeX references (author: Tahir, A.; publisher: Dailwind App Studio). LinguaX Arc is archived on Zenodo: https://doi.org/10.5281/zenodo.22706552','',
   '## Research tools']
  for route,(title,description) in PAGES.items():
   if route=='index.html':continue
