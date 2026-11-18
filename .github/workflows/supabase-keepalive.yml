@@ -1,13 +1,15 @@
-# Keeps the free-tier Supabase project (PMC accounts and corpus) from being
-# paused for inactivity. Twice a week it makes one small read-only request:
-# the public PMC preview summary, which writes nothing and does not count
-# against the visitors' preview limit. If the request fails, the run fails and
-# GitHub emails the repository owner.
+# Keeps the free-tier Supabase project (PMC workspace and owner login) from
+# being paused for inactivity. Once a day it:
+#   1. writes a heartbeat row in the database (dw_keepalive),
+#   2. reads the public PMC summary (dw_pmc_public_summary),
+#   3. checks the sign-in service (auth health).
+# Nothing here touches visitor data or the PMC preview limits. If the database
+# calls fail, the run fails and GitHub emails the repository owner.
 name: Supabase keep-alive
 
 on:
   schedule:
-    - cron: '17 3 * * 1,4'   # Mondays and Thursdays, 03:17 UTC
+    - cron: '17 3 * * *'   # every day, 03:17 UTC
   workflow_dispatch:
 
 permissions:
@@ -16,21 +18,29 @@ permissions:
 jobs:
   ping:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
-      - name: Query the public PMC summary
+      - name: Heartbeat, PMC summary and auth health
         env:
           # The publishable key is already public in assets/pmc-auth-config.js.
           SUPABASE_URL: https://kotxgvwbffengeuvaoca.supabase.co
           SUPABASE_KEY: sb_publishable_NS7Ijr-YsQkVykQNG79wnw_2fFbncG7
         run: |
-          for attempt in 1 2 3; do
-            code=$(curl -sS -o response.json -w '%{http_code}' -X POST \
-              "$SUPABASE_URL/rest/v1/rpc/dw_pmc_public_summary" \
-              -H "apikey: $SUPABASE_KEY" -H "Content-Type: application/json" -d '{}' || echo 000)
-            echo "Attempt $attempt: HTTP $code"
-            if [ "$code" = "200" ]; then cat response.json; echo; exit 0; fi
-            sleep 30
-          done
-          echo "::error::Supabase did not answer. The project may be paused: open https://supabase.com/dashboard and restore it."
-          exit 1
+          call() {
+            for attempt in 1 2 3; do
+              code=$(curl -sS -o out.json -w '%{http_code}' -X "$1" "$SUPABASE_URL$2" \
+                -H "apikey: $SUPABASE_KEY" -H "Content-Type: application/json" ${3:+-d "$3"} || echo 000)
+              echo "$2 attempt $attempt: HTTP $code"
+              if [ "$code" = "200" ]; then cat out.json; echo; return 0; fi
+              sleep 30
+            done
+            return 1
+          }
+          ok=0
+          call POST /rest/v1/rpc/dw_keepalive '{}' || ok=1
+          call POST /rest/v1/rpc/dw_pmc_public_summary '{}' || ok=1
+          call GET /auth/v1/health || echo "Auth health did not answer (not fatal)."
+          if [ $ok -ne 0 ]; then
+            echo "::error::Supabase did not answer. The project may be paused: open https://supabase.com/dashboard and restore it."
+            exit 1
+          fi
