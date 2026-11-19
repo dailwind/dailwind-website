@@ -1,0 +1,17 @@
+{
+  "title": "Dailwind Research Tools: Browser-Based Corpus, Text and Document Tools",
+  "upload_type": "software",
+  "description": "<p>Dailwind Research Tools is a collection of free, browser-based tools for corpus linguistics, text analysis, writing and document work, published by Dailwind App Studio at <a href=\"https://dailwind.com/toolkits/\">dailwind.com/toolkits</a>.</p><p>It includes a corpus toolkit (KWIC concordance, word lists, collocations, keyness), corpus cleaning, merging and metadata tools, register, lexical, readability, stylistic, stylometric, morphological, syntactic and sentiment analysis, a parallel text aligner, a qualitative coder, a subtitle corpus builder, and writing, OCR, PDF and image utilities. Most tools process files locally in the user's browser.</p><p>Each tool can be cited individually from its Cite button, for example: Tahir, A., &amp; Tahir, A. (2026). <i>Corpus Toolkit</i> [Computer software]. In <i>Dailwind Research Tools</i>. Dailwind App Studio.</p>",
+  "creators": [
+    {"name": "Tahir, Arslan", "affiliation": "Dailwind App Studio; Emerson University, Multan"},
+    {"name": "Tahir, Adnan", "affiliation": "Emerson University, Multan"}
+  ],
+  "keywords": ["corpus linguistics", "text analysis", "natural language processing", "concordance", "research software", "digital humanities"],
+  "license": "MIT",
+  "version": "2026.11",
+  "language": "eng",
+  "related_identifiers": [
+    {"identifier": "https://dailwind.com/toolkits/", "relation": "isDocumentedBy", "resource_type": "other", "scheme": "url"},
+    {"identifier": "10.5281/zenodo.22706552", "relation": "isRelatedTo", "resource_type": "software", "scheme": "doi"}
+  ]
+}
