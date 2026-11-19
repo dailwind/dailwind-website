@@ -7,7 +7,7 @@
     {"name": "Tahir, Adnan", "affiliation": "Emerson University, Multan"}
   ],
   "keywords": ["corpus linguistics", "text analysis", "natural language processing", "concordance", "research software", "digital humanities"],
-  "license": "MIT",
+  "license": "mit",
   "version": "2026.11",
   "language": "eng",
   "related_identifiers": [
