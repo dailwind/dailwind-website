@@ -4,7 +4,7 @@
 (()=>{
  const grid=document.querySelector('.finder-library');if(!grid)return;
  const cards=[...document.querySelectorAll('.toolkit-card[data-toolkit]')];if(!cards.length)return;
- const KEY='dailwind:lastToolkit',NEW=new Set(['case-converter','text-statistics','synonym-explorer','citation-generator','text-to-speech','passport-photo-maker','image-resizer','image-converter','text-humanizer','ai-text-detector','grammar-checker','lexical-metrics','morphology-explorer','syntax-explorer','sentiment-studio','register-profile','forensic-compare','readability-studio','stylometry-lab','parallel-aligner','qualitative-coder']);
+ const KEY='dailwind:lastToolkit',NEW=new Set(['subtitle-corpus','case-converter','text-statistics','synonym-explorer','citation-generator','text-to-speech','passport-photo-maker','image-resizer','image-converter','text-humanizer','ai-text-detector','grammar-checker','lexical-metrics','morphology-explorer','syntax-explorer','sentiment-studio','register-profile','forensic-compare','readability-studio','stylometry-lab','parallel-aligner','qualitative-coder']);
  const store={get(){try{return JSON.parse(localStorage.getItem(KEY)||'null');}catch{return null;}},set(v){try{localStorage.setItem(KEY,JSON.stringify(v));}catch{}}};
  const RKEY='dailwind:recentTools',recent={get(){try{const v=JSON.parse(localStorage.getItem(RKEY)||'[]');return Array.isArray(v)?v:[];}catch{return[];}}};
  const pushRecent=(slug,name)=>{try{const l=recent.get().filter(t=>t&&t.slug!==slug);l.unshift({slug,name,at:Date.now()});localStorage.setItem(RKEY,JSON.stringify(l.slice(0,6)));}catch{}};
