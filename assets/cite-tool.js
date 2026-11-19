@@ -10,10 +10,14 @@
   var year = data.getAttribute('data-year') || '2026';
   if (!tool || !url) return;
 
-  var AUTHOR_FULL = 'Tahir, Arslan';
-  var AUTHOR_SHORT = 'Tahir, A.';
+  // Both authors; the collection is archived on Zenodo.
+  var APA_AUTHORS = 'Tahir, A., & Tahir, A.';
+  var HARVARD_AUTHORS = 'Tahir, A. and Tahir, A.';
+  var FULL_AUTHORS = 'Tahir, Arslan, and Adnan Tahir';
+  var COLLECTION = 'Dailwind Research Tools';
   var PUBLISHER = 'Dailwind App Studio';
-  var bare = url.replace(/^https?:\/\//, '');
+  var DOI = '10.5281/zenodo.24363599';
+  var DOI_URL = 'https://doi.org/' + DOI;
 
   var now = new Date();
   var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -29,19 +33,19 @@
   // Each style: [label, plain text, html with italics]
   var styles = [
     ['APA 7',
-      AUTHOR_SHORT + ' (' + year + '). ' + tool + ' [Computer software]. ' + PUBLISHER + '. ' + url,
-      esc(AUTHOR_SHORT) + ' (' + year + '). <i>' + esc(tool) + '</i> [Computer software]. ' + esc(PUBLISHER) + '. ' + esc(url)],
+      APA_AUTHORS + ' (' + year + '). ' + tool + ' [Computer software]. In ' + COLLECTION + '. ' + PUBLISHER + '. ' + DOI_URL,
+      esc(APA_AUTHORS) + ' (' + year + '). <i>' + esc(tool) + '</i> [Computer software]. In <i>' + COLLECTION + '</i>. ' + esc(PUBLISHER) + '. ' + DOI_URL],
     ['MLA 9',
-      AUTHOR_FULL + '. ' + tool + '. ' + PUBLISHER + ', ' + year + ', ' + bare + '. Accessed ' + d + ' ' + MLA_MONTHS[m] + ' ' + y + '.',
-      esc(AUTHOR_FULL) + '. <i>' + esc(tool) + '</i>. ' + esc(PUBLISHER) + ', ' + year + ', ' + esc(bare) + '. Accessed ' + d + ' ' + MLA_MONTHS[m] + ' ' + y + '.'],
+      FULL_AUTHORS + '. ' + tool + '. ' + COLLECTION + ', ' + PUBLISHER + ', ' + year + ', ' + DOI_URL + '. Accessed ' + d + ' ' + MLA_MONTHS[m] + ' ' + y + '.',
+      esc(FULL_AUTHORS) + '. <i>' + esc(tool) + '</i>. <i>' + COLLECTION + '</i>, ' + esc(PUBLISHER) + ', ' + year + ', ' + DOI_URL + '. Accessed ' + d + ' ' + MLA_MONTHS[m] + ' ' + y + '.'],
     ['Chicago 17',
-      AUTHOR_FULL + '. ' + tool + '. ' + PUBLISHER + ', ' + year + '. Computer software. ' + url + '.',
-      esc(AUTHOR_FULL) + '. <i>' + esc(tool) + '</i>. ' + esc(PUBLISHER) + ', ' + year + '. Computer software. ' + esc(url) + '.'],
+      FULL_AUTHORS + '. ' + tool + '. In ' + COLLECTION + '. ' + PUBLISHER + ', ' + year + '. Computer software. ' + DOI_URL + '.',
+      esc(FULL_AUTHORS) + '. <i>' + esc(tool) + '</i>. In <i>' + COLLECTION + '</i>. ' + esc(PUBLISHER) + ', ' + year + '. Computer software. ' + DOI_URL + '.'],
     ['Harvard',
-      AUTHOR_SHORT + ' (' + year + ') ' + tool + ' [Computer software]. ' + PUBLISHER + '. Available at: ' + url + ' (Accessed: ' + d + ' ' + MONTHS[m] + ' ' + y + ').',
-      esc(AUTHOR_SHORT) + ' (' + year + ') <i>' + esc(tool) + '</i> [Computer software]. ' + esc(PUBLISHER) + '. Available at: ' + esc(url) + ' (Accessed: ' + d + ' ' + MONTHS[m] + ' ' + y + ').'],
+      HARVARD_AUTHORS + ' (' + year + ') ' + tool + ' [Computer software]. In: ' + COLLECTION + '. ' + PUBLISHER + '. Available at: ' + DOI_URL + ' (Accessed: ' + d + ' ' + MONTHS[m] + ' ' + y + ').',
+      esc(HARVARD_AUTHORS) + ' (' + year + ') <i>' + esc(tool) + '</i> [Computer software]. In: <i>' + COLLECTION + '</i>. ' + esc(PUBLISHER) + '. Available at: ' + DOI_URL + ' (Accessed: ' + d + ' ' + MONTHS[m] + ' ' + y + ').'],
     ['BibTeX',
-      '@software{' + key + ',\n  author    = {Tahir, Arslan},\n  title     = {' + tool.replace(/&/g, '\\&') + '},\n  year      = {' + year + '},\n  publisher = {' + PUBLISHER + '},\n  url       = {' + url + '},\n  urldate   = {' + iso + '}\n}',
+      '@software{' + key + ',\n  author    = {Tahir, Arslan and Tahir, Adnan},\n  title     = {' + tool.replace(/&/g, '\\&') + '},\n  booktitle = {' + COLLECTION + '},\n  year      = {' + year + '},\n  publisher = {' + PUBLISHER + '},\n  doi       = {' + DOI + '},\n  url       = {' + url + '},\n  urldate   = {' + iso + '}\n}',
       null]
   ];
 
@@ -61,7 +65,7 @@
       (s[2] ? '<p class="dw-cite-text">' + s[2] + '</p>' : '<pre class="dw-cite-text dw-cite-code">' + esc(s[1]) + '</pre>') +
       '</section>';
   });
-  html += '</div><p class="dw-cite-note">MLA, Harvard and BibTeX include today\'s date as the access date. Check the reference against your department\'s style guide.</p>' +
+  html += '</div><p class="dw-cite-note">Archived on Zenodo: <a href="' + DOI_URL + '" target="_blank" rel="noopener">doi:' + DOI + '</a>. MLA, Harvard and BibTeX include today\'s date as the access date. Check the reference against your department\'s style guide.</p>' +
     '<p class="dw-cite-status" role="status" aria-live="polite"></p></div>';
   dlg.innerHTML = html;
   document.body.appendChild(dlg);

@@ -151,7 +151,7 @@ def apply_discovery(root):
   'Dailwind App Studio (formerly Dailwind Studios, sometimes written Dailwind Studio) is an independent software studio founded by Arslan Tahir, a PhD scholar in English Linguistics in Multan, Pakistan. The studio was renamed in November 2026; all three names refer to the same studio, and Dailwind App Studio is the current name.','',
   '## About','- [Arslan Tahir]('+ORIGIN+'/arslan-tahir/): founder of Dailwind App Studio','- [Contact]('+ORIGIN+'/contact.html): arslan@dailwind.com','',
   '## Android apps','- [Dailwind App Studio on Google Play](https://play.google.com/store/apps/dev?id=6939621632495024352): developer page with the published Android apps','- [LinguaX Arc]('+ORIGIN+'/linguax-arc/): offline corpus analysis toolkit for Android, part of the LinguaX Software Series; nominated for the Honhaar Punjab Innovation and Technology (PiNTECH) Expo 2026, organised by the Punjab Higher Education Commission','- [Owl Files Saver]('+ORIGIN+'/apps/owl-file-saver/): private, offline file saver for Android','',
-  'Every web tool page has a Cite button with APA 7, MLA 9, Chicago 17, Harvard and BibTeX references (author: Tahir, A.; publisher: Dailwind App Studio). LinguaX Arc is archived on Zenodo: https://doi.org/10.5281/zenodo.22706552','',
+  'Every web tool page has a Cite button with APA 7, MLA 9, Chicago 17, Harvard and BibTeX references (authors: Tahir, Arslan and Tahir, Adnan; publisher: Dailwind App Studio). The tools are archived on Zenodo as Dailwind Research Tools: https://doi.org/10.5281/zenodo.24363599. LinguaX Arc is archived on Zenodo: https://doi.org/10.5281/zenodo.22706552','',
   '## Research tools']
  for route,(title,description) in PAGES.items():
   if route=='index.html':continue

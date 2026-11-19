@@ -10,9 +10,14 @@ authors:
     given-names: Adnan
     affiliation: "Emerson University, Multan"
 version: "2026.11"
+doi: "10.5281/zenodo.24363599"
 date-released: "2026-11-19"
 license: MIT
 url: "https://dailwind.com/toolkits/"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24363599"
+    description: "Zenodo archive of Dailwind Research Tools"
 repository-code: "https://github.com/dailwind/dailwind-website"
 abstract: >-
   Dailwind Research Tools is a collection of free, browser-based tools for
