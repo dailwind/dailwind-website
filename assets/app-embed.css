@@ -1,0 +1,13 @@
+/* App mode (inside the Dailwind Toolkits app): hide website-only parts. */
+.dw-app .dw-app-hide,
+.dw-app body > footer,
+.dw-app .language-footer,
+.dw-app .footer,
+.dw-app body > .header,
+.dw-app .cookie-note,
+.dw-app .skip,
+.dw-app nav.tool-related{display:none!important}
+.dw-app .language-top{padding-top:12px;padding-bottom:12px}
+.dw-app .language-main{padding-top:24px}
+.dw-app .sc-app-note{display:block!important}
+.dw-app .sc-ext{display:none!important}

@@ -88,9 +88,28 @@ def add_citation(text,route,tools):
  text=text.replace('</head>','<link rel="stylesheet" href="../assets/cite-tool.css"><script defer src="../assets/cite-tool.js"></script></head>',1)
  return re.sub(r'(<body\b[^>]*>)',lambda m:m[1]+tag,text,count=1,flags=re.I)
 
+APP_EXTRA=[{"slug":"pmc","name":"Pakistan Medical Corpus (PMC)","category":"Corpora","symbol":"PMC","task":"Explore medical discourse from Pakistan.","description":"A medical-discourse research corpus from Pakistan. Free and open to everyone: analyze the published texts, no account needed.","color":"#e8f4f1"}]
+APP_NOTES={"subtitle-corpus":"On phones this tool accepts subtitle files only. YouTube links need the computer version with the free extension.","pmc":"Needs an internet connection.","mat-cleaner":"Paid service by email.","text-to-speech":"Uses the phone's voices; some Android versions do not allow speech inside apps.","english-ocr":"Large scans may be slow on older phones."}
+
+def app_catalog(root):
+ # Tool list for the Dailwind Toolkits Android app (fetched from https://dailwind.com/app/tools.json).
+ src=(root/'assets/toolkit-catalog.js').read_text(encoding='utf-8')
+ items=json.loads(src[src.index('['):src.rindex(']')+1])+APP_EXTRA
+ out=[]
+ for i in items:
+  if not (root/i['slug']/'index.html').exists():continue
+  out.append({"slug":i['slug'],"name":i['name'],"category":i.get('category','Tools'),"symbol":i.get('symbol',''),"tagline":i.get('task',''),"description":i.get('description',''),"color":i.get('color','#eef0ff'),"url":ORIGIN+'/'+i['slug']+'/?app=1',"paid":bool(i.get('paid')),"needsInternet":i['slug'] in ('pmc',),"note":APP_NOTES.get(i['slug'],""),"keywords":' '.join(i.get('intents',[]))[:400]})
+ return out
+
+def add_app_embed(text,route,slugs):
+ slug=route.split('/')[0]
+ if route!=slug+'/index.html' or slug not in slugs or 'app-embed.js' in text:return text
+ return text.replace('</head>','<link rel="stylesheet" href="../assets/app-embed.css"><script defer src="../assets/app-embed.js"></script></head>',1)
+
 def apply_discovery(root):
  root=Path(root);catalog={}
  tools=cite_tools(root)
+ app=app_catalog(root);app_slugs={i['slug'] for i in app}
  if (root/'articles/catalog.json').exists():catalog={item['slug']:item for item in json.loads((root/'articles/catalog.json').read_text())}
  urls=set()
  for path in sorted(root.rglob('*.html')):
@@ -101,6 +120,7 @@ def apply_discovery(root):
    if not re.search(r'<link[^>]*rel="canonical"',text):text=text.replace('</head>','<link rel="canonical" href="https://dailwind.com/corpus-toolkit/coverage.html"></head>',1)
   text=re.sub(r'(<a\b[^>]*href="[^"]*(?:articles/|articles\.html)"[^>]*>)Articles(</a>)',r'\1Reading Room\2',text)
   text=add_citation(text,route,tools)
+  text=add_app_embed(text,route,app_slugs)
   m=page_metadata(text,route);primary=canonical_route(m['url'])
   if primary in PAGES:
    title,description=PAGES[primary];text=re.sub(r'<title>.*?</title>','<title>'+escape(title)+'</title>',text,count=1,flags=re.S|re.I);text=setmeta(text,'description',description)
@@ -159,3 +179,5 @@ def apply_discovery(root):
   lines.append('- ['+title.split(' | ')[0]+']('+url+'): '+description)
  lines+=['','## Access and scope','Most toolkits process files on the visitor’s device. MAT Tagger Cleaner is a paid corpus-preparation service arranged by email (arslan@dailwind.com); it does not perform MAT tagging or multidimensional analysis. PMC is free and open to everyone without an account; corpus files are not available for download.','Do not treat corpus-preparation output as independently validated linguistic analysis.','']
  (root/'llms.txt').write_text('\n'.join(lines))
+ (root/'app').mkdir(exist_ok=True)
+ (root/'app/tools.json').write_text(json.dumps({'name':'Dailwind Toolkits','updated':__import__('datetime').date.today().isoformat(),'tools':app},ensure_ascii=False,indent=1),encoding='utf-8')

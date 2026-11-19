@@ -83,3 +83,5 @@
   .sc-err{max-width:none}
   .language-workspace .tt-btns>button,.language-workspace .tt-btns>.language-upload{flex:1 1 calc(50% - 10px)}
 }
+.sc-app-note{display:none;padding:14px 18px;border-radius:16px;background:#fff7e8;border:1px solid #f1e3c8;color:#5e5440;font-size:13px;margin:12px 0}
+.dw-app #sc-check,.dw-app #sc-links,.dw-app label[for=sc-links],.dw-app #sc-whole-row{display:none!important}
