@@ -47,3 +47,39 @@
 .sc-service p{color:#5e5440;max-width:820px}
 .sc-notes ul{margin:0;padding-left:20px;color:#4e5764}.sc-notes li{margin:7px 0}
 @media (max-width:760px){.sc-grid,.sc-choice{grid-template-columns:1fr}.sc-result dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Alignment: every control in a button row shares one height and baseline */
+.language-workspace .tt-btns{align-items:center;gap:10px}
+.language-workspace .tt-btns>*{margin:0!important}
+.language-workspace .tt-btns>button,.language-workspace .tt-btns>.language-upload{min-height:42px;padding:0 20px;line-height:1.2;box-sizing:border-box}
+.language-workspace .tt-btns>.language-upload{position:relative}
+.language-workspace .tt-btns>.language-upload input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.language-workspace .mt-row{display:flex;flex-wrap:wrap;gap:8px 24px;margin:14px 0}
+.language-workspace .mt-row .mt-check{margin:0!important;font-weight:500}
+.mt-check input{width:16px;height:16px;margin:0;flex:none;accent-color:#0071e3}
+.sc-grid{margin-top:4px}
+.sc-grid label{margin-top:10px}
+.sc-table td{vertical-align:middle}
+.sc-table td:first-child,.sc-table th:first-child{width:36px}
+.sc-table input[type=checkbox]{width:16px;height:16px;margin:0;accent-color:#0071e3;display:block}
+.sc-table select{margin:0}
+.sc-progress{margin:16px 0 4px}
+.sc-result{margin-top:8px}
+.sc-ext-head b{line-height:1.4}
+@media (max-width:760px){
+  .sc-table-wrap{max-height:none}
+  .sc-table thead tr{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f7f9fc}
+  .sc-table thead th{position:static;padding:0;border:0}
+  .sc-table thead th:not(:first-child){display:none}
+  .sc-table thead th:first-child::after{content:"Select all";margin-left:10px;white-space:nowrap;text-transform:none;letter-spacing:0;font-size:12px}
+  .sc-table thead th:first-child{position:relative;display:flex;align-items:center}
+  .sc-table,.sc-table thead,.sc-table tbody{display:block}
+  .sc-table tbody tr{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px 12px;padding:14px;border-top:1px solid #eef1f5}
+  .sc-table tbody td{padding:0;border:0;min-width:0}
+  .sc-table tbody td:nth-child(1){grid-row:1;align-self:start;padding-top:2px}
+  .sc-table tbody td:nth-child(2){display:none}
+  .sc-table tbody td:nth-child(3){grid-column:2;grid-row:1}
+  .sc-table tbody td:nth-child(4),.sc-table tbody td:nth-child(5){grid-column:2}
+  .sc-table select{width:100%}
+  .sc-err{max-width:none}
+  .language-workspace .tt-btns>button,.language-workspace .tt-btns>.language-upload{flex:1 1 calc(50% - 10px)}
+}
