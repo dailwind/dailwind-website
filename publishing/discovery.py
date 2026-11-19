@@ -20,6 +20,7 @@ PAGES={
  'english-ocr/index.html':('English OCR for Scanned Books & PDFs | Dailwind','Convert printed English scans and PDF page images into editable text. Enhance pages, review recognition results and download TXT or text-only Word.'),
  'pdf-tools/index.html':('PDF Tools: PDF Splitter & Optimizer | Dailwind','Split PDFs into parts, choose page ranges or optimize document structure. Create manageable files for reading and research in your browser.'),
  'image-tools/index.html':('PDF to Images, Images to PDF & Compression | Dailwind','Export PDF pages as image ZIPs, combine images into a PDF, or resize and compress JPEG, PNG and WebP files locally in your browser.'),
+ 'subtitle-corpus/index.html':('Subtitle Corpus Builder: YouTube Subtitles to Corpus | Dailwind','Paste YouTube links or a whole playlist and build a clean subtitle corpus. Uploaded subtitles first, then auto-generated, then machine translation. One file or one per video, with metadata CSV.'),
  'metadata-studio/index.html':('Corpus Metadata Generator: Excel & CSV Reports | Dailwind','Catalogue corpus documents by genre, title and source. Review word counts, edit metadata, add custom fields and export Excel or CSV reports.'),
  'grammar-checker/index.html':('Grammar Checker & Writing Assistant: Free, Private | Dailwind','Check spelling, grammar, punctuation, clarity, conciseness and tone as you type, with one-click fixes, a document score and readability. Runs on your device.'),
     'ai-text-detector/index.html':('AI Text Detector: Academic Heuristic Estimate | Dailwind','Transparent on-device estimate of machine-like writing with academic-aware signals. An estimate, never proof.'),
@@ -51,7 +52,7 @@ PAGES={
  'corpus-toolkit/coverage.html':('Corpus Toolkit Features, Methods & Limits | Dailwind','See what Dailwind Corpus Toolkit supports: concordance, a CQL subset, word lists, n-grams, statistics and exports, with documented methods and current limits.'),
  'toolkit/linguistics/methods.html':('Research Lab Methods: TTR, Entropy & Tagging | Dailwind','How Dailwind Research Labs calculate lexical diversity, entropy, MATTR and sentence boundaries, plus the scope and limits of the English tagging models.'),
  'contact.html':('Contact: Collaboration & Research Services | Dailwind','Contact Dailwind App Studio about collaboration, writing, research tools, paid OCR services and access to protected research resources.')}
-TOOLS={name.split('/')[0] for name in PAGES if name.split('/')[0] in {'grammar-checker','corpus-toolkit','corpus-cleaner','stylistic-toolkit','file-converter','corpus-merger','english-ocr','pdf-tools','image-tools','metadata-studio','lexical-metrics','morphology-explorer','syntax-explorer','sentiment-studio','register-profile','forensic-compare','readability-studio','stylometry-lab','parallel-aligner','qualitative-coder'}}
+TOOLS={name.split('/')[0] for name in PAGES if name.split('/')[0] in {'grammar-checker','corpus-toolkit','corpus-cleaner','stylistic-toolkit','file-converter','corpus-merger','english-ocr','pdf-tools','image-tools','metadata-studio','lexical-metrics','morphology-explorer','syntax-explorer','sentiment-studio','register-profile','forensic-compare','readability-studio','stylometry-lab','parallel-aligner','qualitative-coder','subtitle-corpus'}}
 ORIGIN='https://dailwind.com'
 
 def canonical_route(url):
