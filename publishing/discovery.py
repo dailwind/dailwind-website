@@ -115,6 +115,12 @@ def add_subtitle_support(text,route,slugs):
  if not re.search(r'<input[^>]*type="file"[^>]*accept="[^"]*(\.txt|text/plain)',text):return text
  return text.replace('</head>','<script defer src="../assets/subtitle-support.js"></script></head>',1)
 
+def add_apple_glass(text,route,slugs):
+ # Apple-style frosted design on every tool workspace (loaded last so it wins).
+ slug=route.split('/')[0]
+ if route!=slug+'/index.html' or slug not in slugs or 'apple-glass.css' in text:return text
+ return text.replace('</head>','<link rel="stylesheet" href="../assets/apple-glass.css"></head>',1)
+
 def apply_discovery(root):
  root=Path(root);catalog={}
  tools=cite_tools(root)
@@ -131,6 +137,7 @@ def apply_discovery(root):
   text=add_citation(text,route,tools)
   text=add_app_embed(text,route,app_slugs)
   text=add_subtitle_support(text,route,app_slugs)
+  text=add_apple_glass(text,route,app_slugs)
   m=page_metadata(text,route);primary=canonical_route(m['url'])
   if primary in PAGES:
    title,description=PAGES[primary];text=re.sub(r'<title>.*?</title>','<title>'+escape(title)+'</title>',text,count=1,flags=re.S|re.I);text=setmeta(text,'description',description)

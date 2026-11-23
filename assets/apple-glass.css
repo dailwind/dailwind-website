@@ -1,0 +1,131 @@
+/* Apple-style design for the Toolkits page and every tool workspace:
+   frosted-glass bars that stay at the top, frosted cards and panels, SF-style type and blue pill buttons. */
+:root{
+  --ag-glass:rgba(250,250,252,.72);
+  --ag-card:rgba(255,255,255,.72);
+  --ag-blur:saturate(180%) blur(20px);
+  --ag-ink:#1d1d1f;--ag-muted:#6e6e73;--ag-line:rgba(0,0,0,.08);
+  --ag-blue:#0071e3;--ag-blue-hover:#0077ed;
+  --ag-font:"SF Pro Text","SF Pro Icons","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ag-display:"SF Pro Display","SF Pro Icons","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ag-ease:cubic-bezier(0,0,.5,1);
+}
+
+/* ---------- 1. Tool top bars: frosted "local nav" like apple.com product pages ---------- */
+.language-top,
+.prep-top,
+.dailwind-workspace :is(.prep-top,.arc-header),
+.dailwind-workspace .system-bar{
+  position:sticky;top:0;z-index:60;
+  background:var(--ag-glass)!important;
+  -webkit-backdrop-filter:var(--ag-blur)!important;backdrop-filter:var(--ag-blur)!important;
+  border:0!important;border-bottom:1px solid var(--ag-line)!important;border-radius:0!important;
+  box-shadow:none!important;margin:0!important;width:100%!important;box-sizing:border-box;
+  font-family:var(--ag-font);
+}
+.language-top{min-height:52px;padding:8px clamp(16px,4vw,48px)!important}
+.language-top>strong{font-family:var(--ag-display);font-size:19px;font-weight:600;letter-spacing:.012em;color:var(--ag-ink);margin-right:auto}
+.language-top>a,.prep-top a:not(.button):not(.primary),.dailwind-workspace .arc-header a:not(.button){font-size:12px;color:rgba(0,0,0,.8);text-decoration:none;letter-spacing:-.01em}
+.language-top>a:hover,.prep-top a:hover{color:#000}
+.language-private{font-size:12px!important;color:var(--ag-muted)!important}
+
+/* Cite button: the small blue pill Apple uses for "Buy" in its local nav */
+.dw-cite-open{background:var(--ag-blue)!important;color:#fff!important;border:0!important;border-radius:980px!important;min-height:28px!important;height:28px;padding:0 12px!important;font:400 12px/1 var(--ag-font)!important;box-shadow:none!important;transition:background .2s var(--ag-ease)}
+.dw-cite-open:hover{background:var(--ag-blue-hover)!important}
+.dw-cite-open *{color:#fff!important}
+
+/* ---------- 2. Workspace pages: Apple type, frosted panels and cards ---------- */
+body.language-workspace,.dailwind-workspace{font-family:var(--ag-font);color:var(--ag-ink)}
+.language-title h1,.dailwind-workspace :is(h1,.prep-hero h1){font-family:var(--ag-display);font-weight:600;letter-spacing:-.005em;color:var(--ag-ink)}
+.language-title p,.language-eyebrow{color:var(--ag-muted)}
+
+.language-panel,
+.language-steps article,
+.language-status,
+nav.tool-related,
+.dailwind-workspace :is(.prep-sidebar,.prep-card,.workspace-guide,.guide-card,.arc-layout>aside,.desktop-window .sidebar){
+  background:var(--ag-card)!important;
+  -webkit-backdrop-filter:var(--ag-blur);backdrop-filter:var(--ag-blur);
+  border:1px solid rgba(255,255,255,.7)!important;
+  border-radius:18px!important;
+  box-shadow:0 2px 12px rgba(0,0,0,.05),inset 0 1px 0 rgba(255,255,255,.75)!important;
+}
+.language-steps article{transition:transform .3s var(--ag-ease),box-shadow .3s var(--ag-ease)}
+.language-steps article:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08)!important}
+
+/* Primary buttons: Apple blue pills */
+.language-workspace :is(button.primary,.tt-btns .primary,a.primary){background:var(--ag-blue)!important;border-color:var(--ag-blue)!important;color:#fff!important;border-radius:980px!important;font-family:var(--ag-font);font-weight:400}
+.language-workspace :is(button.primary,a.primary):hover{background:var(--ag-blue-hover)!important}
+.language-workspace .tt-btns>button:not(.primary),.language-workspace .tt-btns>.language-upload{border-radius:980px!important}
+
+/* ---------- 3. Toolkits page ---------- */
+.toolkits-apple{background:#f5f5f7}
+.toolkits-apple main,.toolkits-apple .finder-hero{background:transparent}
+.toolkits-apple :is(h1,h2,h3){font-family:var(--ag-display);color:var(--ag-ink)}
+.toolkits-apple .finder-hero h1{font-weight:600;letter-spacing:-.015em}
+.toolkits-apple .finder-search{background:#fff!important;border:1px solid rgba(0,0,0,.06)!important;border-radius:16px!important;box-shadow:0 4px 20px rgba(0,0,0,.06)!important}
+.toolkits-apple .finder-search button,.toolkits-apple .toolkit-card .button,.toolkits-apple .finder-search [type=submit]{background:var(--ag-blue)!important;border-color:var(--ag-blue)!important;color:#fff!important;border-radius:980px!important;box-shadow:none!important;font-family:var(--ag-font);font-weight:400}
+.toolkits-apple .toolkit-card .button:hover{background:var(--ag-blue-hover)!important}
+.toolkits-apple .finder-examples button{background:rgba(255,255,255,.8)!important;border:1px solid rgba(0,0,0,.06)!important;border-radius:980px!important}
+
+/* Category chips: a frosted bar that sticks under the top navigation, like Apple's local nav */
+.toolkits-apple .finder-categories{
+  position:sticky;top:52px;z-index:40;
+  width:fit-content;max-width:100%;margin-left:auto;margin-right:auto;box-sizing:border-box;
+  padding:6px;gap:4px;border-radius:28px;
+  background:var(--ag-glass);-webkit-backdrop-filter:var(--ag-blur);backdrop-filter:var(--ag-blur);
+  border:1px solid rgba(255,255,255,.7);box-shadow:0 6px 24px rgba(0,0,0,.07);
+}
+.toolkits-apple .finder-categories button{background:transparent!important;border:0!important;border-radius:980px!important;box-shadow:none!important;color:var(--ag-ink)!important;font-family:var(--ag-font);font-size:13px;min-height:34px;padding:0 14px;transition:background .25s var(--ag-ease)}
+.toolkits-apple .finder-categories button:hover{background:rgba(0,0,0,.05)!important}
+.toolkits-apple .finder-categories button[aria-pressed="true"]{background:var(--ag-ink)!important;color:#fff!important}
+.toolkits-apple .finder-categories button[aria-pressed="true"] .finder-chip-count{background:rgba(255,255,255,.2)!important;color:#fff!important}
+.toolkits-apple .finder-chip-count{background:rgba(0,0,0,.06)!important;color:var(--ag-muted)!important}
+
+/* Tool cards: frosted tiles that lift on hover */
+.toolkits-apple .finder-group>header span{color:var(--ag-muted)}
+.toolkits-apple .toolkit-card{
+  background:var(--ag-card)!important;
+  -webkit-backdrop-filter:var(--ag-blur);backdrop-filter:var(--ag-blur);
+  border:1px solid rgba(255,255,255,.8)!important;border-radius:18px!important;
+  box-shadow:2px 4px 12px rgba(0,0,0,.08)!important;
+  transition:transform .3s var(--ag-ease),box-shadow .3s var(--ag-ease);
+}
+.toolkits-apple .toolkit-card:hover{transform:scale(1.01);box-shadow:2px 4px 16px rgba(0,0,0,.16)!important}
+.toolkits-apple .toolkit-card h3{font-weight:600;letter-spacing:.007em}
+.toolkits-apple .toolkit-task{color:var(--ag-ink)}
+.toolkits-apple .toolkit-card p:not(.toolkit-task){color:var(--ag-muted)}
+.toolkits-apple .toolkit-symbol{border-radius:12px}
+.toolkits-apple .toolkit-service-note{background:rgba(255,255,255,.6)!important;border-radius:14px!important;border:1px solid rgba(0,0,0,.05)!important}
+
+/* Soft colour behind the page so the glass has something to frost */
+.toolkits-apple .finder-library{position:relative}
+.toolkits-apple .finder-library::before{content:"";position:absolute;inset:0 -10vw;z-index:-1;pointer-events:none;
+  background:radial-gradient(40% 30% at 15% 10%,rgba(0,113,227,.07),transparent 70%),radial-gradient(35% 25% at 85% 35%,rgba(191,90,242,.07),transparent 70%),radial-gradient(40% 30% at 30% 70%,rgba(48,209,88,.06),transparent 70%),radial-gradient(35% 25% at 80% 90%,rgba(255,159,10,.06),transparent 70%)}
+
+@media(max-width:900px){
+  .language-top>strong{font-size:17px}
+  .toolkits-apple .finder-categories{top:48px;width:auto;flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;border-radius:22px;scrollbar-width:none}
+  .toolkits-apple .finder-categories::-webkit-scrollbar{display:none}
+  .toolkits-apple .finder-categories button{flex:none}
+}
+@media(prefers-reduced-motion:reduce){.toolkits-apple .toolkit-card,.language-steps article{transition:none}.toolkits-apple .toolkit-card:hover{transform:none}}
+@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  :root{--ag-glass:rgba(250,250,252,.97);--ag-card:rgba(255,255,255,.97)}
+}
+
+/* Hidden helper labels stay hidden inside frosted panels */
+.language-workspace .skip:not(:focus):not(:focus-within){position:absolute!important;width:1px!important;height:1px!important;padding:0!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important}
+
+/* Phones: one slim frosted bar (back, tool name, Cite) like Apple's local nav */
+@media(max-width:700px){
+  .language-top{flex-wrap:nowrap!important;gap:10px!important;min-height:48px;padding:6px 14px!important}
+  .language-top>a:first-child{flex:none;font-size:0!important;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:rgba(0,0,0,.05)}
+  .language-top>a:first-child::before{content:"‹";font-size:22px;line-height:1;color:var(--ag-ink);margin-top:-3px}
+  .language-top>strong{flex:1;min-width:0;font-size:15px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+  .language-private,.prep-top :is(.prep-privacy,.privacy,.local-note){display:none!important}
+  .dailwind-workspace :is(.prep-top,.arc-header),.prep-top{min-height:52px;padding:8px 14px!important;flex-wrap:nowrap!important;gap:10px!important}
+  .prep-top .prep-brand{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px!important;font-weight:600}
+  .prep-top .workspace-return{order:-1;flex:none;font-size:0!important;width:28px;height:28px;min-height:28px!important;padding:0!important;display:grid!important;place-items:center;border-radius:50%!important;background:rgba(0,0,0,.05)!important;border:0!important}
+  .prep-top .workspace-return::before{content:"‹";font-size:22px;line-height:1;color:var(--ag-ink);margin-top:-3px}
+}
