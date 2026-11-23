@@ -106,6 +106,15 @@ def add_app_embed(text,route,slugs):
  if route!=slug+'/index.html' or slug not in slugs or 'app-embed.js' in text:return text
  return text.replace('</head>','<link rel="stylesheet" href="../assets/app-embed.css"><script defer src="../assets/app-embed.js"></script></head>',1)
 
+SUBTITLE_SKIP={'subtitle-corpus','metadata-studio'}
+
+def add_subtitle_support(text,route,slugs):
+ # SRT / VTT / SBV files accepted by every text tool (converted to plain text in the browser).
+ slug=route.split('/')[0]
+ if route!=slug+'/index.html' or slug not in slugs or slug in SUBTITLE_SKIP or 'subtitle-support.js' in text:return text
+ if not re.search(r'<input[^>]*type="file"[^>]*accept="[^"]*(\.txt|text/plain)',text):return text
+ return text.replace('</head>','<script defer src="../assets/subtitle-support.js"></script></head>',1)
+
 def apply_discovery(root):
  root=Path(root);catalog={}
  tools=cite_tools(root)
@@ -121,6 +130,7 @@ def apply_discovery(root):
   text=re.sub(r'(<a\b[^>]*href="[^"]*(?:articles/|articles\.html)"[^>]*>)Articles(</a>)',r'\1Reading Room\2',text)
   text=add_citation(text,route,tools)
   text=add_app_embed(text,route,app_slugs)
+  text=add_subtitle_support(text,route,app_slugs)
   m=page_metadata(text,route);primary=canonical_route(m['url'])
   if primary in PAGES:
    title,description=PAGES[primary];text=re.sub(r'<title>.*?</title>','<title>'+escape(title)+'</title>',text,count=1,flags=re.S|re.I);text=setmeta(text,'description',description)
