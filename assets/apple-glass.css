@@ -395,3 +395,78 @@ body.ag-soft .footer{background:rgba(255,255,255,.5);-webkit-backdrop-filter:var
 .dw-steps .dw-step-folder:not(#dw-a):not(#dw-b):not(#dw-c){display:inline-flex!important;align-items:center;gap:6px;padding:3px 10px!important;min-height:0!important;margin:0!important;border:0!important;border-radius:980px!important;background:none!important;box-shadow:none!important;color:var(--t1,#0071e3)!important;font:500 12.5px/1.3 var(--ag-font,"SF Pro Text","Helvetica Neue",sans-serif)!important;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .dw-steps .dw-step-folder:not(#dw-a):not(#dw-b):not(#dw-c):hover{background:color-mix(in srgb,var(--t1,#0071e3) 8%,transparent)!important}
 @media (max-width:640px),(pointer:coarse){.dw-step-more{display:none}}
+
+/* ---------- Live progress card (percentage, bar, animation, activity log) ---------- */
+.dw-hide{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;margin:-1px!important;padding:0!important;border:0!important}
+.dw-activity{margin:14px 0 18px;padding:18px 20px 14px;border-radius:22px;background:rgba(255,255,255,.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border:1px solid color-mix(in srgb,var(--t1,#0071e3) 16%,rgba(0,0,0,.06));box-shadow:0 2px 12px rgba(0,0,0,.04),0 18px 44px color-mix(in srgb,var(--t1,#0071e3) 10%,transparent);font-family:var(--ag-font,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif);color:#1d1d1f}
+.dw-activity[hidden]{display:none}
+.dw-act-top{display:grid;grid-template-columns:72px minmax(0,1fr) auto;align-items:center;gap:16px}
+.dw-act-head p{margin:0}
+.dw-act-kicker{font:600 11px/1.3 inherit;letter-spacing:.08em;text-transform:uppercase;color:var(--t1,#0071e3)}
+.dw-act-now{margin-top:3px!important;font:600 16px/1.35 var(--ag-font,"SF Pro Display","Helvetica Neue",sans-serif);letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.dw-act-meta{margin-top:4px!important;font-size:12.5px;color:#6e6e73;font-variant-numeric:tabular-nums}
+.dw-act-pct{display:flex;align-items:baseline;gap:1px;font-variant-numeric:tabular-nums;color:color-mix(in srgb,var(--t1,#0071e3) 85%,#000)}
+.dw-act-pct b{font:700 40px/1 var(--ag-font,"SF Pro Display","Helvetica Neue",sans-serif);letter-spacing:-.03em}
+.dw-act-pct span{font:600 18px/1 inherit;opacity:.7}
+.dw-act-pct[hidden]{display:none}
+.dw-act-bar{position:relative;height:12px;margin:14px 0 4px;border-radius:12px;background:#ececf0;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.06)}
+.dw-act-fill{position:absolute;inset:0 auto 0 0;width:2%;border-radius:12px;background:var(--t-grad,linear-gradient(90deg,#0071e3,#42a1ff));transition:width .5s cubic-bezier(.2,.8,.2,1);overflow:hidden}
+.dw-activity.is-busy .dw-act-fill::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.28) 0 10px,transparent 10px 22px);background-size:44px 100%;animation:dwBarStripes 1s linear infinite}
+.dw-activity.is-indeterminate .dw-act-fill{width:35%!important;animation:dwBarSweep 1.4s ease-in-out infinite}
+@keyframes dwBarStripes{to{background-position:44px 0}}
+@keyframes dwBarSweep{0%{left:-35%}100%{left:100%}}
+.dw-activity.is-done .dw-act-fill{background:linear-gradient(90deg,#34c759,#30d158)}
+.dw-activity.is-done .dw-act-kicker{color:#248a3d}
+.dw-activity.is-stopped .dw-act-kicker{color:#c93400}
+.dw-activity.is-stopped .dw-act-fill{background:#ff9f0a}
+/* the animation: a stack of pages, a scanning line and a magnifying glass */
+.dw-act-art{position:relative;width:72px;height:72px}
+.dw-page{position:absolute;left:14px;top:8px;width:40px;height:52px;border-radius:6px;background:#fff;border:1px solid rgba(0,0,0,.1);box-shadow:0 3px 8px rgba(0,0,0,.08)}
+.dw-page.p3{transform:translate(8px,4px) rotate(8deg);opacity:.6}
+.dw-page.p2{transform:translate(4px,2px) rotate(4deg);opacity:.8}
+.dw-page.p1{overflow:hidden;padding:8px 7px;display:flex;flex-direction:column;gap:5px}
+.dw-page.p1 i{display:block;height:3px;border-radius:2px;background:color-mix(in srgb,var(--t1,#0071e3) 28%,#d2d2d7)}
+.dw-page.p1 i:nth-child(2){width:80%}.dw-page.p1 i:nth-child(4){width:65%}.dw-page.p1 i:nth-child(5){width:85%}
+.dw-scan{position:absolute;left:0;right:0;top:0;height:10px;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--t1,#0071e3) 35%,transparent),transparent);opacity:0}
+.dw-lens{position:absolute;left:30px;top:26px;width:22px;height:22px;border-radius:50%;border:3px solid color-mix(in srgb,var(--t1,#0071e3) 85%,#000);background:rgba(255,255,255,.35);box-shadow:0 2px 6px rgba(0,0,0,.18);opacity:0}
+.dw-lens::after{content:"";position:absolute;right:-9px;bottom:-7px;width:11px;height:4px;border-radius:2px;background:color-mix(in srgb,var(--t1,#0071e3) 85%,#000);transform:rotate(45deg)}
+.dw-activity.is-busy .dw-page.p1{animation:dwPageTurn 2.6s ease-in-out infinite}
+.dw-activity.is-busy .dw-page.p2{animation:dwPageShuffle 2.6s ease-in-out infinite}
+.dw-activity.is-busy .dw-scan{opacity:1;animation:dwScan 1.3s linear infinite}
+.dw-activity.is-busy .dw-lens{opacity:1;animation:dwLens 2.6s ease-in-out infinite}
+.dw-activity.is-busy .dw-page.p1 i{animation:dwLine 1.3s ease-in-out infinite}
+.dw-activity.is-busy .dw-page.p1 i:nth-child(2){animation-delay:.15s}.dw-activity.is-busy .dw-page.p1 i:nth-child(3){animation-delay:.3s}.dw-activity.is-busy .dw-page.p1 i:nth-child(4){animation-delay:.45s}.dw-activity.is-busy .dw-page.p1 i:nth-child(5){animation-delay:.6s}
+.dw-activity.is-done .dw-page.p1::after{content:"";position:absolute;left:12px;top:16px;width:16px;height:9px;border:solid #34c759;border-width:0 0 3px 3px;transform:rotate(-45deg)}
+.dw-activity.is-done .dw-page.p1 i{opacity:.35}
+@keyframes dwScan{0%{top:-10px}100%{top:52px}}
+@keyframes dwLens{0%{transform:translate(-14px,-12px)}25%{transform:translate(4px,-14px)}50%{transform:translate(2px,6px)}75%{transform:translate(-16px,4px)}100%{transform:translate(-14px,-12px)}}
+@keyframes dwPageTurn{0%,70%{transform:none}85%{transform:translate(-6px,-3px) rotate(-6deg)}100%{transform:none}}
+@keyframes dwPageShuffle{0%,70%{transform:translate(4px,2px) rotate(4deg)}85%{transform:translate(8px,0) rotate(9deg)}100%{transform:translate(4px,2px) rotate(4deg)}}
+@keyframes dwLine{0%,100%{background:color-mix(in srgb,var(--t1,#0071e3) 28%,#d2d2d7)}50%{background:var(--t1,#0071e3)}}
+/* activity log */
+.dw-act-log{margin-top:10px;border-top:1px solid rgba(0,0,0,.06);padding-top:8px}
+.dw-act-log summary{cursor:pointer;font:600 13px/1.4 inherit;color:#424245;list-style:none;display:inline-flex;align-items:center;gap:6px}
+.dw-act-log summary::-webkit-details-marker{display:none}
+.dw-act-log summary::before{content:"";width:7px;height:7px;border:solid #86868b;border-width:0 2px 2px 0;transform:rotate(-45deg);transition:transform .2s}
+.dw-act-log[open] summary::before{transform:rotate(45deg)}
+.dw-act-count{font-weight:400;color:#86868b}
+.dw-act-log ol{list-style:none;margin:8px 0 0;padding:10px 12px;max-height:180px;overflow:auto;border-radius:12px;background:#1d1d1f;color:#e8e8ed;font:12px/1.55 "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.dw-act-log li{display:flex;gap:10px;margin:0;padding:0}
+.dw-act-log li time{flex:none;color:#7dd3fc}
+.dw-act-log li span{min-width:0;word-break:break-word}
+.dw-act-log li:last-child span{color:#fff}
+.dw-activity.is-busy .dw-act-log li:last-child span::after{content:"▍";margin-left:3px;color:#30d158;animation:dwCaret 1s steps(1) infinite}
+@keyframes dwCaret{50%{opacity:0}}
+/* the status line above: a live dot while working */
+.dw-status.is-working{position:relative;padding-left:34px!important}
+.dw-status.is-working::before{content:"";position:absolute;left:14px;top:50%;width:9px;height:9px;margin-top:-4.5px;border-radius:50%;background:var(--t1,#0071e3);box-shadow:0 0 0 0 color-mix(in srgb,var(--t1,#0071e3) 50%,transparent);animation:dwDot 1.3s ease-out infinite}
+@keyframes dwDot{to{box-shadow:0 0 0 9px transparent}}
+@media (max-width:640px){
+.dw-activity{padding:14px 14px 12px;border-radius:18px}
+.dw-act-top{grid-template-columns:56px minmax(0,1fr) auto;gap:10px}
+.dw-act-art{transform:scale(.8);transform-origin:left center}
+.dw-act-pct b{font-size:30px}
+.dw-act-now{font-size:14.5px}
+}
+@media (prefers-reduced-motion:reduce){.dw-activity *,.dw-status::before{animation:none!important}}
+.dw-act-log summary{margin:0!important;padding:2px 0!important}.dw-act-log ol{margin:8px 0 0!important}

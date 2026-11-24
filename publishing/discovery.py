@@ -147,6 +147,12 @@ def add_zip_names(text,route,slugs):
  if route!=slug+'/index.html' or slug not in slugs or slug in {'pmc','mat-cleaner'} or 'zip-names.js' in text:return text
  return text.replace('</head>','<script defer src="../assets/zip-names.js"></script></head>',1)
 
+def add_progress_ui(text,route,slugs):
+ # Live progress card: percentage, modern bar, working animation and activity log.
+ slug=route.split('/')[0]
+ if route!=slug+'/index.html' or slug not in slugs or slug in {'pmc','mat-cleaner'} or 'progress-ui.js' in text:return text
+ return text.replace('</head>','<script defer src="../assets/progress-ui.js"></script></head>',1)
+
 def add_apple_glass(text,route,slugs):
  # Apple-style frosted design on every tool workspace (loaded last so it wins).
  slug=route.split('/')[0]
@@ -195,6 +201,7 @@ def apply_discovery(root):
   text=add_download_clarity(text,route,app_slugs)
   text=add_step_flow(text,route,app_slugs)
   text=add_zip_names(text,route,app_slugs)
+  text=add_progress_ui(text,route,app_slugs)
   text=add_apple_glass(text,route,app_slugs)
   text=add_site_glass(text,route)
   text=add_identity(text,route,app_slugs)
