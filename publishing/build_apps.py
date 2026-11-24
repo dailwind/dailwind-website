@@ -155,9 +155,48 @@ def render_privacy(a,shell):
           '<div class="app-actions"><span class="app-links"><a class="app-link" href="../">About '+e(a['name'])+'</a><a class="app-link" href="../../">All apps</a></span></div></article></section></main>')
     return head+header+main+footer
 
+ORBIT_START='<!-- app-orbit:start -->';ORBIT_END='<!-- app-orbit:end -->'
+
+def render_orbit(apps):
+    """Home page showcase: every app with an icon circles the Dailwind mark."""
+    shown=[a for a in apps if a.get('icon')]
+    icons='';cards=''
+    for i,a in enumerate(shown):
+        src=e(a.get('icon2x') or a['icon']);acc=e(a.get('accent','#0071e3'))
+        icons+=('<li><button class="orbit-app" type="button" data-orbit-i="'+str(i)+'" style="--accent:'+acc+'" aria-label="'+e(a['name'])+'" aria-controls="orbit-card-'+str(i)+'">'
+                '<img src="'+src+'" width="112" height="112" alt="" decoding="async"></button></li>')
+        soon=a['status']=='coming-soon'
+        badge='<span class="orbit-badge'+(' soon' if soon else '')+'">'+('Coming soon' if soon else 'On Google Play')+'</span>'
+        more=('<a class="button outline" href="'+e(a['learnMoreUrl'])+'">Learn more</a>' if a.get('learnMoreUrl') else '')
+        get=('<a class="button" href="'+e(a['playStoreUrl'])+'" rel="noopener">Get it on Google Play</a>' if a.get('playStoreUrl') else '')
+        cards+=('<article class="orbit-info" id="orbit-card-'+str(i)+'" data-orbit-card="'+str(i)+'" style="--accent:'+acc+'"'+('' if i==0 else ' hidden')+'>'
+                '<img class="orbit-info-icon" src="'+e(a['icon'])+'" width="56" height="56" alt="" loading="lazy" decoding="async">'
+                '<div class="orbit-info-text"><p class="orbit-info-cat">'+e(a.get('category',''))+' '+badge+'</p><h3>'+e(a['name'])+'</h3>'
+                '<p class="orbit-info-tag">'+e(a.get('tagline') or a['description'])+'</p></div>'
+                '<div class="orbit-info-actions">'+get+more+'</div></article>')
+    return (ORBIT_START+'<section class="app-orbit" aria-labelledby="orbit-title" data-app-orbit>'
+            '<div class="orbit-copy"><p class="product-overline">DAILWIND APP STUDIO · ANDROID</p><h2 id="orbit-title">Our apps, in orbit.</h2>'
+            '<p class="banner-tagline">Private, offline apps for study and research.</p></div>'
+            '<div class="orbit-stage"><canvas class="orbit-trails" aria-hidden="true"></canvas><span class="orbit-ring" aria-hidden="true"></span><span class="orbit-ring two" aria-hidden="true"></span>'
+            '<div class="orbit-sun" aria-hidden="true"><img src="assets/dailwind-logo-v871.webp" width="436" height="472" alt="" decoding="async"></div>'
+            '<ul class="orbit-apps" aria-label="Dailwind apps">'+icons+'</ul></div>'
+            '<div class="orbit-cards">'+cards+'</div>'
+            '<p class="orbit-all"><a class="underlink" href="apps/">See all apps in the Dailwind App Store <span aria-hidden="true">›</span></a></p>'
+            '</section>'+ORBIT_END)
+
+def home_with_orbit(apps):
+    home=(ROOT/'index.html').read_text()
+    block=render_orbit(apps)
+    if ORBIT_START in home:
+        a=home.index(ORBIT_START);b=home.index(ORBIT_END)+len(ORBIT_END)
+        return home[:a]+block+home[b:]
+    anchor='<section class="product-banner first-product">'
+    if anchor not in home:raise ValueError('Home page anchor for the app showcase is missing.')
+    return home.replace(anchor,block+' '+anchor,1)
+
 def build():
     apps=load();shell=(ROOT/'toolkits/index.html').read_text()
-    pages={ROOT/'apps/index.html':render(apps,shell)}
+    pages={ROOT/'apps/index.html':render(apps,shell),ROOT/'index.html':home_with_orbit(apps)}
     for a in apps:
         if a.get('slug'):pages[ROOT/'apps'/a['slug']/'index.html']=render_detail(a,shell)
         if a.get('privacy'):pages[ROOT/'apps'/a['slug']/'privacy'/'index.html']=render_privacy(a,shell)

@@ -28,7 +28,9 @@
       "width": 1280,
       "height": 720,
       "label": "Owl Files Saver demo: share, save and sort files on your device"
-    }
+    },
+    "accent": "#16a34a",
+    "tagline": "Save, sort and lock your files. Offline."
   },
   {
     "name": "LinguaX Arc",
@@ -37,7 +39,10 @@
     "icon": "assets/linguax/app-icon.webp",
     "playStoreUrl": "https://play.google.com/store/apps/details?id=com.aistudio.linguaxarc.lhvqkp",
     "learnMoreUrl": "linguax-arc/",
-    "category": "Education · Android"
+    "category": "Education · Android",
+    "accent": "#2563eb",
+    "tagline": "Corpus research. No laptop required.",
+    "icon2x": "assets/linguax/app-icon.webp"
   },
   {
     "name": "MedQuiz",
@@ -147,6 +152,8 @@
           "contact": true
         }
       ]
-    }
+    },
+    "accent": "#d946ef",
+    "tagline": "10,012 medical MCQs. Fully offline."
   }
 ]

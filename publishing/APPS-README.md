@@ -32,3 +32,9 @@ Privacy policies:
    "sections": [{"h": "1. Overview", "p": ["..."], "ul": ["..."], "after": ["..."]}, {"h": "8. Contact Us", "p": ["..."], "contact": true}]}`
   Links and e-mail addresses in the text become clickable. A `contact` section lists the e-mails and website from `facts`.
   Use the page URL (e.g. https://dailwind.com/apps/medquiz/privacy/) as the Privacy Policy URL in Google Play Console.
+
+Home page showcase ("Our apps, in orbit."):
+- `build_apps.py` also writes the orbit block into `index.html` (between `<!-- app-orbit:start -->` and `<!-- app-orbit:end -->`). Every app with an `icon` joins the orbit automatically.
+- `accent` (optional) – the app's colour for its glow and comet trail, e.g. `#16a34a`.
+- `tagline` (optional) – one short line shown in the front card (defaults to `description`).
+- Script and styles: `assets/app-orbit.js`, `assets/app-orbit.css`.
