@@ -28,11 +28,17 @@
     var r = stage.getBoundingClientRect();
     W = r.width; H = r.height;
     var sun = root.querySelector('.orbit-sun'), icon = buttons[0].offsetWidth || 112;
-    var sunR = (sun ? sun.offsetWidth : 132) / 2 + 14;
+    var sunW = (sun ? sun.offsetWidth : 132) / 2 + 14, sunH = (sun ? sun.offsetHeight : 132) / 2 + 12;
     cx = W / 2; cy = H / 2 - icon * 0.12;
     // The orbit always clears the Dailwind mark: in front, behind and at the sides.
-    rx = Math.max(sunR + icon * 0.62, Math.min(W / 2 - icon * 0.62, 340));
-    ry = Math.max(sunR + icon * 0.64, rx * 0.34);
+    rx = Math.max(sunW + icon * 0.62, Math.min(W / 2 - icon * 0.62, 340));
+    ry = Math.max(sunH + icon * 0.64, rx * 0.36);
+    // Where an icon passes beside the logo, keep it above or below the logo's band.
+    var xs = Math.min(0.999, (sunW + icon * 0.55) / rx), need = (sunH + icon * 0.56) / Math.sqrt(1 - xs * xs);
+    ry = Math.max(ry, need);
+    // Make room for the whole orbit (small phones get a taller stage instead of clipped icons).
+    var needH = Math.ceil(2 * ry + icon * 1.5);
+    if (needH > H) { stage.style.height = needH + 'px'; H = needH; cy = H / 2 - icon * 0.12; }
     root.querySelectorAll('.orbit-ring').forEach(function (r, k) {
       var f = k ? 1.2 : 1;
       r.style.width = (rx * 2 * f) + 'px'; r.style.height = (ry * 2 * f) + 'px';

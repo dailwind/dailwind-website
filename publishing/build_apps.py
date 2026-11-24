@@ -186,7 +186,7 @@ def render_orbit(apps):
             '<div class="orbit-copy"><p class="product-overline">DAILWIND APP STUDIO · ANDROID</p><h2 id="orbit-title">Our apps, in orbit.</h2>'
             '<p class="banner-tagline">Private, offline apps for study and research.</p></div>'
             '<div class="orbit-stage"><canvas class="orbit-trails" aria-hidden="true"></canvas><span class="orbit-ring" aria-hidden="true"></span><span class="orbit-ring two" aria-hidden="true"></span>'
-            '<div class="orbit-sun orbit-logo" aria-hidden="true"><img src="assets/dailwind-logo-v871.webp" width="436" height="472" alt="" decoding="async"></div>'
+            '<div class="orbit-sun orbit-logo" aria-hidden="true"><img src="assets/dailwind-wordmark-v1.webp" width="640" height="148" alt="" decoding="async"></div>'
             '<ul class="orbit-apps" aria-label="Dailwind apps">'+icons+'</ul></div>'
             '<div class="orbit-cards">'+cards+'</div>'
             '<p class="orbit-all"><a class="underlink" href="apps/">See all apps in the Dailwind App Store <span aria-hidden="true">›</span></a></p>'
