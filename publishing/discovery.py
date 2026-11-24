@@ -118,7 +118,11 @@ def add_subtitle_support(text,route,slugs):
 def add_apple_glass(text,route,slugs):
  # Apple-style frosted design on every tool workspace (loaded last so it wins).
  slug=route.split('/')[0]
- if route!=slug+'/index.html' or slug not in slugs or 'apple-glass.css' in text:return text
+ if 'apple-glass.css' in text:return text
+ if route.startswith('apps/') and route.endswith('index.html'):
+  depth=route.count('/')
+  return text.replace('</head>','<link rel="stylesheet" href="'+'../'*depth+'assets/apple-glass.css"></head>',1)
+ if route!=slug+'/index.html' or slug not in slugs:return text
  return text.replace('</head>','<link rel="stylesheet" href="../assets/apple-glass.css"></head>',1)
 
 def apply_discovery(root):
