@@ -16,7 +16,9 @@
   root.classList.add('is-live');
 
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var PERIOD = 26000;                      // one full orbit, ms
+  // Visitors with "reduce motion" still see a calm, slower orbit (no trails, no pulse); the site's
+  // "Pause automatic media" button and hovering both stop it.
+  var PERIOD = reduce ? 48000 : 26000;     // one full orbit, ms
   var phase = 0, speed = 1, target = 1, front = -1, seek = null, hold = 0, last = 0, visible = true;
   var W = 0, H = 0, rx = 0, ry = 0, cx = 0, cy = 0, dpr = 1;
   var accents = buttons.map(function (b) { return getComputedStyle(b).getPropertyValue('--accent').trim() || '#0071e3'; });
@@ -25,8 +27,18 @@
   function size() {
     var r = stage.getBoundingClientRect();
     W = r.width; H = r.height;
-    cx = W / 2; cy = H / 2 - H * 0.02;
-    rx = Math.min(W * 0.4, 330); ry = Math.max(46, rx * 0.3);
+    var sun = root.querySelector('.orbit-sun'), icon = buttons[0].offsetWidth || 112;
+    var sunR = (sun ? sun.offsetWidth : 132) / 2 + 14;
+    cx = W / 2; cy = H / 2 - icon * 0.12;
+    // The orbit always clears the Dailwind mark: in front, behind and at the sides.
+    rx = Math.max(sunR + icon * 0.62, Math.min(W / 2 - icon * 0.62, 340));
+    ry = Math.max(sunR + icon * 0.64, rx * 0.34);
+    root.querySelectorAll('.orbit-ring').forEach(function (r, k) {
+      var f = k ? 1.2 : 1;
+      r.style.width = (rx * 2 * f) + 'px'; r.style.height = (ry * 2 * f) + 'px';
+      r.style.left = cx + 'px'; r.style.top = cy + 'px';
+    });
+    if (sun) { sun.style.left = cx + 'px'; sun.style.top = cy + 'px'; }
     if (ctx) {
       dpr = Math.min(2, window.devicePixelRatio || 1);
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
@@ -46,8 +58,9 @@
       var depth = (z + 1) / 2;
       var scale = 0.58 + depth * 0.52;
       var b = buttons[i];
-      b.style.transform = 'translate(' + (x - 56).toFixed(1) + 'px,' + (y - 56).toFixed(1) + 'px) scale(' + scale.toFixed(3) + ')';
-      b.style.zIndex = String(z > -0.15 ? 60 + Math.round(depth * 40) : 10 + Math.round(depth * 30));
+      var h = b.offsetWidth / 2;
+      b.style.transform = 'translate(' + (x - h).toFixed(1) + 'px,' + (y - h).toFixed(1) + 'px) scale(' + scale.toFixed(3) + ')';
+      b.style.zIndex = String(z > 0 ? 60 + Math.round(depth * 40) : 10 + Math.round(depth * 30));
       b.style.opacity = (0.5 + depth * 0.5).toFixed(3);
       b.style.filter = 'saturate(' + (0.55 + depth * 0.45).toFixed(2) + ') brightness(' + (0.86 + depth * 0.14).toFixed(2) + ')';
       if (z > best) { best = z; bestI = i; }
@@ -86,7 +99,7 @@
   function frame(t) {
     if (!last) last = t;
     var dt = Math.min(64, t - last); last = t;
-    if (visible && !document.hidden) {
+    if (visible && !document.hidden && !userPaused) {
       if (seek !== null) {
         var diff = seek - phase;
         if (Math.abs(diff) < 0.004) { phase = seek; seek = null; hold = t + 5000; target = 0; }
@@ -96,7 +109,7 @@
         speed += (target - speed) * Math.min(1, dt / 420);
         phase -= speed * dt / PERIOD * Math.PI * 2;
       }
-      fade();
+      if (!reduce) fade();
       place();
     }
     requestAnimationFrame(frame);
@@ -108,7 +121,6 @@
     var d = want - phase;
     d = Math.atan2(Math.sin(d), Math.cos(d));
     seek = phase + d;
-    if (reduce) { phase = seek; seek = null; place(); }
   }
 
   buttons.forEach(function (b, i) {
@@ -125,13 +137,19 @@
   root.querySelector('.orbit-cards').addEventListener('pointerenter', function () { target = 0; });
   root.querySelector('.orbit-cards').addEventListener('pointerleave', function () { if (!hold) target = 1; });
 
+  // Only a click on the site's "Pause automatic media" button stops the orbit (its automatic
+  // default for reduced-motion visitors does not; they get the calmer orbit instead).
+  var userPaused = false;
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-motion-toggle]');
+    if (t) setTimeout(function () { userPaused = t.getAttribute('aria-pressed') === 'true'; }, 0);
+  });
   if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }).observe(root);
   window.addEventListener('resize', function () { size(); place(); });
   size();
   show(0);
-  if (reduce) { place(); return; }
   // Entrance: icons spiral out from the Dailwind mark.
-  root.classList.add('is-entering');
+  if (!reduce) root.classList.add('is-entering');
   setTimeout(function () { root.classList.remove('is-entering'); }, 1400);
   requestAnimationFrame(frame);
 })();

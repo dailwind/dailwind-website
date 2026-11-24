@@ -3,12 +3,12 @@
 .app-orbit::before{content:"";position:absolute;inset:-20% -10% 0;z-index:-1;background:radial-gradient(60% 55% at 50% 58%,color-mix(in srgb,var(--orbit-accent) 22%,transparent),transparent 70%),radial-gradient(40% 40% at 20% 20%,rgba(255,255,255,.9),transparent 70%);transition:background 1.2s ease}
 .orbit-copy h2{font-size:56px;line-height:1.06;font-weight:650;letter-spacing:-1.8px;margin:0 0 10px;color:#1d1d1f}
 .orbit-copy .banner-tagline{margin-bottom:0}
-.orbit-stage{position:relative;height:400px;max-width:900px;margin:10px auto 0}
+.orbit-stage{position:relative;height:470px;max-width:900px;margin:10px auto 0}
 .orbit-trails{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:blur(2px);opacity:.9}
-.orbit-ring{position:absolute;left:50%;top:48%;width:min(80%,660px);aspect-ratio:1/.3;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(0,0,0,.07);box-shadow:0 0 0 1px rgba(255,255,255,.6) inset;pointer-events:none}
-.orbit-ring.two{width:min(98%,820px);border-style:dashed;border-color:rgba(0,0,0,.05)}
-.orbit-sun{position:absolute;left:50%;top:48%;z-index:50;width:132px;height:132px;transform:translate(-50%,-50%);display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#f2f2f5 70%);box-shadow:0 0 0 10px rgba(255,255,255,.55),0 0 0 22px rgba(255,255,255,.25),0 22px 60px color-mix(in srgb,var(--orbit-accent) 35%,transparent),0 0 90px color-mix(in srgb,var(--orbit-accent) 30%,transparent);transition:box-shadow 1.2s ease}
-.orbit-sun img{width:52px;height:auto}
+.orbit-ring{position:absolute;left:50%;top:48%;width:min(80%,660px);height:200px;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(0,0,0,.07);box-shadow:0 0 0 1px rgba(255,255,255,.6) inset;pointer-events:none}
+.orbit-ring.two{width:min(98%,820px);height:260px;border-style:dashed;border-color:rgba(0,0,0,.05)}
+.orbit-sun{position:absolute;left:50%;top:48%;z-index:50;width:112px;height:112px;transform:translate(-50%,-50%);display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#f2f2f5 70%);box-shadow:0 0 0 10px rgba(255,255,255,.55),0 0 0 22px rgba(255,255,255,.25),0 22px 60px color-mix(in srgb,var(--orbit-accent) 35%,transparent),0 0 90px color-mix(in srgb,var(--orbit-accent) 30%,transparent);transition:box-shadow 1.2s ease}
+.orbit-sun img{width:44px;height:auto}
 .orbit-sun::after{content:"";position:absolute;inset:-34px;border-radius:50%;border:1px solid color-mix(in srgb,var(--orbit-accent) 35%,transparent);animation:orbitPulse 3.2s ease-out infinite}
 @keyframes orbitPulse{from{transform:scale(.7);opacity:.9}to{transform:scale(1.35);opacity:0}}
 .orbit-apps{list-style:none;margin:0;padding:0;display:flex;justify-content:center;gap:28px;position:relative;z-index:1}
@@ -43,14 +43,14 @@
 @media (max-width:760px){
  .app-orbit{padding:38px 14px 32px}
  .orbit-copy h2{font-size:38px;letter-spacing:-1.2px}
- .orbit-stage{height:290px}
- .orbit-sun{width:92px;height:92px}
- .orbit-sun img{width:38px}
- .orbit-app{width:84px;height:84px;border-radius:20px}
- .orbit-app img{border-radius:20px}
- .app-orbit.is-live .orbit-app{transform-origin:42px 42px;margin:14px 0 0 14px}
+ .orbit-stage{height:340px}
+ .orbit-sun{width:76px;height:76px}
+ .orbit-sun img{width:30px}
+ .orbit-app{width:76px;height:76px;border-radius:18px}
+ .orbit-app img{border-radius:18px}
+ .app-orbit.is-live .orbit-app{transform-origin:38px 38px}
  .orbit-info{grid-template-columns:48px minmax(0,1fr);padding:16px}
  .orbit-info-icon{width:48px;height:48px}
  .orbit-info-actions{grid-column:1/-1;justify-content:flex-start}
 }
-@media (prefers-reduced-motion:reduce){.orbit-sun::after,.app-orbit *{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.orbit-sun::after{animation:none!important}.orbit-trails{display:none}}
