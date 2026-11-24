@@ -91,6 +91,64 @@
     }).catch(function (err) { say(el, err.message || 'These files could not be combined.'); el.value = ''; });
   }, true);
 
+  /* ---------- choosing file types when a whole folder comes in ---------- */
+  function extOf(f) { var m = /\.([a-z0-9]{1,8})$/i.exec(f.name); return m ? m[1].toLowerCase() : ''; }
+  var NICE = { pdf: 'PDF', docx: 'Word', doc: 'Word 97', odt: 'OpenDocument', txt: 'Text', md: 'Markdown', csv: 'CSV', srt: 'Subtitles', vtt: 'Subtitles', sbv: 'Subtitles',
+    conllu: 'CoNLL-U', conll: 'CoNLL', png: 'Image', jpg: 'Image', jpeg: 'Image', webp: 'Image', gif: 'Image', bmp: 'Image', avif: 'Image', svg: 'Image', heic: 'Image', ico: 'Icon',
+    xlsx: 'Excel', xls: 'Excel', pptx: 'PowerPoint', zip: 'ZIP archive', mp3: 'Audio', mp4: 'Video', json: 'JSON', html: 'Web page', rtf: 'Rich text' };
+  function chooseFormats(input, all) {
+    all = all.filter(function (f) { return !/^\./.test(f.name) && !/^(thumbs\.db|desktop\.ini)$/i.test(f.name); });
+    var groups = {}, order = [];
+    all.forEach(function (f) { var e = extOf(f); if (!groups[e]) { groups[e] = { ext: e, files: [], ok: accepts(input, f) }; order.push(e); } groups[e].files.push(f); });
+    var supported = order.filter(function (e) { return groups[e].ok; });
+    if (order.length < 2) return Promise.resolve(supported.length ? groups[supported[0]].files : []);
+    order.sort(function (a, b) { return (groups[b].ok - groups[a].ok) || (groups[b].files.length - groups[a].files.length) || a.localeCompare(b); });
+    var folder = ((all[0] && all[0].webkitRelativePath) || '').split('/')[0];
+    return new Promise(function (done) {
+      var dlg = document.createElement('dialog');
+      dlg.className = 'mf-dialog';
+      dlg.setAttribute('aria-labelledby', 'mf-dialog-title');
+      dlg.innerHTML = '<form method="dialog"><p class="mf-kicker">Folder</p><h2 id="mf-dialog-title">Which file types should be added?</h2>' +
+        '<p class="mf-sub"></p><div class="mf-quick"><button type="button" data-mf-all>Select all</button><button type="button" data-mf-none>Clear</button></div>' +
+        '<ul class="mf-types"></ul><p class="mf-note"></p><div class="mf-actions"><button type="button" data-mf-cancel>Cancel</button><button type="submit" class="primary" data-mf-ok></button></div></form>';
+      dlg.querySelector('.mf-sub').textContent = (folder ? '“' + folder + '” · ' : '') + all.length + ' files found in ' + order.length + ' formats. Tick the formats you want; the rest are left out.';
+      var list = dlg.querySelector('.mf-types'), boxes = [];
+      order.forEach(function (e) {
+        var g = groups[e], li = document.createElement('li'), id = 'mf-t-' + (e || 'none');
+        li.className = g.ok ? '' : 'is-off';
+        li.innerHTML = '<label><input type="checkbox"><span class="mf-ext"></span><span class="mf-kind"></span><span class="mf-count"></span></label>';
+        var cb = li.querySelector('input');
+        cb.id = id; cb.checked = g.ok; cb.disabled = !g.ok; cb.value = e;
+        li.querySelector('.mf-ext').textContent = e ? '.' + e.toUpperCase() : 'No ext.';
+        li.querySelector('.mf-kind').textContent = g.ok ? (NICE[e] || 'File') : 'Not supported by this tool';
+        li.querySelector('.mf-count').textContent = g.files.length + (g.files.length === 1 ? ' file' : ' files');
+        if (g.ok) boxes.push(cb);
+        list.appendChild(li);
+      });
+      var ok = dlg.querySelector('[data-mf-ok]'), note = dlg.querySelector('.mf-note');
+      function count() {
+        var n = boxes.reduce(function (t, b) { return t + (b.checked ? groups[b.value].files.length : 0); }, 0);
+        ok.textContent = n ? 'Add ' + n + (n === 1 ? ' file' : ' files') : 'Choose a format';
+        ok.disabled = !n;
+        note.textContent = supported.length < order.length ? 'Greyed-out formats cannot be opened by this tool.' : '';
+      }
+      list.addEventListener('change', count);
+      dlg.querySelector('[data-mf-all]').addEventListener('click', function () { boxes.forEach(function (b) { b.checked = true; }); count(); });
+      dlg.querySelector('[data-mf-none]').addEventListener('click', function () { boxes.forEach(function (b) { b.checked = false; }); count(); });
+      var result = null;
+      dlg.querySelector('[data-mf-cancel]').addEventListener('click', function () { dlg.close(); });
+      dlg.querySelector('form').addEventListener('submit', function () {
+        var pick = {}; boxes.forEach(function (b) { if (b.checked) pick[b.value] = 1; });
+        result = all.filter(function (f) { return pick[extOf(f)]; }).sort(byName);
+      });
+      dlg.addEventListener('close', function () { dlg.remove(); done(result); });
+      count();
+      document.body.appendChild(dlg);
+      dlg.showModal();
+      if (ok && !ok.disabled) ok.focus();
+    });
+  }
+
   /* ---------- folders dropped on drop areas ---------- */
   function walk(entry, out) {
     return new Promise(function (done) {
@@ -119,13 +177,16 @@
     var out = [];
     Promise.all(entries.map(function (x) { return walk(x, out); })).then(function () {
       var input = (target.closest && target.closest('label,div,section') || document).querySelector('input[type=file]') || document.querySelector('input[type=file]:not([id^=restore])');
-      out = out.filter(function (f) { return input ? accepts(input, f) : !/^\./.test(f.name); }).sort(byName);
+      return (input ? chooseFormats(input, out) : Promise.resolve(out.filter(function (f) { return !/^\./.test(f.name); }))).then(function (chosen) {
+      if (chosen === null) return;
+      out = chosen.sort(byName);
       if (!out.length) return say(input, 'No supported files were found in that folder.');
       var dt = new DataTransfer();
       out.forEach(function (f) { dt.items.add(f); });
       redrop = true;
       try { target.dispatchEvent(new DragEvent('drop', Object.assign({ bubbles: true, cancelable: true, dataTransfer: dt }, opts))); }
       finally { redrop = false; }
+      });
     });
   }, true);
 
@@ -141,10 +202,13 @@
     picker.className = 'mf-folder-input';
     picker.addEventListener('change', function (e) {
       e.stopImmediatePropagation();
-      var files = Array.prototype.filter.call(picker.files || [], function (f) { return accepts(input, f); }).sort(byName);
+      var all = Array.prototype.slice.call(picker.files || []);
       picker.value = '';
-      if (!files.length) return say(input, 'No supported files were found in that folder.');
-      hand(input, files);
+      chooseFormats(input, all).then(function (files) {
+        if (files === null) return;
+        if (!files.length) return say(input, 'No supported files were found in that folder.');
+        hand(input, files.sort(byName));
+      });
     });
     input.insertAdjacentElement('afterend', picker);
     return picker;
