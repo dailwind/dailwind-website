@@ -135,3 +135,29 @@
 /* Guide steps pick up the tool colour */
 .tool-identity :is(.guide-step,.guide-steps>*,.workspace-guide article) :is(b,strong,.guide-num):first-child{color:var(--t1)}
 .tool-identity [data-guide-stage]:hover,.tool-identity .guide-top button:not(.guide-auto):hover{border-color:var(--t1)!important;color:var(--t1)!important}
+
+/* ---------- Apple-style secondary buttons in every toolkit ---------- */
+.tool-identity :is(main,.prep-layout,.app-window,.desktop-window,.language-main) :is(button,.language-upload,label.button,a.button):not(.primary):not(.guide-auto):not(.dw-cite-open):not([aria-pressed=true]):not([aria-selected=true]):not([role=tab]):not(.dock-item):not(.heart):not([class*=close]):not(.lab-mode):not(:is(.arc-header,.system-bar,.prep-top,.language-top,[class*=dock],nav) *),
+.tool-identity :is(.tt-btns,.file-actions,.mt-row) :is(button,.language-upload):not(.primary):not([aria-pressed=true]){
+  background:rgba(255,255,255,.82)!important;color:#1d1d1f!important;
+  border:1px solid rgba(0,0,0,.1)!important;border-radius:980px!important;
+  font-family:var(--ag-font,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif)!important;font-weight:500!important;font-size:14px!important;
+  box-shadow:0 1px 2px rgba(0,0,0,.04)!important;text-shadow:none!important;
+  transition:border-color .2s ease,color .2s ease,background .2s ease!important}
+.tool-identity :is(main,.prep-layout,.app-window,.desktop-window,.language-main) :is(button,.language-upload,a.button):not(.primary):not(.guide-auto):not(.dw-cite-open):not([aria-pressed=true]):not([aria-selected=true]):hover{
+  border-color:var(--t1)!important;color:var(--t1)!important;background:#fff!important}
+.tool-identity :is(button,.language-upload):disabled{opacity:.45!important}
+.tool-identity :is(button.primary,.guide-auto){font-family:var(--ag-font,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif)!important;font-weight:500!important;font-size:14px!important}
+
+/* ---------- Text boxes: calm, readable text instead of the big typewriter font ---------- */
+.tool-identity textarea{font:400 15px/1.55 var(--ag-font,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif)!important;letter-spacing:0!important;padding:14px 16px!important;border-radius:14px!important;border:1px solid #d2d2d7!important;background:rgba(255,255,255,.9)!important;color:#1d1d1f!important}
+.tool-identity textarea::placeholder{color:#86868b!important;font:inherit!important}
+.tool-identity :is(input[type=text],input[type=search],input[type=number],input[type=url],input[type=email],select){font-family:var(--ag-font,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif)!important;font-size:15px!important;border-radius:12px!important;border:1px solid #d2d2d7!important}
+@media(max-width:700px){
+  .tool-identity textarea,.tool-identity :is(input[type=text],input[type=search],input[type=number],input[type=url],input[type=email],select){font-size:16px!important}
+  .tool-identity textarea{min-height:180px}
+}
+
+/* MAT Tagger Cleaner (service page): same identity in the page heading */
+.tool-identity .page-intro h1{background:var(--t-grad);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent;font-weight:700;letter-spacing:-.02em}
+.tool-identity .page-intro .eyebrow{color:var(--t1)!important;font-weight:600}

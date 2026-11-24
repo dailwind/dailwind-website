@@ -42,10 +42,11 @@ THEMES = {
     'synonym-explorer':     ('dots',    '#6366f1', '#a5b4fc', '#ec4899'),
     'text-statistics':      ('beams',   '#059669', '#10b981', '#3b82f6'),
     'case-converter':       ('ribbons', '#9333ea', '#e879f9', '#6366f1'),
+    'mat-cleaner':          ('rings',   '#0b6bcb', '#38bdf8', '#14b8a6'),
 }
 
 # Pages that are not workspaces keep the site look.
-SKIP = {'mat-cleaner', 'pmc'}
+SKIP = {'pmc'}
 
 
 def _hex(h, s, l):
