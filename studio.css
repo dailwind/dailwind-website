@@ -174,3 +174,5 @@ body.reading-greek .header,.reading-greek .header{border:0!important;background:
 .reading-greek .header nav>a[aria-current]{color:rgba(0,0,0,.8)}
 @keyframes gn-in{from{opacity:0;transform:translateY(-8px)}}
 @media(prefers-reduced-motion:reduce){.header nav.open>a{animation:none}.menu-toggle::before,.menu-toggle::after{transition:none}}
+/* Home tiles reach both edges of the window, so no white strip shows at the sides when zoomed out */
+.home-product-grid{padding-left:0;padding-right:0}
