@@ -256,3 +256,41 @@ body.ag-soft .footer{background:rgba(255,255,255,.5);-webkit-backdrop-filter:var
 .toolkits-apple .toolkit-card[style*="--t1"]:hover{box-shadow:2px 4px 16px rgba(0,0,0,.12),0 18px 40px color-mix(in srgb,var(--t1) 18%,transparent)!important}
 .toolkits-apple .toolkit-card[style*="--t1"]::before{content:"";position:absolute;left:18px;right:18px;top:0;height:3px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,var(--t1),var(--t2),var(--t3));opacity:.9}
 .toolkits-apple .toolkit-card{position:relative;overflow:hidden}
+
+/* Toolkits page: icons stay still */
+.toolkits-apple .toolkit-card .toolkit-symbol,.toolkits-apple .toolkit-card.toolkit-in-view .toolkit-symbol,.toolkits-apple .toolkit-card:is(:hover,:focus-within) .toolkit-symbol{animation:none!important;transform:none!important}
+
+/* ---------- Phones ---------- */
+@media(max-width:900px){
+  /* Preparation tools: hero first, then the quick start, then the files panel */
+  .dailwind-workspace .prep-layout{display:flex!important;flex-direction:column;gap:16px}
+  .dailwind-workspace .prep-main{display:contents}
+  .dailwind-workspace .prep-title{order:-3}
+  .dailwind-workspace .dailwind-guide{order:-2}
+  .dailwind-workspace .prep-sidebar{order:-1}
+  .dailwind-workspace .prep-main>*{min-width:0}
+}
+@media(max-width:700px){
+  /* Corpus Toolkit bar */
+  .dailwind-workspace .arc-header{gap:8px!important}
+  .dailwind-workspace .arc-brand{flex:1;min-width:0;gap:8px}
+  .dailwind-workspace .arc-brand img{width:28px;height:28px}
+  .dailwind-workspace .arc-brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px;font-weight:600}
+  .dailwind-workspace .arc-brand small{display:none}
+  .dailwind-workspace .back-to-website{order:-1;flex:none;font-size:0!important;width:28px;height:28px;min-height:28px!important;padding:0!important;display:grid!important;place-items:center;border-radius:50%!important;background:rgba(0,0,0,.05)!important;border:0!important}
+  .dailwind-workspace .back-to-website::before{content:"‹";font-size:22px;line-height:1;color:#1d1d1f;margin-top:-3px}
+  /* Stylistic Toolkit bar */
+  .dailwind-workspace .system-bar{gap:8px!important;height:52px!important;min-height:52px;padding:0 12px!important;font-size:12px!important}
+  .dailwind-workspace .system-bar>a:not(.workspace-return),.dailwind-workspace .system-bar>span,.dailwind-workspace .system-bar>time,.dailwind-workspace .system-bar .dock-mode-toggle{display:none!important}
+  .dailwind-workspace .system-bar>strong{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px;font-weight:600}
+  .dailwind-workspace .system-bar .workspace-return{flex:none;font-size:0!important;width:28px;height:28px;min-height:28px!important;padding:0!important;display:grid!important;place-items:center;border-radius:50%!important;background:rgba(0,0,0,.05)!important;border:0!important}
+  .dailwind-workspace .system-bar .workspace-return::before{content:"‹";font-size:22px;line-height:1;color:#1d1d1f;margin-top:-3px}
+  /* Hero text sizes */
+  .tool-identity :is(.language-title,.prep-title,.workspace-heading,section.intro) h1{font-size:clamp(30px,9vw,38px)!important}
+  .tool-identity :is(.language-title,.prep-title,.workspace-heading,section.intro)>div>p:not([class]){font-size:16px!important}
+  /* Buttons big enough to tap */
+  .tool-identity :is(button,.button,a.primary){min-height:44px}
+  .toolkits-apple .toolkit-card{padding:22px!important}
+  .toolkits-apple .toolkit-card h3{font-size:22px}
+  .toolkits-apple .finder-group>header h2{font-size:28px}
+}
