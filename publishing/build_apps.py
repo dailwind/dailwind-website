@@ -31,6 +31,8 @@ def load(path=ROOT/'publishing/apps.json'):
         if pv is not None:
             if not a.get('slug'):raise ValueError('privacy needs a slug: '+a['name'])
             if not (isinstance(pv,dict) and isinstance(pv.get('effective'),str) and isinstance(pv.get('sections'),list) and pv['sections']):raise ValueError('privacy needs effective and sections: '+a['name'])
+        for x in a.get('screenshots',[]):
+            if not (isinstance(x,dict) and (ROOT/x.get('src','')).exists() and x.get('alt')):raise ValueError('Bad screenshot: '+repr(x))
         for k in ('details','features'):
             if k in a and not (isinstance(a[k],list) and all(isinstance(x,str) for x in a[k])):raise ValueError(k+' must be a list of strings')
     return apps
@@ -118,6 +120,12 @@ def video(a,up):
     if not v:return ''
     return ('<figure class="app-video"><video data-app-video src="'+up+e(v['src'])+'" poster="'+up+e(v['poster'])+'" width="'+str(v['width'])+'" height="'+str(v['height'])+'" muted loop playsinline preload="none" aria-label="'+e(v['label'])+'"></video></figure>')
 
+def screenshots(a,up):
+    shots=a.get('screenshots') or []
+    if not shots:return ''
+    items=''.join('<li><a href="'+up+e(x['src'])+'" class="app-shot" aria-label="Open screenshot: '+e(x['alt'])+'"><img src="'+up+e(x['src'])+'" width="'+str(x['width'])+'" height="'+str(x['height'])+'" alt="'+e(x['alt'])+'" loading="lazy" decoding="async"></a></li>' for x in shots)
+    return '<section class="app-shots" aria-label="'+e(a['name'])+' screenshots"><h2>Screenshots</h2><ul class="app-shot-track">'+items+'</ul></section>'
+
 def render_detail(a,shell):
     title=a['name']+' for Android | Dailwind App Store';desc=a['description']
     head,header,footer=shell_parts(shell,title,desc,'https://dailwind.com/apps/'+a['slug']+'/','../../')
@@ -125,7 +133,7 @@ def render_detail(a,shell):
     feats='<h2>Features</h2><ul class="app-features">'+''.join('<li>'+e(f)+'</li>' for f in a['features'])+'</ul>' if a.get('features') else ''
     main=('<main id="main" class="apps-page"><section class="wrap app-detail"><p class="eyebrow"><a class="app-link" href="../">← Back to Apps</a></p>'
           '<article class="app-card app-detail-card"><div class="app-detail-head">'+icon_html(a,'../../',96,False)+'<div><h1 class="app-name">'+e(a['name'])+'</h1>'+('<p class="app-category">'+e(a['category'])+'</p>' if a.get('category') else '')+badge(a)+'</div></div>'
-          '<p class="lede app-desc">'+e(a['description'])+'</p>'+video(a,'../../')+body+feats+'<div class="app-actions">'+play(a)+'<span class="app-links">'+('<a class="app-link" href="privacy/">Privacy Policy</a>' if a.get('privacy') else '')+'<a class="app-link" href="../">Back to Apps</a></span></div></article></section></main>')
+          '<p class="lede app-desc">'+e(a['description'])+'</p>'+video(a,'../../')+screenshots(a,'../../')+body+feats+'<div class="app-actions">'+play(a)+'<span class="app-links">'+('<a class="app-link" href="privacy/">Privacy Policy</a>' if a.get('privacy') else '')+'<a class="app-link" href="../">Back to Apps</a></span></div></article></section></main>')
     return head+header+main+footer
 
 def linkify(text):
@@ -178,7 +186,7 @@ def render_orbit(apps):
             '<div class="orbit-copy"><p class="product-overline">DAILWIND APP STUDIO · ANDROID</p><h2 id="orbit-title">Our apps, in orbit.</h2>'
             '<p class="banner-tagline">Private, offline apps for study and research.</p></div>'
             '<div class="orbit-stage"><canvas class="orbit-trails" aria-hidden="true"></canvas><span class="orbit-ring" aria-hidden="true"></span><span class="orbit-ring two" aria-hidden="true"></span>'
-            '<div class="orbit-sun" aria-hidden="true"><img src="assets/dailwind-logo-v871.webp" width="436" height="472" alt="" decoding="async"></div>'
+            '<div class="orbit-sun" aria-hidden="true"><span class="orb-blob one"></span><span class="orb-blob two"></span><span class="orb-blob three"></span><span class="orb-shine"></span><span class="orb-spark"></span><span class="orb-name"></span></div>'
             '<ul class="orbit-apps" aria-label="Dailwind apps">'+icons+'</ul></div>'
             '<div class="orbit-cards">'+cards+'</div>'
             '<p class="orbit-all"><a class="underlink" href="apps/">See all apps in the Dailwind App Store <span aria-hidden="true">›</span></a></p>'

@@ -84,6 +84,13 @@
     buttons.forEach(function (b, k) { b.classList.toggle('is-front', k === i); b.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
     cards.forEach(function (c, k) { c.hidden = k !== i; if (k === i) { c.classList.remove('is-in'); void c.offsetWidth; c.classList.add('is-in'); } });
     root.style.setProperty('--orbit-accent', accents[i]);
+    var orb = root.querySelector('.orbit-sun');
+    if (orb) {
+      orb.style.setProperty('--c2', accents[(i + 1) % n]);
+      orb.style.setProperty('--c3', accents[(i + 2) % n] || accents[i]);
+      var nm = orb.querySelector('.orb-name');
+      if (nm) { nm.style.opacity = '0'; setTimeout(function () { nm.textContent = buttons[i].getAttribute('aria-label'); nm.style.opacity = ''; }, 200); }
+    }
   }
 
   function fade() {

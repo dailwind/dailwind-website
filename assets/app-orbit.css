@@ -7,10 +7,6 @@
 .orbit-trails{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:blur(2px);opacity:.9}
 .orbit-ring{position:absolute;left:50%;top:48%;width:min(80%,660px);height:200px;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid rgba(0,0,0,.07);box-shadow:0 0 0 1px rgba(255,255,255,.6) inset;pointer-events:none}
 .orbit-ring.two{width:min(98%,820px);height:260px;border-style:dashed;border-color:rgba(0,0,0,.05)}
-.orbit-sun{position:absolute;left:50%;top:48%;z-index:50;width:112px;height:112px;transform:translate(-50%,-50%);display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#f2f2f5 70%);box-shadow:0 0 0 10px rgba(255,255,255,.55),0 0 0 22px rgba(255,255,255,.25),0 22px 60px color-mix(in srgb,var(--orbit-accent) 35%,transparent),0 0 90px color-mix(in srgb,var(--orbit-accent) 30%,transparent);transition:box-shadow 1.2s ease}
-.orbit-sun img{width:44px;height:auto}
-.orbit-sun::after{content:"";position:absolute;inset:-34px;border-radius:50%;border:1px solid color-mix(in srgb,var(--orbit-accent) 35%,transparent);animation:orbitPulse 3.2s ease-out infinite}
-@keyframes orbitPulse{from{transform:scale(.7);opacity:.9}to{transform:scale(1.35);opacity:0}}
 .orbit-apps{list-style:none;margin:0;padding:0;display:flex;justify-content:center;gap:28px;position:relative;z-index:1}
 .app-orbit.is-live .orbit-apps{position:absolute;inset:0;display:block}
 .app-orbit.is-live .orbit-apps li{position:static}
@@ -45,7 +41,6 @@
  .orbit-copy h2{font-size:38px;letter-spacing:-1.2px}
  .orbit-stage{height:340px}
  .orbit-sun{width:76px;height:76px}
- .orbit-sun img{width:30px}
  .orbit-app{width:76px;height:76px;border-radius:18px}
  .orbit-app img{border-radius:18px}
  .app-orbit.is-live .orbit-app{transform-origin:38px 38px}
@@ -53,4 +48,20 @@
  .orbit-info-icon{width:48px;height:48px}
  .orbit-info-actions{grid-column:1/-1;justify-content:flex-start}
 }
-@media (prefers-reduced-motion:reduce){.orbit-sun::after{animation:none!important}.orbit-trails{display:none}}
+@media (prefers-reduced-motion:reduce){.orbit-trails{display:none}.orb-blob,.orb-spark{animation-duration:40s!important}}
+
+/* The living orb at the centre: colours blend from the apps, led by the app in front. */
+.orbit-sun{--c1:var(--orbit-accent);--c2:#7c3aed;--c3:#f97316;position:absolute;left:50%;top:48%;z-index:50;width:112px;height:112px;transform:translate(-50%,-50%);border-radius:50%;overflow:hidden;isolation:isolate;background:linear-gradient(140deg,var(--c2),var(--c1) 52%,var(--c3));box-shadow:0 0 0 1px rgba(255,255,255,.55) inset,0 22px 60px color-mix(in srgb,var(--c1) 45%,transparent),0 0 110px color-mix(in srgb,var(--c1) 35%,transparent);animation:orbBreath 4.5s ease-in-out infinite;transition:background 1.2s ease,box-shadow 1.2s ease}
+.orb-blob{position:absolute;width:85%;height:85%;border-radius:50%;filter:blur(12px);opacity:.9}
+.orb-blob.one{left:-12%;top:-10%;background:radial-gradient(circle,var(--c1),transparent 68%);animation:orbSpinA 7s linear infinite;transform-origin:62% 64%}
+.orb-blob.two{right:-14%;top:4%;background:radial-gradient(circle,var(--c2),transparent 68%);animation:orbSpinB 9s linear infinite;transform-origin:30% 60%}
+.orb-blob.three{left:8%;bottom:-18%;background:radial-gradient(circle,var(--c3),transparent 68%);animation:orbSpinA 11s linear infinite reverse;transform-origin:50% 20%}
+.orb-shine{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.85),rgba(255,255,255,.15) 26%,transparent 46%),radial-gradient(circle at 70% 85%,rgba(255,255,255,.18),transparent 40%)}
+.orb-spark{position:absolute;inset:-20%;background:conic-gradient(from 0deg,transparent 0 70%,rgba(255,255,255,.45) 80%,transparent 90%);animation:orbSpinA 5s linear infinite;mix-blend-mode:overlay}
+.orb-name{position:absolute;left:8%;right:8%;bottom:20%;text-align:center;color:#fff;font:700 11px/1.15 "SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.02em;text-shadow:0 1px 6px rgba(0,0,0,.35);opacity:.95;transition:opacity .4s}
+@keyframes orbSpinA{to{transform:rotate(360deg)}}
+@keyframes orbSpinB{to{transform:rotate(-360deg)}}
+@keyframes orbBreath{50%{box-shadow:0 0 0 1px rgba(255,255,255,.55) inset,0 26px 70px color-mix(in srgb,var(--c1) 55%,transparent),0 0 150px color-mix(in srgb,var(--c1) 45%,transparent)}}
+@media (max-width:760px){.orbit-sun{width:80px;height:80px}.orb-name{font-size:9px;bottom:18%}}
+.orbit-sun{width:124px;height:124px}
+@media (max-width:760px){.orbit-sun{width:80px;height:80px}}

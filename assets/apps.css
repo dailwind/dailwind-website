@@ -112,3 +112,12 @@ body.apps-body{background:#f5f5f7;min-height:100vh;--apps-accent:#0066cc}
 .app-policy section li{margin:6px 0}
 .app-policy a:not(.app-link){color:var(--apps-accent,#0071e3);overflow-wrap:anywhere}
 .app-policy-contact{list-style:none;padding-left:0!important}
+/* Screenshot gallery on app pages */
+.app-shots{margin:26px 0 8px}
+.app-shots h2{margin:0 0 12px}
+.app-shot-track{list-style:none;margin:0 -4px;padding:6px 4px 16px;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin;overscroll-behavior-inline:contain}
+.app-shot-track li{flex:0 0 auto;scroll-snap-align:start}
+.app-shot{display:block;border-radius:26px;overflow:hidden;background:#fff;border:1px solid rgba(0,0,0,.08);box-shadow:0 10px 30px rgba(0,0,0,.1);transition:transform .3s ease,box-shadow .3s ease}
+.app-shot:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.16)}
+.app-shot img{display:block;width:200px;height:auto}
+@media (max-width:600px){.app-shot img{width:168px}.app-shot{border-radius:22px}}

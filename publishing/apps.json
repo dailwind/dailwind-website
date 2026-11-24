@@ -154,6 +154,62 @@
       ]
     },
     "accent": "#d946ef",
-    "tagline": "10,012 medical MCQs. Fully offline."
+    "tagline": "10,012 medical MCQs. Fully offline.",
+    "screenshots": [
+      {
+        "src": "assets/apps/medquiz-screen-01-v1.webp",
+        "alt": "MedQuiz splash screen with the LexData logo",
+        "width": 540,
+        "height": 1102
+      },
+      {
+        "src": "assets/apps/medquiz-screen-02-v1.webp",
+        "alt": "Welcome screen: Your smart study partner for medical MCQs",
+        "width": 540,
+        "height": 1102
+      },
+      {
+        "src": "assets/apps/medquiz-screen-03-v1.webp",
+        "alt": "Home screen with Daily 20, subjects and history",
+        "width": 540,
+        "height": 1102
+      },
+      {
+        "src": "assets/apps/medquiz-screen-04-v1.webp",
+        "alt": "Subjects list with question and topic counts",
+        "width": 540,
+        "height": 1102
+      },
+      {
+        "src": "assets/apps/medquiz-screen-05-v1.webp",
+        "alt": "Progress screen with accuracy, streak and results by subject",
+        "width": 540,
+        "height": 1102
+      },
+      {
+        "src": "assets/apps/medquiz-screen-06-v1.webp",
+        "alt": "Microbiology question with the correct answer and tutor explanation",
+        "width": 540,
+        "height": 1102
+      },
+      {
+        "src": "assets/apps/medquiz-screen-07-v1.webp",
+        "alt": "Quick 10 practice question from Anatomy · Histology",
+        "width": 540,
+        "height": 1102
+      },
+      {
+        "src": "assets/apps/medquiz-screen-08-v1.webp",
+        "alt": "Correct answer with a short explanation from MedQuiz Tutor",
+        "width": 540,
+        "height": 1102
+      },
+      {
+        "src": "assets/apps/medquiz-screen-09-v1.webp",
+        "alt": "Saved screen with bookmarks and mistakes to review",
+        "width": 540,
+        "height": 1102
+      }
+    ]
   }
 ]
