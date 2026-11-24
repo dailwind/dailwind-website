@@ -9,7 +9,9 @@ from social import page_metadata
 PAGES={
  'index.html':('Dailwind App Studio | Corpus Tools, PDF Utilities & LinguaX Arc','Explore browser-based corpus analysis, text cleaning, English OCR, PDF utilities and LinguaX Arc, the offline Android corpus toolkit.'),
  'toolkits/index.html':('Research Toolkits: Corpus, Text, PDF & Image Tools | Dailwind','Find the right tool for corpus analysis, text cleaning, English OCR, PDF conversion, file merging and metadata reports. Most tools run on your device.'),
- 'apps/index.html':('App Store: Android Apps by Dailwind App Studio | Dailwind','Browse Android apps from Dailwind App Studio, including Owl Files Saver and LinguaX Arc, plus apps coming soon.'),
+ 'apps/index.html':('App Store: Android Apps by Dailwind App Studio | Dailwind','Browse Android apps from Dailwind App Studio, including Owl Files Saver, LinguaX Arc and MedQuiz.'),
+ 'apps/medquiz/index.html':('MedQuiz: Offline Medical MCQ Practice for Android | Dailwind','Offline medical MCQ practice for exam preparation. 10,012 MCQs with explanations, progress statistics and a daily study reminder, all on your device.'),
+ 'apps/medquiz/privacy/index.html':('Privacy Policy for MedQuiz | Dailwind App Store','Privacy Policy for MedQuiz by Dailwind App Studio: what the app stores on your device, the permissions it uses and how to contact us.'),
  'apps/owl-file-saver/index.html':('Owl Files Saver: Private Offline File Saver for Android | Dailwind','A private, offline file saver for Android. Save shared files in one tap, organise them and keep them on your device.'),
  'corpus-toolkit/index.html':('Corpus Toolkit: Online Corpus Analysis | Dailwind','Explore KWIC concordance, word frequencies, collocations, keyness and charts with your own texts. Analyze corpora locally in your browser.'),
  'corpus-cleaner/index.html':('Corpus Cleaner for Books, Theses & OCR Text | Dailwind','Clean books, theses, articles and damaged OCR text. Remove chosen words or phrases, review an audit and download copies. Files stay on your device.'),

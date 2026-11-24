@@ -25,3 +25,10 @@ Icons: convert to WebP, e.g. with Pillow, 256 and 512 px, versioned filename und
 Keep descriptions factual: copy facts from the app's Google Play listing; do not invent features.
 Cards animate in via `assets/apps-motion.js` + `assets/apps.css` (disabled for reduced motion).
 Layout check (needs Playwright): `python3 publishing/tests/test_apps_layout.py` after `prepare_pages.py`, or pass a base URL such as `https://dailwind.com/`.
+
+Privacy policies:
+- `privacy` (optional, needs `slug`) – generates `apps/<slug>/privacy/` and adds "Privacy Policy" links to the card and the detail page.
+  `{"effective": "November 24, 2026", "facts": [["App Name", "..."], ["Contact Email", "a@b.com, c@d.com"], ["Website", "https://..."]],
+   "sections": [{"h": "1. Overview", "p": ["..."], "ul": ["..."], "after": ["..."]}, {"h": "8. Contact Us", "p": ["..."], "contact": true}]}`
+  Links and e-mail addresses in the text become clickable. A `contact` section lists the e-mails and website from `facts`.
+  Use the page URL (e.g. https://dailwind.com/apps/medquiz/privacy/) as the Privacy Policy URL in Google Play Console.

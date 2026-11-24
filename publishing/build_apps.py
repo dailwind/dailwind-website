@@ -9,7 +9,7 @@ from html import escape
 import json,re,sys
 ROOT=Path(__file__).resolve().parent.parent
 TITLE='Dailwind App Store | Android Apps by Dailwind App Studio'
-DESC='Browse Android apps from Dailwind App Studio, including Owl Files Saver and LinguaX Arc, plus apps coming soon.'
+DESC='Browse Android apps from Dailwind App Studio, including Owl Files Saver, LinguaX Arc and MedQuiz.'
 PLAY_SVG='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4 2.8v18.4c0 .5.5.8.9.6L20.6 12.6c.5-.3.5-.9 0-1.2L4.9 2.2c-.4-.2-.9.1-.9.6Z"/></svg>'
 STATUS={'live','coming-soon'}
 e=lambda s:escape(s,quote=True)
@@ -27,6 +27,10 @@ def load(path=ROOT/'publishing/apps.json'):
             v=a.get(k)
             if k=='learnMoreUrl' and a.get('slug') and v=='apps/'+a['slug']+'/':continue
             if v and (v.startswith(('/','http')) or '..' in v or not (ROOT/v).exists()):raise ValueError(k+' must be an existing site path: '+v)
+        pv=a.get('privacy')
+        if pv is not None:
+            if not a.get('slug'):raise ValueError('privacy needs a slug: '+a['name'])
+            if not (isinstance(pv,dict) and isinstance(pv.get('effective'),str) and isinstance(pv.get('sections'),list) and pv['sections']):raise ValueError('privacy needs effective and sections: '+a['name'])
         for k in ('details','features'):
             if k in a and not (isinstance(a[k],list) and all(isinstance(x,str) for x in a[k])):raise ValueError(k+' must be a list of strings')
     return apps
@@ -59,7 +63,10 @@ def detail_url(a):
 def card(a):
     soon=a['status']=='coming-soon'
     actions=[play(a)]
-    if a.get('learnMoreUrl'):actions.append('<a class="app-link" href="../'+e(a['learnMoreUrl'])+'" aria-label="Learn more about '+e(a['name'])+'">Learn more <span aria-hidden="true">›</span></a>')
+    links=[]
+    if a.get('learnMoreUrl'):links.append('<a class="app-link" href="../'+e(a['learnMoreUrl'])+'" aria-label="Learn more about '+e(a['name'])+'">Learn more <span aria-hidden="true">›</span></a>')
+    if a.get('privacy'):links.append('<a class="app-link app-privacy-link" href="'+e(a['slug'])+'/privacy/" aria-label="'+e(a['name'])+' privacy policy">Privacy Policy</a>')
+    if links:actions.append('<span class="app-links">'+''.join(links)+'</span>')
     actions=[x for x in actions if x]
     act='<div class="app-actions">'+''.join(actions)+'</div>' if actions else ''
     sub='<p class="app-category">'+e(a['category'])+'</p>' if a.get('category') else ''
@@ -88,7 +95,7 @@ def shell_parts(shell,title,desc,url,up):
     head=re.sub(r'<script[^>]*src="\.\./assets/credits-3d\.js[^"]*"[^>]*></script>','',head)
     head=re.sub(r'<link rel="stylesheet" href="\.\./assets/(academic-review|credits-3d)\.css[^"]*">','',head)
     head+='<link rel="stylesheet" href="../assets/apps.css?v=3"><script src="../assets/apps-motion.js?v=2" defer></script>'
-    header='<body class="apps-body">'+shell[shell.index('<body>')+6:shell.index('<main id="main">')].replace(' aria-current="page"','').replace('<a href="../apps/" >','<a href="../apps/" aria-current="page">')
+    header='<body class="apps-body">'+shell[re.search(r'<body[^>]*>',shell).end():re.search(r'<main id="main"[^>]*>',shell).start()].replace(' aria-current="page"','').replace('<a href="../apps/" >','<a href="../apps/" aria-current="page">')
     if 'aria-current="page"' not in header:raise ValueError('Navigation is missing the Apps link.')
     footer=shell[shell.index('</main>')+7:]
     footer=re.sub(r'<dialog id="credits-dialog".*?</dialog>','',footer,flags=re.S)
@@ -118,7 +125,34 @@ def render_detail(a,shell):
     feats='<h2>Features</h2><ul class="app-features">'+''.join('<li>'+e(f)+'</li>' for f in a['features'])+'</ul>' if a.get('features') else ''
     main=('<main id="main" class="apps-page"><section class="wrap app-detail"><p class="eyebrow"><a class="app-link" href="../">← Back to Apps</a></p>'
           '<article class="app-card app-detail-card"><div class="app-detail-head">'+icon_html(a,'../../',96,False)+'<div><h1 class="app-name">'+e(a['name'])+'</h1>'+('<p class="app-category">'+e(a['category'])+'</p>' if a.get('category') else '')+badge(a)+'</div></div>'
-          '<p class="lede app-desc">'+e(a['description'])+'</p>'+video(a,'../../')+body+feats+'<div class="app-actions">'+play(a)+'<a class="app-link" href="../">Back to Apps</a></div></article></section></main>')
+          '<p class="lede app-desc">'+e(a['description'])+'</p>'+video(a,'../../')+body+feats+'<div class="app-actions">'+play(a)+'<span class="app-links">'+('<a class="app-link" href="privacy/">Privacy Policy</a>' if a.get('privacy') else '')+'<a class="app-link" href="../">Back to Apps</a></span></div></article></section></main>')
+    return head+header+main+footer
+
+def linkify(text):
+    out=e(text)
+    out=re.sub(r'https://[A-Za-z0-9./_-]+[A-Za-z0-9/]',lambda m:'<a href="'+m[0]+'" rel="noopener">'+m[0]+'</a>',out)
+    out=re.sub(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}',lambda m:'<a href="mailto:'+m[0]+'">'+m[0]+'</a>',out)
+    return out
+
+def render_privacy(a,shell):
+    pv=a['privacy'];title='Privacy Policy for '+a['name']+' | Dailwind App Store'
+    desc='Privacy Policy for '+a['name']+' by Dailwind App Studio: what the app stores on your device, the permissions it uses and how to contact us.'
+    head,header,footer=shell_parts(shell,title,desc,'https://dailwind.com/apps/'+a['slug']+'/privacy/','../../../')
+    facts=''.join('<div><dt>'+e(k)+'</dt><dd>'+linkify(v)+'</dd></div>' for k,v in pv.get('facts',[]))
+    emails=[x for k,v in pv.get('facts',[]) if 'mail' in k.lower() for x in re.findall(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}',v)]
+    sites=[v for k,v in pv.get('facts',[]) if k.lower()=='website']
+    body=''
+    for sec in pv['sections']:
+        body+='<section><h2>'+e(sec['h'])+'</h2>'+''.join('<p>'+linkify(x)+'</p>' for x in sec.get('p',[]))
+        if sec.get('ul'):body+='<ul>'+''.join('<li>'+linkify(x)+'</li>' for x in sec['ul'])+'</ul>'
+        body+=''.join('<p>'+linkify(x)+'</p>' for x in sec.get('after',[]))
+        if sec.get('contact'):
+            body+='<ul class="app-policy-contact">'+''.join('<li>Email: <a href="mailto:'+e(m)+'">'+e(m)+'</a></li>' for m in emails)+''.join('<li>Website: '+linkify(w)+'</li>' for w in sites)+'</ul>'
+        body+='</section>'
+    main=('<main id="main" class="apps-page"><section class="wrap app-detail app-policy"><p class="eyebrow"><a class="app-link" href="../">← Back to '+e(a['name'])+'</a></p>'
+          '<article class="app-card app-detail-card"><div class="app-detail-head">'+icon_html(a,'../../../',72,False)+'<div><p class="app-category">'+e(a['name'])+' · Privacy</p><h1 class="app-name">Privacy Policy for '+e(a['name'])+'</h1>'
+          '<p class="app-policy-date">Effective Date: '+e(pv['effective'])+'</p></div></div>'+('<dl class="app-policy-facts">'+facts+'</dl>' if facts else '')+body+
+          '<div class="app-actions"><span class="app-links"><a class="app-link" href="../">About '+e(a['name'])+'</a><a class="app-link" href="../../">All apps</a></span></div></article></section></main>')
     return head+header+main+footer
 
 def build():
@@ -126,6 +160,7 @@ def build():
     pages={ROOT/'apps/index.html':render(apps,shell)}
     for a in apps:
         if a.get('slug'):pages[ROOT/'apps'/a['slug']/'index.html']=render_detail(a,shell)
+        if a.get('privacy'):pages[ROOT/'apps'/a['slug']/'privacy'/'index.html']=render_privacy(a,shell)
     return pages
 
 if __name__=='__main__':

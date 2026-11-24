@@ -40,9 +40,113 @@
     "category": "Education · Android"
   },
   {
-    "name": "Next app",
+    "name": "MedQuiz",
     "status": "coming-soon",
-    "description": "A new Dailwind app is in development. Details will be shared here soon.",
-    "category": "In development"
+    "description": "Offline medical MCQ practice for exam preparation. 10,012 MCQs with explanations, progress statistics and a daily study reminder, all on your device.",
+    "icon": "assets/apps/medquiz-icon-v1-256.webp",
+    "icon2x": "assets/apps/medquiz-icon-v1-512.webp",
+    "slug": "medquiz",
+    "learnMoreUrl": "apps/medquiz/",
+    "category": "Medical education · Android",
+    "details": [
+      "MedQuiz is an offline medical MCQ study and exam preparation app for medical students, healthcare trainees and adult learners. It works completely offline, with no registration, no login and no personal information sent to any server."
+    ],
+    "features": [
+      "10,012 MCQs with explanations that work 100% offline.",
+      "Quiz history, scores and accuracy statistics by subject and topic.",
+      "Bookmarked questions and a study streak.",
+      "Optional daily study reminder at 8:00 PM.",
+      "Dark and light themes.",
+      "No ads, no in-app purchases and no account needed."
+    ],
+    "detailsSource": "MedQuiz privacy policy supplied by Arslan Tahir (2026-11-25)",
+    "privacy": {
+      "effective": "November 24, 2026",
+      "facts": [
+        [
+          "App Name",
+          "MedQuiz (Package ID: com.dailwind.medquiz)"
+        ],
+        [
+          "Developer",
+          "Dailwind App Studio / LexData Tech"
+        ],
+        [
+          "Website",
+          "https://lexdataai.com/"
+        ],
+        [
+          "Contact Email",
+          "lexdatatech@163.com, arslan@dailwind.com"
+        ]
+      ],
+      "sections": [
+        {
+          "h": "1. Overview",
+          "p": [
+            "MedQuiz (“we”, “our”, or “the App”) is an offline medical MCQ study and exam preparation application. Your privacy is important to us. MedQuiz is designed to work completely offline without requiring user registration, login, or submission of personal information to external servers."
+          ]
+        },
+        {
+          "h": "2. Information Stored Locally on Your Device",
+          "p": [
+            "MedQuiz does not collect, transmit, or store personal data on remote servers. All study data stays strictly on your device in local storage (Room SQLite database and Android SharedPreferences), including:"
+          ],
+          "ul": [
+            "Quiz attempts, scores, subject/topic accuracy statistics, and quiz history",
+            "Bookmarked questions and study streak dates",
+            "Optional display name entered inside the app (defaults to “Doctor”)",
+            "App preferences such as Dark/Light theme and Daily Reminder toggle status"
+          ],
+          "after": [
+            "You can delete all of this local data at any time by tapping “Reset progress” in the Progress tab or by uninstalling the App."
+          ]
+        },
+        {
+          "h": "3. Permissions We Use",
+          "p": [
+            "MedQuiz requests only the minimum permissions necessary for its core features:"
+          ],
+          "ul": [
+            "Notifications (POST_NOTIFICATIONS): Optional permission requested only when you choose to enable the Daily Study Reminder (8:00 PM local notification). You can turn reminders off anytime from the Home screen bell icon or Progress > Preferences, or in your device Settings.",
+            "Run at Startup (RECEIVE_BOOT_COMPLETED): Used strictly to restore your active local daily study reminder alarm if your device restarts.",
+            "Network Access (INTERNET / ACCESS_NETWORK_STATE): All 10,012 MCQs and explanations work 100% offline. Network access is only used if you tap external links in the app to open https://lexdataai.com/ in your device browser."
+          ]
+        },
+        {
+          "h": "4. Third-Party Services, Ads & Analytics",
+          "ul": [
+            "MedQuiz displays no advertisements and includes no in-app purchases.",
+            "We do not sell, rent, or share any user data with third parties.",
+            "Tapping the “Updates, lectures & courses” option opens https://lexdataai.com/ in your external browser, where any interaction on that website is governed by the website’s own privacy practices."
+          ]
+        },
+        {
+          "h": "5. Children’s Privacy",
+          "p": [
+            "MedQuiz is intended for medical students, healthcare trainees, and adult learners. We do not knowingly collect personal information from children under 13 years of age."
+          ]
+        },
+        {
+          "h": "6. Educational Disclaimer",
+          "p": [
+            "MedQuiz is provided strictly for educational and medical exam preparation purposes. It is not a medical device and must not be used for clinical diagnosis, treatment, or patient care decisions."
+          ]
+        },
+        {
+          "h": "7. Changes to This Privacy Policy",
+          "p": [
+            "We may update this Privacy Policy from time to time. Any updates will be reflected by updating the Effective Date at the top of this page."
+          ]
+        },
+        {
+          "h": "8. Contact Us",
+          "p": [
+            "If you have any questions or concerns regarding this Privacy Policy or MedQuiz, please contact us at:"
+          ],
+          "contact": true
+        }
+      ]
+    }
   }
 ]
