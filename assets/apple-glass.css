@@ -166,3 +166,48 @@ body.toolkits-apple,body.apps-body{overflow-x:clip}
 .apps-body .app-features li{color:#424245}
 .apps-body .app-video{border-radius:18px;overflow:hidden}
 @media(prefers-reduced-motion:reduce){.apps-body .app-card{transition:none}.apps-body .app-card:hover{transform:none}}
+
+/* ---------- 6. Site pages (About, Contact, MAT Cleaner, Privacy, Terms, PMC, LinguaX Arc, Reading Room, Home) ---------- */
+.ag-site{font-family:var(--ag-font)}
+.ag-site :is(h1,h2,h3){font-family:var(--ag-display)}
+.ag-site .page-intro h1,.ag-site .portfolio-intro h1{font-weight:600;letter-spacing:-.015em}
+.ag-site .lede{color:var(--ag-muted)}
+.ag-site .button{background:var(--ag-blue);border-color:var(--ag-blue);color:#fff;border-radius:980px;font-family:var(--ag-font);font-weight:400;box-shadow:none;transition:background .2s var(--ag-ease)}
+.ag-site .button:hover{background:var(--ag-blue-hover);border-color:var(--ag-blue-hover)}
+.ag-site .button.outline{background:transparent;color:var(--ag-blue)}
+.ag-site .button.outline:hover{background:var(--ag-blue);color:#fff}
+.ag-site :is(.underlink,.text-link,.text-button){color:#0066cc}
+
+/* Light grey Apple background with soft colour behind the glass */
+html:has(body.ag-soft){background:#f5f5f7}
+body.ag-soft{background:#f5f5f7;overflow-x:clip}
+body.ag-soft::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(38% 32% at 10% 20%,rgba(0,113,227,.08),transparent 70%),radial-gradient(34% 30% at 90% 30%,rgba(191,90,242,.08),transparent 70%),radial-gradient(38% 32% at 25% 85%,rgba(48,209,88,.06),transparent 70%),radial-gradient(34% 30% at 85% 90%,rgba(255,159,10,.06),transparent 70%)}
+body.ag-soft :is(main,.portfolio-modern){background:transparent}
+body.ag-soft .footer{background:rgba(255,255,255,.5);-webkit-backdrop-filter:var(--ag-blur);backdrop-filter:var(--ag-blur)}
+
+/* Frosted cards */
+.ag-site :is(.contact-grid>div,.contact-grid>form,.legal-layout>aside,.legal-copy,.portfolio-pillars>article,.portfolio-projects>a,.development-grid>article,.portfolio-record-item,.method-grid>article,.pmc-lab-v2 .lab-app,.support-note,.submission-note,.articles-toolbar){
+  background:var(--ag-card)!important;
+  -webkit-backdrop-filter:var(--ag-blur);backdrop-filter:var(--ag-blur);
+  border:1px solid rgba(255,255,255,.8)!important;border-radius:18px!important;
+  box-shadow:2px 4px 12px rgba(0,0,0,.07)!important}
+.ag-site :is(.contact-grid>div,.contact-grid>form,.legal-copy,.portfolio-pillars>article,.development-grid>article,.method-grid>article){padding:clamp(20px,3vw,32px)!important}
+.ag-site .legal-layout>aside{padding:20px!important;position:sticky;top:64px;align-self:start}
+.ag-site .portfolio-record-item{padding:4px 20px!important;margin-bottom:10px}
+.ag-site :is(.portfolio-projects>a,.portfolio-pillars>article,.method-grid>article){transition:transform .3s var(--ag-ease),box-shadow .3s var(--ag-ease)}
+.ag-site :is(.portfolio-projects>a,.portfolio-pillars>article,.method-grid>article):hover{transform:scale(1.01);box-shadow:2px 4px 16px rgba(0,0,0,.14)!important}
+.ag-site .contact-grid{gap:20px}
+.ag-site .contact-grid>div hr,.ag-site .contact-grid>div>div{border-color:rgba(0,0,0,.08)}
+
+/* Apple-style form fields */
+.ag-site :is(.contact-grid,.manage-page) :is(input[type=text],input[type=email],select,textarea){border:1px solid #d2d2d7;border-radius:12px;background:rgba(255,255,255,.9);font-family:var(--ag-font);transition:border-color .2s,box-shadow .2s}
+.ag-site :is(.contact-grid,.manage-page) :is(input,select,textarea):focus{outline:0;border-color:var(--ag-blue);box-shadow:0 0 0 4px rgba(0,113,227,.15)}
+
+/* Reading Room keeps its painting and paper colours; only rows and notes get the glass */
+.reading-greek .article-row{border-radius:14px;transition:background .25s var(--ag-ease)}
+.reading-greek .article-row:hover{background:rgba(255,255,255,.55)}
+@media(max-width:900px){.ag-site .legal-layout>aside{position:static}}
+@media(prefers-reduced-motion:reduce){.ag-site :is(.portfolio-projects>a,.portfolio-pillars>article,.method-grid>article){transition:none}.ag-site :is(.portfolio-projects>a,.portfolio-pillars>article,.method-grid>article):hover{transform:none}}
+/* No card inside a card on Contact and MAT Cleaner */
+.ag-site .contact-grid .support-note{background:transparent!important;-webkit-backdrop-filter:none;backdrop-filter:none;border:0!important;border-top:1px solid rgba(0,0,0,.08)!important;border-radius:0!important;box-shadow:none!important;padding:18px 0 0!important}

@@ -125,6 +125,21 @@ def add_apple_glass(text,route,slugs):
  if route!=slug+'/index.html' or slug not in slugs:return text
  return text.replace('</head>','<link rel="stylesheet" href="../assets/apple-glass.css"></head>',1)
 
+AG_SOFT={'contact.html','privacy.html','terms.html','404.html','mat-cleaner/index.html','arslan-tahir/index.html','pmc/index.html'}
+
+def add_site_glass(text,route):
+ # Apple-style look on the site pages (everything that uses studio.css and is not a tool or app page).
+ if 'studio.css' not in text or 'ag-site' in text or route.startswith('apps/') or route.startswith('manage/') or not route.endswith('.html'):return text
+ depth=route.count('/')
+ if 'apple-glass.css' not in text:text=text.replace('</head>','<link rel="stylesheet" href="'+'../'*depth+'assets/apple-glass.css"></head>',1)
+ cls='ag-site'+(' ag-soft' if route in AG_SOFT else '')
+ m=re.search(r'<body([^>]*)>',text)
+ if not m:return text
+ attrs=m.group(1)
+ if re.search(r'class="',attrs):attrs=re.sub(r'class="',f'class="{cls} ',attrs,count=1)
+ else:attrs=f' class="{cls}"'+attrs
+ return text[:m.start()]+'<body'+attrs+'>'+text[m.end():]
+
 def apply_discovery(root):
  root=Path(root);catalog={}
  tools=cite_tools(root)
@@ -142,6 +157,7 @@ def apply_discovery(root):
   text=add_app_embed(text,route,app_slugs)
   text=add_subtitle_support(text,route,app_slugs)
   text=add_apple_glass(text,route,app_slugs)
+  text=add_site_glass(text,route)
   m=page_metadata(text,route);primary=canonical_route(m['url'])
   if primary in PAGES:
    title,description=PAGES[primary];text=re.sub(r'<title>.*?</title>','<title>'+escape(title)+'</title>',text,count=1,flags=re.S|re.I);text=setmeta(text,'description',description)
