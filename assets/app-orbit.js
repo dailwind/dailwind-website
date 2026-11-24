@@ -84,13 +84,7 @@
     buttons.forEach(function (b, k) { b.classList.toggle('is-front', k === i); b.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
     cards.forEach(function (c, k) { c.hidden = k !== i; if (k === i) { c.classList.remove('is-in'); void c.offsetWidth; c.classList.add('is-in'); } });
     root.style.setProperty('--orbit-accent', accents[i]);
-    var orb = root.querySelector('.orbit-sun');
-    if (orb) {
-      orb.style.setProperty('--c2', accents[(i + 1) % n]);
-      orb.style.setProperty('--c3', accents[(i + 2) % n] || accents[i]);
-      var nm = orb.querySelector('.orb-name');
-      if (nm) { nm.style.opacity = '0'; setTimeout(function () { nm.textContent = buttons[i].getAttribute('aria-label'); nm.style.opacity = ''; }, 200); }
-    }
+
   }
 
   function fade() {
@@ -159,4 +153,62 @@
   if (!reduce) root.classList.add('is-entering');
   setTimeout(function () { root.classList.remove('is-entering'); }, 1400);
   requestAnimationFrame(frame);
+  earth();
+
+  /* ---- The turning Earth: an orthographic globe drawn from a flat map, with drifting clouds,
+     sunlight from the upper left and a 23.4° tilt. ---- */
+  function earth() {
+    var box = root.querySelector('.orbit-earth'), cv = box && box.querySelector('.earth-canvas');
+    if (!cv || !cv.getContext) return;
+    var g = cv.getContext('2d'), map = null, clouds = null, MW = 0, MH = 0, D = 0, px = null, img = null, spin = 0, lastE = 0;
+    function load(src) { return new Promise(function (ok, no) { var im = new Image(); im.decoding = 'async'; im.onload = function () { ok(im); }; im.onerror = no; im.src = src; }); }
+    function pixels(im) { var c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight; var x = c.getContext('2d'); x.drawImage(im, 0, 0); return x.getImageData(0, 0, c.width, c.height).data; }
+    function setup() {
+      var css = box.offsetWidth || 132; D = Math.round(css * Math.min(2, window.devicePixelRatio || 1));
+      cv.width = D; cv.height = D; img = g.createImageData(D, D);
+      var list = [], tilt = 23.4 * Math.PI / 180, ct = Math.cos(tilt), st = Math.sin(tilt);
+      var L = [-0.55, 0.5, 0.67], ln = Math.hypot(L[0], L[1], L[2]); L = [L[0] / ln, L[1] / ln, L[2] / ln];
+      for (var y = 0; y < D; y++) for (var x = 0; x < D; x++) {
+        var nx = (x + 0.5) / D * 2 - 1, ny = 1 - (y + 0.5) / D * 2, r2 = nx * nx + ny * ny;
+        if (r2 > 1) continue;
+        var nz = Math.sqrt(1 - r2);
+        var tx = nx * ct + ny * st, ty = -nx * st + ny * ct;           // undo the axial tilt
+        var lat = Math.asin(Math.max(-1, Math.min(1, ty))), lon = Math.atan2(tx, nz);
+        var light = nx * L[0] + ny * L[1] + nz * L[2];
+        var shade = Math.max(0.16, Math.min(1, 0.22 + light * 0.95)) * (0.82 + 0.18 * nz);
+        var spec = Math.pow(Math.max(0, 2 * light * nz - L[2]), 18) * 0.6;
+        list.push(((y * D + x) * 4), Math.floor((0.5 - lat / Math.PI) * (MH - 1)), lon, shade, spec, Math.min(1, (1 - Math.sqrt(r2)) * 18));
+      }
+      px = new Float32Array(list);
+    }
+    function draw(t) {
+      if (!px) return;
+      var out = img.data, k, u, uc, mi, ci, a, n6 = px.length;
+      var off = spin, offc = spin * 1.35 + 1.1;
+      for (k = 0; k < n6; k += 6) {
+        var o = px[k], row = px[k + 1], lon = px[k + 2], sh = px[k + 3], sp = px[k + 4], edge = px[k + 5];
+        u = ((lon + off) / (Math.PI * 2) + 0.5) % 1; if (u < 0) u += 1;
+        uc = ((lon + offc) / (Math.PI * 2) + 0.5) % 1; if (uc < 0) uc += 1;
+        mi = (row * MW + Math.floor(u * MW)) * 4; ci = (row * MW + Math.floor(uc * MW)) * 4;
+        var r = map[mi], gg = map[mi + 1], b = map[mi + 2];
+        var water = b > r + 30 && b > gg ? 1 : 0;
+        a = clouds[ci + 3] / 255 * 0.85;
+        r = r * (1 - a) + 255 * a; gg = gg * (1 - a) + 255 * a; b = b * (1 - a) + 255 * a;
+        var s2 = water * sp * 255 * (1 - a);
+        out[o] = Math.min(255, r * sh + s2); out[o + 1] = Math.min(255, gg * sh + s2); out[o + 2] = Math.min(255, b * sh + s2 + 6); out[o + 3] = 255 * edge;
+      }
+      g.putImageData(img, 0, 0);
+    }
+    function tick(t) {
+      var dt = Math.min(64, t - (lastE || t)); lastE = t;
+      if (visible && !document.hidden && !userPaused) { spin += dt / (reduce ? 90000 : 40000) * Math.PI * 2; draw(t); }
+      requestAnimationFrame(tick);
+    }
+    Promise.all([load(box.getAttribute('data-earth-map')), load(box.getAttribute('data-earth-clouds'))]).then(function (ims) {
+      map = pixels(ims[0]); clouds = pixels(ims[1]); MW = ims[0].naturalWidth; MH = ims[0].naturalHeight;
+      setup(); spin = -1.2; draw(0);                       // start with Asia and Africa facing us
+      window.addEventListener('resize', function () { setup(); draw(0); });
+      requestAnimationFrame(tick);
+    }).catch(function () {});
+  }
 })();
