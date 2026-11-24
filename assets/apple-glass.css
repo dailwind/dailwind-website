@@ -211,3 +211,42 @@ body.ag-soft .footer{background:rgba(255,255,255,.5);-webkit-backdrop-filter:var
 @media(prefers-reduced-motion:reduce){.ag-site :is(.portfolio-projects>a,.portfolio-pillars>article,.method-grid>article){transition:none}.ag-site :is(.portfolio-projects>a,.portfolio-pillars>article,.method-grid>article):hover{transform:none}}
 /* No card inside a card on Contact and MAT Cleaner */
 .ag-site .contact-grid .support-note{background:transparent!important;-webkit-backdrop-filter:none;backdrop-filter:none;border:0!important;border-top:1px solid rgba(0,0,0,.08)!important;border-radius:0!important;box-shadow:none!important;padding:18px 0 0!important}
+
+/* ---------- 7. Toolkits search: an Apple-style frosted search field ---------- */
+.toolkits-apple .finder-search{max-width:680px!important;margin:30px auto 0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.toolkits-apple .finder-search>label{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.toolkits-apple .finder-search>div{
+  position:relative;display:flex!important;align-items:center;gap:6px;height:64px;padding:0 8px 0 22px!important;
+  background:rgba(255,255,255,.78)!important;-webkit-backdrop-filter:var(--ag-blur);backdrop-filter:var(--ag-blur);
+  border:1px solid rgba(255,255,255,.9)!important;border-radius:980px!important;
+  box-shadow:0 10px 40px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04),inset 0 1px 0 rgba(255,255,255,.9)!important;
+  transition:box-shadow .3s var(--ag-ease),transform .3s var(--ag-ease)}
+.toolkits-apple .finder-search>div:focus-within{box-shadow:0 0 0 4px rgba(0,113,227,.18),0 14px 44px rgba(0,0,0,.1)!important;transform:translateY(-1px)}
+.toolkits-apple .finder-search-icon{position:static!important;flex:none;color:#86868b!important;display:grid;place-items:center;width:24px;height:24px}
+.toolkits-apple .finder-search-icon svg{width:21px;height:21px}
+.toolkits-apple .finder-search input{flex:1;min-width:0;height:100%;border:0!important;outline:0!important;background:transparent!important;box-shadow:none!important;padding:0 8px!important;font:400 19px/1.2 var(--ag-font)!important;letter-spacing:-.01em;color:var(--ag-ink)}
+.toolkits-apple .finder-search input::placeholder{color:#86868b}
+.toolkits-apple .finder-search input::-webkit-search-cancel-button{opacity:.5}
+.toolkits-apple .finder-search button[type=submit]{flex:none;height:48px!important;min-height:48px!important;padding:0 22px!important;margin:0!important;border-radius:980px!important;font:400 15px/1 var(--ag-font)!important;background:var(--ag-blue)!important;color:#fff!important;border:0!important;box-shadow:none!important;transition:background .2s var(--ag-ease),transform .2s var(--ag-ease)}
+.toolkits-apple .finder-search button[type=submit]:hover{background:var(--ag-blue-hover)!important}
+.toolkits-apple .finder-search button[type=submit]:active{transform:scale(.97)}
+.toolkits-apple .finder-examples{justify-content:center;gap:8px!important;margin-top:20px!important;flex-wrap:wrap}
+.toolkits-apple .finder-examples>span{color:var(--ag-muted);font-size:13px}
+.toolkits-apple .finder-examples button{min-height:34px;padding:0 15px!important;font:400 13px/1 var(--ag-font)!important;color:var(--ag-ink)!important;background:rgba(255,255,255,.7)!important;-webkit-backdrop-filter:var(--ag-blur);backdrop-filter:var(--ag-blur);border:1px solid rgba(0,0,0,.06)!important;border-radius:980px!important;box-shadow:none!important;transition:background .2s var(--ag-ease)}
+.toolkits-apple .finder-examples button:hover{background:#fff!important;color:var(--ag-blue)!important}
+.toolkits-apple .finder-privacy{text-align:center;color:#86868b!important;font-size:12px!important;margin-top:14px!important}
+.toolkits-apple .finder-kbd{background:rgba(255,255,255,.8)!important;border:1px solid rgba(0,0,0,.1)!important;border-radius:6px!important;font-family:var(--ag-font)}
+.toolkits-apple #finder-recommendations>*{border-radius:18px!important}
+
+/* Category bar: clear gap below the top navigation when it sticks */
+.toolkits-apple .finder-categories{top:64px!important}
+@media(max-width:900px){
+  .toolkits-apple .finder-categories{top:62px!important}
+  .toolkits-apple .finder-search>div{height:56px;padding-left:16px!important}
+  .toolkits-apple .finder-search input{font-size:16px!important}
+  .toolkits-apple .finder-search button[type=submit]{height:42px!important;min-height:42px!important;padding:0 14px!important;font-size:0!important;width:42px}
+  .toolkits-apple .finder-search button[type=submit]::after{content:"→";font-size:18px}
+}
+.toolkits-apple .finder-search>div:focus-within{border:1px solid rgba(0,113,227,.45)!important;outline:0!important}
+.toolkits-apple .finder-search :is(input,div):focus,.toolkits-apple .finder-search :is(input,div):focus-visible{outline:0!important}
+@media(max-width:900px){.toolkits-apple .finder-categories{top:66px!important}}
