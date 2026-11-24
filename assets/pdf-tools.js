@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
  const $=id=>document.getElementById(id),small=()=>ArcCapacity.small;
- let file=null,pages=0,mode='split',worker=null,loaded=false,pdf=null,pdfTask=null,renderTask=null,results=[],busy=false,cancelled=false,serial=0,runToken=0,zipURL=null;
+ let batch=[],file=null,pages=0,mode='split',worker=null,loaded=false,pdf=null,pdfTask=null,renderTask=null,results=[],busy=false,cancelled=false,serial=0,runToken=0,zipURL=null;
  const pending=new Map(),bytes=n=>n>=1048576?(n/1048576).toFixed(2)+' MB':(n/1024).toFixed(1)+' KB',say=s=>{$('pdf-status').textContent=s;};
  function lock(on){busy=on;document.querySelectorAll('[data-pdf-setting]').forEach(n=>n.disabled=on);$('pdf-run').disabled=on||!pages;$('pdf-stop').hidden=!on;updateZip();}
  function stopWorker(error){worker?.terminate();worker=null;loaded=false;for(const p of pending.values()){clearTimeout(p.timer);p.reject(error);}pending.clear();}
@@ -20,11 +20,21 @@
   }catch(e){const p=document.createElement('p');p.className='error';p.textContent=e.message;$('pdf-plan').append(p);}
  }
  function setMode(value){if(busy)return;mode=value;$('mode-split').setAttribute('aria-pressed',String(mode==='split'));$('mode-compress').setAttribute('aria-pressed',String(mode==='compress'));$('split-options').hidden=mode!=='split';$('compress-explanation').hidden=mode!=='compress';$('pdf-run').textContent=mode==='split'?'Create PDF parts':'Compress PDF';}
- async function open(f){
-  if(busy||!f)return;const limit=ArcCapacity.pdf.fileBytes;if(!/\.pdf$/i.test(f.name))return say('Please choose a PDF file.');if(f.size>limit)return say('This device accepts PDFs up to '+bytes(limit)+'.');if(results.length&&!confirm('Open another PDF? Download the current results before replacing this session.'))return;
+ async function openMany(list){
+  const files=[...list||[]].filter(f=>/\.pdf$/i.test(f.name)).sort((a,b)=>(a.webkitRelativePath||a.name).localeCompare(b.webkitRelativePath||b.name,undefined,{numeric:true,sensitivity:'base'}));
+  if(!files.length)return say('Please choose PDF files.');
+  const big=files.find(f=>f.size>ArcCapacity.pdf.fileBytes);if(big)return say(big.name+' is larger than this device accepts ('+bytes(ArcCapacity.pdf.fileBytes)+').');
+  if(files.length===1)return open(files[0]);
+  await open(files[0],true);if(file!==files[0])return;batch=files;
+  $('pdf-source').textContent=files.length+' PDFs · batch · '+bytes(files.reduce((n,f)=>n+f.size,0))+' · preview shows '+files[0].name;
+  say(files.length+' PDFs ready. Your settings apply to each PDF in turn. In a batch, every PDF uses its own full page range.');
+ }
+ async function open(f,keep){
+  if(busy||!f)return;batch=[];const limit=ArcCapacity.pdf.fileBytes;if(!/\.pdf$/i.test(f.name))return say('Please choose a PDF file.');if(f.size>limit)return say('This device accepts PDFs up to '+bytes(limit)+'.');if(results.length&&!confirm('Open another PDF? Download the current results before replacing this session.'))return;
   lock(true);cancelled=false;runToken++;stopWorker(Error('Replacing source'));clearResults();if(pdf)await pdf.loadingTask.destroy();pdf=null;file=f;pages=0;
   try{say('Opening '+f.name+' locally…');await load();$('pdf-first').value='1';$('pdf-last').value=pages;$('pdf-amount').value=Math.min(10,pages);$('pdf-source').textContent=f.name+' · '+pages.toLocaleString()+' pages · '+bytes(f.size);previewPlan();say('PDF ready. Choose your parts or compression settings. Original file stays unchanged.');}catch(e){say(e.message);pages=0;}finally{lock(false);}
  }
+ async function swap(f){stopWorker(Error('Next PDF'));if(pdf)await pdf.loadingTask.destroy();pdf=null;file=f;pages=0;await load();}
  function check(t){if(cancelled||t!==runToken)throw Error('Stopped. Completed PDF parts remain available below.');}
  async function raster(range,options,t){
   if(!pdf){const lib=await import('../toolkit/lib/pdf.mjs');lib.GlobalWorkerOptions.workerSrc=new URL('../toolkit/lib/pdf.worker.mjs',location.href).href;pdfTask=lib.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false,standardFontDataUrl:new URL('../toolkit/lib/standard_fonts/',location.href).href,wasmUrl:new URL('../toolkit/lib/wasm/',location.href).href});pdf=await pdfTask.promise;}
@@ -43,27 +53,31 @@
   if(busy||!pages)return;const options={scan:$('pdf-treatment').value==='scan',dpi:+$('pdf-dpi').value,quality:+$('pdf-quality').value/100};if(options.scan&&!$('pdf-scan-ack').checked)return say('Please confirm the image-only scan-mode tradeoff before continuing.');
   let ranges;try{ranges=mode==='split'?plan():[{from:1,to:pages}];}catch(e){return say(e.message);}if(results.length&&!confirm('Replace the generated results? Download any files you want to keep first.'))return;
   clearResults();lock(true);cancelled=false;const t=++runToken;$('pdf-progress').value=0;
+  const list=batch.length>1?batch:[file];
   try{
+   for(const [fi,current] of list.entries()){
+   if(list.length>1){say('PDF '+(fi+1)+' of '+list.length+': opening '+current.name+'…');if(file!==current||!loaded)await swap(current);check(t);if(mode==='split'){$('pdf-first').value='1';$('pdf-last').value=String(pages);try{ranges=plan();}catch(e){throw Error(current.name+': '+e.message);}}else ranges=[{from:1,to:pages}];}
    await load();check(t);
    for(let i=0;i<ranges.length;i++){
-    const range=ranges[i];say('Creating '+(mode==='split'?'part '+(i+1)+' of '+ranges.length:'compressed copy')+'…');
+    const range=ranges[i];say((list.length>1?current.name+' · ':'')+'Creating '+(mode==='split'?'part '+(i+1)+' of '+ranges.length:'compressed copy')+'…');
     const data=options.scan?await raster(range,options,t):await request(mode==='compress'?'optimize':'part',range);check(t);
     let blob=new Blob([data],{type:'application/pdf'}),detail='';
     if(mode==='compress'){
      if(!options.scan&&blob.size>=file.size){blob=file;detail='No smaller structural result; original-size copy.';}
      else{const change=(1-blob.size/file.size)*100;detail=change>0?change.toFixed(1)+'% smaller than source':Math.abs(change).toFixed(1)+'% larger; try lower scan quality.';}
     }
-    const name=mode==='split'?ArcPDFParts.partName(file.name,i,ranges.length,range):ArcPDFParts.base(file.name)+(options.scan?'-compressed-scan.pdf':'-optimized.pdf');append(blob,name,range,detail);$('pdf-progress').value=(i+1)/ranges.length;
+    const name=mode==='split'?ArcPDFParts.partName(file.name,i,ranges.length,range):ArcPDFParts.base(file.name)+(options.scan?'-compressed-scan.pdf':'-optimized.pdf');append(blob,name,range,detail);$('pdf-progress').value=(fi+(i+1)/ranges.length)/list.length;
+   }
    }
    say('Ready. '+results.length+' PDF file(s) generated locally. Review the PDFs before sharing.');
   }catch(e){say(cancelled?'Stopped. Completed PDF parts remain available below.':e.message);}finally{lock(false);$('pdf-results').scrollIntoView({block:'start',behavior:'auto'});}
  }
- $('pdf-open').addEventListener('click',()=>$('pdf-file').click());$('pdf-file').addEventListener('change',async e=>{await open(e.target.files[0]);e.target.value='';});
+ $('pdf-open').addEventListener('click',()=>$('pdf-file').click());$('pdf-file').addEventListener('change',async e=>{await openMany(e.target.files);e.target.value='';});
  $('mode-split').addEventListener('click',()=>setMode('split'));$('mode-compress').addEventListener('click',()=>setMode('compress'));
  for(const id of ['pdf-first','pdf-last','pdf-method','pdf-amount','pdf-custom'])$(id).addEventListener('input',previewPlan);
  $('pdf-treatment').addEventListener('change',()=>{$('scan-options').hidden=$('pdf-treatment').value!=='scan';});$('pdf-quality').addEventListener('input',()=>{$('pdf-quality-label').textContent=$('pdf-quality').value+' / 100';});
  $('pdf-run').addEventListener('click',run);$('pdf-stop').addEventListener('click',()=>{cancelled=true;runToken++;renderTask?.cancel();stopWorker(Error('Stopped. Completed PDF parts remain available below.'));say('Stopping. Completed parts remain available.');});
- $('pdf-zip').addEventListener('click',async()=>{if(busy||!results.length)return;lock(true);$('pdf-stop').hidden=true;try{say('Preparing ZIP on this device…');const files=[];for(const r of results)files.push({name:r.name,data:new Uint8Array(await r.blob.arrayBuffer())});const blob=new Blob([CorpusExports.zip(files)],{type:'application/zip'});if(zipURL)URL.revokeObjectURL(zipURL);zipURL=URL.createObjectURL(blob);$('pdf-download-link').href=zipURL;$('pdf-download-link').download=ArcPDFParts.base(file.name)+'-PDF-parts.zip';$('pdf-download-name').textContent=results.length+' PDFs · '+bytes(blob.size);$('pdf-download-dialog').showModal();say('ZIP ready. Individual PDF downloads remain available.');}catch(e){say(e.message);}finally{lock(false);}});
+ $('pdf-zip').addEventListener('click',async()=>{if(busy||!results.length)return;lock(true);$('pdf-stop').hidden=true;try{say('Preparing ZIP on this device…');const files=[];for(const r of results)files.push({name:r.name,data:new Uint8Array(await r.blob.arrayBuffer())});const blob=new Blob([CorpusExports.zip(files)],{type:'application/zip'});if(zipURL)URL.revokeObjectURL(zipURL);zipURL=URL.createObjectURL(blob);$('pdf-download-link').href=zipURL;$('pdf-download-link').download=batch.length>1?'Dailwind-PDF-batch.zip':ArcPDFParts.base(file.name)+'-PDF-parts.zip';$('pdf-download-name').textContent=results.length+' PDFs · '+bytes(blob.size);$('pdf-download-dialog').showModal();say('ZIP ready. Individual PDF downloads remain available.');}catch(e){say(e.message);}finally{lock(false);}});
  $('pdf-download-close').addEventListener('click',()=>$('pdf-download-dialog').close());
  $('pdf-demo').addEventListener('click',async()=>{if(busy)return;const response=await fetch('../assets/pdf-demo.pdf');if(!response.ok)return say('Sample PDF could not load.');await open(new File([await response.blob()],'Arc-Sample-Book.pdf',{type:'application/pdf'}));});
  setMode('split');lock(false);

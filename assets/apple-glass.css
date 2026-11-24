@@ -294,3 +294,9 @@ body.ag-soft .footer{background:rgba(255,255,255,.5);-webkit-backdrop-filter:var
   .toolkits-apple .toolkit-card h3{font-size:22px}
   .toolkits-apple .finder-group>header h2{font-size:28px}
 }
+
+/* "Add folder" buttons beside every upload */
+.mf-folder{white-space:nowrap}
+.language-upload+.mf-folder,.mt-drop+.mf-folder{margin-top:8px;display:inline-flex;align-items:center;gap:4px;padding:8px 16px;border-radius:980px;border:1px solid rgba(0,0,0,.12);background:rgba(255,255,255,.8);color:#0071e3;font:500 14px/1.2 "SF Pro Text","Helvetica Neue",system-ui,sans-serif;cursor:pointer}
+.language-upload+.mf-folder:hover,.mt-drop+.mf-folder:hover{background:#fff;border-color:#0071e3}
+.file-actions>.mf-folder{grid-column:1/-1;flex:1 1 100%!important}

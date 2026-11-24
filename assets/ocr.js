@@ -11,7 +11,33 @@
  async function library(){if(!pdfLib){pdfLib=await import('../toolkit/lib/pdf.mjs');pdfLib.GlobalWorkerOptions.workerSrc=new URL('../toolkit/lib/pdf.worker.mjs',location.href).href;}return pdfLib;}
  function clearRecords(){records=[];renderRecords();$('ocr-editor').value='';$('ocr-confidence').textContent='No recognized pages yet.';$('ocr-progress').value=0;}
  async function replaceSource(next){
-  if(source?.doc)await source.doc.loadingTask.destroy();source?.bitmap?.close();source=next;clearRecords();$('ocr-source').textContent=next.name+' · '+next.pages+' page(s)';for(const id of ['ocr-from','ocr-to'])$(id).max=next.pages;$('ocr-from').value='1';$('ocr-to').value=String(next.pages);
+  if(source?.parts)for(const x of source.parts)if(x.doc)await x.doc.loadingTask.destroy();if(source?.doc)await source.doc.loadingTask.destroy();source?.bitmap?.close();source=next;clearRecords();$('ocr-source').textContent=next.name+' · '+next.pages+' page(s)';for(const id of ['ocr-from','ocr-to'])$(id).max=next.pages;$('ocr-from').value='1';$('ocr-to').value=String(next.pages);
+ }
+ function partFor(pageNo){
+  if(source.kind==='pdf')return {kind:'pdf',doc:source.doc,page:pageNo};
+  if(source.kind==='image')return {kind:'image',bitmap:source.bitmap};
+  const [i,local]=source.map[pageNo-1],x=source.parts[i];
+  if(x.doc)return {kind:'pdf',doc:x.doc,page:local};
+  return createImageBitmap(x.file).then(bitmap=>({kind:'image',bitmap,temp:true}));
+ }
+ function pageLabel(pageNo){if(source?.kind!=='multi')return '';const [i,local]=source.map[pageNo-1]||[];const x=source.parts[i];return x?' · '+x.name+(x.doc?' p. '+local:''):'';}
+ async function openFiles(list){
+  const files=[...list||[]].filter(f=>/\.(pdf|png|jpe?g|webp)$/i.test(f.name)).sort((a,b)=>(a.webkitRelativePath||a.name).localeCompare(b.webkitRelativePath||b.name,undefined,{numeric:true,sensitivity:'base'}));
+  if(!files.length)return note('Use PDF, PNG, JPEG or WebP files.');
+  if(files.length===1)return openFile(files[0]);
+  if(busy)return;if(records.length&&!confirm('Open new sources? Download your current OCR results before replacing this session.'))return;
+  const total=files.reduce((n,f)=>n+f.size,0);if(total>(small()?80:500)*1024*1024)return note('These files together exceed this device’s input budget (desktop 500 MB; mobile/low-memory 80 MB). Choose fewer files.');
+  lock(true);$('ocr-stop').hidden=true;cancelled=false;const t=++token;const parts=[],map=[];
+  try{
+   for(const [n,file] of files.entries()){
+    note('Opening '+file.name+' ('+(n+1)+' of '+files.length+') on this device…');
+    if(/\.pdf$/i.test(file.name)){const lib=await library();const task=lib.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false,standardFontDataUrl:new URL('../toolkit/lib/standard_fonts/',location.href).href,wasmUrl:new URL('../toolkit/lib/wasm/',location.href).href});let doc;try{doc=await guard(task.promise,60000,'PDF loading');}catch(e){await task.destroy();for(const x of parts)if(x.doc)await x.doc.loadingTask.destroy();throw Error(file.name+': '+(e.message||'could not open this PDF.'));}parts.push({name:file.name,doc});for(let p=1;p<=doc.numPages;p++)map.push([parts.length-1,p]);}
+    else{if(file.size>40*1024*1024)throw Error(file.name+': image limit is 40 MB.');parts.push({name:file.name,file});map.push([parts.length-1,1]);}
+    if(map.length>20000)throw Error('Limit: 20,000 pages in one session. Choose fewer files.');
+   }
+   await replaceSource({kind:'multi',name:files.length+' files',parts,map,pages:map.length});
+   await canvasFor(1,options(),t);note(files.length+' files ready as one session ('+map.length+' pages, in file-name order). Preview the settings, then run English OCR.');
+  }catch(e){note(e.message||'Could not open these files.');}finally{lock(false);}
  }
  async function openFile(file){
   if(busy||!file)return;if(records.length&&!confirm('Open a new source? Download your current OCR results before replacing this session.'))return;
@@ -35,10 +61,11 @@
  }
  async function canvasFor(pageNo,o,t){
   check(t);const cap=matchMedia('(max-width:760px)').matches?4000000:8000000;let canvas=document.createElement('canvas');
-  if(source.kind==='pdf'){
-   const page=await source.doc.getPage(pageNo);check(t);const basic=page.getViewport({scale:o.dpi/72});const size=fit(basic.width,basic.height,cap);const viewport=page.getViewport({scale:basic.scale*size.width/basic.width});canvas.width=Math.max(1,Math.floor(viewport.width));canvas.height=Math.max(1,Math.floor(viewport.height));
+  const R=await partFor(pageNo);check(t);
+  if(R.kind==='pdf'){
+   const page=await R.doc.getPage(R.page);check(t);const basic=page.getViewport({scale:o.dpi/72});const size=fit(basic.width,basic.height,cap);const viewport=page.getViewport({scale:basic.scale*size.width/basic.width});canvas.width=Math.max(1,Math.floor(viewport.width));canvas.height=Math.max(1,Math.floor(viewport.height));
    try{await guard(page.render({canvasContext:canvas.getContext('2d'),viewport,background:'rgb(255,255,255)'}).promise,60000,'PDF rendering');}finally{page.cleanup();}
-  }else{const b=source.bitmap;const targetScale=Math.min(2,Math.max(1,2000/Math.max(b.width,b.height)));const size=fit(b.width*targetScale,b.height*targetScale,cap);canvas.width=size.width;canvas.height=size.height;const c=canvas.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,canvas.width,canvas.height);c.drawImage(b,0,0,canvas.width,canvas.height);}
+  }else{const b=R.bitmap;const targetScale=Math.min(2,Math.max(1,2000/Math.max(b.width,b.height)));const size=fit(b.width*targetScale,b.height*targetScale,cap);canvas.width=size.width;canvas.height=size.height;const c=canvas.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,canvas.width,canvas.height);c.drawImage(b,0,0,canvas.width,canvas.height);if(R.temp)b.close();}
   check(t);
   if(o.crop){const w=Math.round(canvas.width*(1-o.crop/50)),h=Math.round(canvas.height*(1-o.crop/50)),next=document.createElement('canvas');next.width=w;next.height=h;next.getContext('2d').drawImage(canvas,(canvas.width-w)/2,(canvas.height-h)/2,w,h,0,0,w,h);canvas.width=canvas.height=1;canvas=next;}
   const angle=(o.rotate+o.skew)*Math.PI/180;
@@ -53,7 +80,7 @@
   ocrWorker=await guard(creating,120000,'English engine loading');check(t);return ocrWorker;
  }
  function renderRecords(selected){
-  records.sort((a,b)=>a.page-b.page);const select=$('ocr-result-page');select.replaceChildren();for(const r of records){const option=document.createElement('option');option.value=r.page;option.textContent='Page '+r.page+(r.error?' · needs retry':r.embedded?' · embedded text':' · score '+Math.round(r.confidence))+(r.edited?' · edited':'');select.append(option);}if(selected)select.value=String(selected);if(!records.length){const option=document.createElement('option');option.textContent='No recognized pages yet';select.append(option);}
+  records.sort((a,b)=>a.page-b.page);const select=$('ocr-result-page');select.replaceChildren();for(const r of records){const option=document.createElement('option');option.value=r.page;option.textContent='Page '+r.page+pageLabel(r.page)+(r.error?' · needs retry':r.embedded?' · embedded text':' · score '+Math.round(r.confidence))+(r.edited?' · edited':'');select.append(option);}if(selected)select.value=String(selected);if(!records.length){const option=document.createElement('option');option.textContent='No recognized pages yet';select.append(option);}
   $('ocr-summary').textContent=records.length+' page result(s) · '+records.filter(r=>r.error).length+' error(s) · '+records.filter(r=>!r.error&&!r.embedded&&r.confidence<65).length+' low-score page(s) for review.';
  }
  function displayRecord(){const r=records.find(r=>r.page===+$('ocr-result-page').value);if(!r)return;$('ocr-editor').value=r.text;const info=$('ocr-confidence');info.dataset.review=String(!!r.error||(!r.embedded&&r.confidence<65));info.textContent=r.error?'Page needs another attempt: '+r.error:r.embedded?'Embedded PDF text used; this page was not OCR-recognized.':('Engine confidence score: '+r.confidence.toFixed(1)+' / 100.'+(r.confidence<65?' Low score: careful review is recommended.':' Review against the scan before research use.'));}
@@ -66,7 +93,7 @@
    for(let page=from;page<=to;page++){
     check(t);note('Preparing page '+page+' of '+to+'…');let entry;
     try{
-     let embedded='';if(o.embedded&&source.kind==='pdf'){const p=await source.doc.getPage(page),content=await guard(p.getTextContent(),30000,'Embedded text reading');embedded=content.items.map(x=>x.str+(x.hasEOL?'\n':' ')).join('');p.cleanup();}
+     let embedded='';const EP=o.embedded?await partFor(page):null;if(EP&&EP.kind==='pdf'){const p=await EP.doc.getPage(EP.page),content=await guard(p.getTextContent(),30000,'Embedded text reading');embedded=content.items.map(x=>x.str+(x.hasEOL?'\n':' ')).join('');p.cleanup();}
      let canvas=null;
      if(embedded.trim().length>=30)entry={page,text:embedded.trim(),confidence:null,embedded:true,settings:o};
      else{canvas=await canvasFor(page,o,t);const worker=await engine(t);await worker.setParameters({tessedit_pageseg_mode:o.layout,preserve_interword_spaces:'1',user_defined_dpi:String(o.dpi)});const result=await guard(worker.recognize(canvas,{}, {text:true,blocks:false,hocr:false,tsv:false}),180000,'Page recognition');check(t);entry={page,text:result.data.text||'',confidence:Number(result.data.confidence)||0,embedded:false,settings:o};}if(canvas)canvas.width=canvas.height=1;
@@ -80,9 +107,9 @@
  }
  async function preview(page){if(busy||!source)return;cancelled=false;const t=++token;lock(true);try{await canvasFor(page||+$('ocr-from').value||1,options(),t);note('Preview ready. Check orientation, cropping and letter clarity before running OCR.');}catch(e){note(e.message);}finally{lock(false);}}
  function stop(){cancelled=true;token++;ocrWorker?.terminate();ocrWorker=null;pixelWorker?.terminate();pixelWorker=null;activeReject?.(Error('Stopped. Completed pages are available for download.'));note('Stopping. Completed pages will remain available.');}
- function combined(){return records.map(r=>'[Page '+r.page+']\n'+(r.error?'[OCR failed: '+r.error+']':r.text)).join('\n\n');}
+ function combined(){return records.map(r=>'[Page '+r.page+pageLabel(r.page)+']\n'+(r.error?'[OCR failed: '+r.error+']':r.text)).join('\n\n');}
  function download(data,name,type){if(downloadURL)URL.revokeObjectURL(downloadURL);downloadURL=URL.createObjectURL(new Blob([data],{type}));$('ocr-download-link').href=downloadURL;$('ocr-download-link').download=name;$('ocr-download-name').textContent=name;$('ocr-download').showModal();}
- $('ocr-add').addEventListener('click',()=>$('ocr-file').click());$('ocr-file').addEventListener('change',async e=>{await openFile(e.target.files[0]);e.target.value='';});
+ $('ocr-add').addEventListener('click',()=>$('ocr-file').click());$('ocr-file').addEventListener('change',async e=>{await openFiles(e.target.files);e.target.value='';});
  $('ocr-sample').addEventListener('click',async()=>{if(busy)return;const c=document.createElement('canvas');c.width=1200;c.height=1600;const x=c.getContext('2d');x.fillStyle='#f8f4e9';x.fillRect(0,0,c.width,c.height);x.fillStyle='#242420';x.font='42px Georgia';x.fillText('THE STUDY OF LANGUAGE',115,190);x.font='30px Georgia';const lines=['A printed English sample for the OCR desk.','Language connects people across time.','Old books preserve ideas, stories and evidence.','Careful reading brings the written record to life.','','Researchers examine words and patterns.','A clear scan helps a machine recognize letters.','Review every name, date and unusual spelling.','','This page is an original demonstration sample.','No historical source or author is claimed.'];lines.forEach((line,i)=>x.fillText(line,115,300+i*65));x.font='24px Georgia';x.fillText('1',590,1490);const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));await openFile(new File([blob],'english-sample-scan.png',{type:'image/png'}));});
  $('ocr-run').addEventListener('click',run);$('ocr-continue').addEventListener('click',()=>{if(busy||!source)return;const last=records.length?Math.max(...records.map(r=>r.page)):0;if(last>=source.pages)return note('All pages have a result. Choose a page range to retry any failed pages.');$('ocr-from').value=last+1;$('ocr-to').value=source.pages;run();});$('ocr-stop').addEventListener('click',stop);$('ocr-preview-button').addEventListener('click',()=>preview());
  $('ocr-result-page').addEventListener('change',async()=>{displayRecord();const r=records.find(r=>r.page===+$('ocr-result-page').value);if(!r||busy)return;cancelled=false;const t=++token;lock(true);try{await canvasFor(r.page,r.settings,t);}catch(e){note(e.message);}finally{lock(false);}});
