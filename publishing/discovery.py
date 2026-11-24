@@ -122,6 +122,12 @@ def add_multi_file(text,route,slugs):
  if not re.search(r'<input[^>]*type="file"',text):return text
  return text.replace('</head>','<script defer src="../assets/multi-file.js"></script></head>',1)
 
+def add_download_clarity(text,route,slugs):
+ # Clear, consistent download buttons in every toolkit.
+ slug=route.split('/')[0]
+ if route!=slug+'/index.html' or slug not in slugs or slug in {'pmc','mat-cleaner'} or 'download-clarity.js' in text:return text
+ return text.replace('</head>','<script defer src="../assets/download-clarity.js"></script></head>',1)
+
 def add_apple_glass(text,route,slugs):
  # Apple-style frosted design on every tool workspace (loaded last so it wins).
  slug=route.split('/')[0]
@@ -166,6 +172,7 @@ def apply_discovery(root):
   text=add_app_embed(text,route,app_slugs)
   text=add_subtitle_support(text,route,app_slugs)
   text=add_multi_file(text,route,app_slugs)
+  text=add_download_clarity(text,route,app_slugs)
   text=add_apple_glass(text,route,app_slugs)
   text=add_site_glass(text,route)
   text=add_identity(text,route,app_slugs)
