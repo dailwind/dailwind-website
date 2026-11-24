@@ -1,0 +1,137 @@
+/* Each toolkit's own identity, in the Apple style.
+   <body class="tool-identity" data-look="…" style="--t1;--t2;--t3"> is set at build time
+   (publishing/tool_identity.py). Colours drive the hero, background art, buttons and accents. */
+.tool-identity{
+  --t1:#0071e3;--t2:#64d2ff;--t3:#5e5ce6;
+  --t1-soft:color-mix(in srgb,var(--t1) 20%,transparent);
+  --t2-soft:color-mix(in srgb,var(--t2) 22%,transparent);
+  --t3-soft:color-mix(in srgb,var(--t3) 18%,transparent);
+  --t-grad:linear-gradient(120deg,var(--t1) 0%,var(--t2) 55%,var(--t3) 100%);
+  background:#f5f5f7!important;
+  accent-color:var(--t1);
+}
+.tool-identity ::selection{background:color-mix(in srgb,var(--t1) 24%,transparent)}
+.tool-identity :is(.app-window,.desktop-window,main.language-main,.prep-main){background:transparent!important}
+
+/* ---------- Background art (stays behind the frosted glass) ---------- */
+.tool-identity::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 45%,rgba(0,0,0,.35) 80%,rgba(0,0,0,.15) 100%);
+          mask-image:linear-gradient(to bottom,#000 0%,#000 45%,rgba(0,0,0,.35) 80%,rgba(0,0,0,.15) 100%)}
+.tool-identity::after{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;opacity:.9;filter:blur(40px)}
+
+[data-look=aurora]::before{background:
+  radial-gradient(45% 40% at 15% 8%,var(--t1-soft),transparent 70%),
+  radial-gradient(40% 38% at 85% 12%,var(--t2-soft),transparent 70%),
+  radial-gradient(50% 40% at 50% 60%,var(--t3-soft),transparent 72%)}
+[data-look=aurora]::after{background:linear-gradient(115deg,transparent 30%,color-mix(in srgb,var(--t2) 10%,transparent) 45%,transparent 60%);animation:ti-drift 18s ease-in-out infinite alternate}
+
+[data-look=mesh]::before{background:
+  radial-gradient(35% 35% at 0% 0%,var(--t1-soft),transparent 70%),
+  radial-gradient(35% 35% at 100% 0%,var(--t2-soft),transparent 70%),
+  radial-gradient(40% 40% at 50% 35%,var(--t3-soft),transparent 70%),
+  radial-gradient(35% 35% at 0% 80%,var(--t2-soft),transparent 70%),
+  radial-gradient(35% 35% at 100% 85%,var(--t1-soft),transparent 70%)}
+
+[data-look=rings]::before{background:
+  repeating-radial-gradient(circle at 88% 8%,transparent 0 46px,color-mix(in srgb,var(--t1) 10%,transparent) 46px 47px),
+  radial-gradient(50% 45% at 88% 8%,var(--t2-soft),transparent 70%),
+  radial-gradient(40% 40% at 10% 40%,var(--t3-soft),transparent 70%)}
+
+[data-look=grid]::before{background:
+  linear-gradient(color-mix(in srgb,var(--t1) 9%,transparent) 1px,transparent 1px) 0 0/44px 44px,
+  linear-gradient(90deg,color-mix(in srgb,var(--t1) 9%,transparent) 1px,transparent 1px) 0 0/44px 44px,
+  radial-gradient(50% 45% at 50% 0%,var(--t2-soft),transparent 75%),
+  radial-gradient(35% 35% at 90% 40%,var(--t3-soft),transparent 70%)}
+[data-look=grid]{--ti-mask:radial-gradient(70% 60% at 50% 0%,#000,transparent 80%)}
+[data-look=grid]::before{-webkit-mask-image:radial-gradient(85% 70% at 50% 0%,#000 30%,transparent 85%);mask-image:radial-gradient(85% 70% at 50% 0%,#000 30%,transparent 85%)}
+
+[data-look=waves]::before{background:
+  repeating-linear-gradient(-28deg,transparent 0 38px,color-mix(in srgb,var(--t1) 6%,transparent) 38px 76px),
+  radial-gradient(50% 40% at 20% 10%,var(--t2-soft),transparent 72%),
+  radial-gradient(45% 40% at 85% 30%,var(--t3-soft),transparent 72%)}
+
+[data-look=dots]::before{background:
+  radial-gradient(color-mix(in srgb,var(--t1) 22%,transparent) 1.3px,transparent 1.6px) 0 0/22px 22px,
+  radial-gradient(45% 40% at 80% 10%,var(--t2-soft),transparent 70%),
+  radial-gradient(45% 40% at 10% 30%,var(--t3-soft),transparent 70%)}
+[data-look=dots]::before{-webkit-mask-image:radial-gradient(90% 65% at 50% 0%,#000 25%,transparent 85%);mask-image:radial-gradient(90% 65% at 50% 0%,#000 25%,transparent 85%)}
+
+[data-look=beams]::before{background:
+  conic-gradient(from 200deg at 50% -10%,transparent 0deg,color-mix(in srgb,var(--t1) 14%,transparent) 12deg,transparent 24deg,transparent 40deg,color-mix(in srgb,var(--t2) 14%,transparent) 52deg,transparent 64deg,transparent 80deg,color-mix(in srgb,var(--t3) 12%,transparent) 92deg,transparent 104deg,transparent 360deg),
+  radial-gradient(55% 45% at 50% 0%,var(--t1-soft),transparent 75%)}
+
+[data-look=prism]::before{background:
+  conic-gradient(from 120deg at 75% 15%,var(--t1-soft),var(--t2-soft),var(--t3-soft),var(--t1-soft)),
+  radial-gradient(60% 50% at 75% 15%,transparent 30%,#f5f5f7 72%)}
+[data-look=prism]::after{background:radial-gradient(30% 25% at 75% 15%,color-mix(in srgb,var(--t2) 16%,transparent),transparent 70%)}
+
+[data-look=halo]::before{background:
+  radial-gradient(circle at 50% 4%,transparent 0 120px,color-mix(in srgb,var(--t1) 16%,transparent) 121px 170px,transparent 260px),
+  radial-gradient(50% 45% at 50% 0%,var(--t2-soft),transparent 75%),
+  radial-gradient(40% 35% at 10% 60%,var(--t3-soft),transparent 70%)}
+
+[data-look=ribbons]::before{background:
+  linear-gradient(160deg,transparent 18%,color-mix(in srgb,var(--t1) 12%,transparent) 22%,transparent 30%),
+  linear-gradient(160deg,transparent 30%,color-mix(in srgb,var(--t2) 12%,transparent) 34%,transparent 42%),
+  linear-gradient(160deg,transparent 42%,color-mix(in srgb,var(--t3) 10%,transparent) 46%,transparent 54%),
+  radial-gradient(45% 40% at 85% 5%,var(--t2-soft),transparent 72%)}
+[data-look=ribbons]::after{background:radial-gradient(30% 30% at 20% 10%,var(--t1-soft),transparent 70%)}
+
+@keyframes ti-drift{from{transform:translateX(-6%)}to{transform:translateX(6%)}}
+
+/* ---------- Hero: gradient headline, coloured eyebrow, glowing icon ---------- */
+.tool-identity :is(.language-title,.prep-title,.workspace-heading,section.intro){position:relative;animation:ti-rise .8s cubic-bezier(.2,.7,.2,1) both}
+.tool-identity :is(.language-title,.prep-title,.workspace-heading,section.intro) h1{
+  background:var(--t-grad);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent;
+  font-family:var(--ag-display,"SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif);font-weight:700!important;letter-spacing:-.02em!important;line-height:1.04!important;
+  padding-bottom:.08em}
+.tool-identity :is(.language-title,.prep-title,.workspace-heading,section.intro) h1 :is(em,span,b){background:inherit;-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent;font-style:normal}
+.tool-identity :is(.language-eyebrow,.prep-title .step-label,.workspace-heading .eyebrow,section.intro .eyebrow){color:var(--t1)!important;font-weight:600!important;letter-spacing:.08em!important}
+.tool-identity :is(.language-title,.prep-title,.workspace-heading,section.intro)>div>p:not([class]){color:#424245!important;font-size:clamp(16px,1.6vw,19px)!important;line-height:1.45!important;max-width:640px}
+.tool-identity :is(.language-glyph,.tool-glyph,.intro-glyph){
+  background:var(--t-grad)!important;color:#fff!important;border:0!important;
+  border-radius:28%!important;box-shadow:0 18px 40px color-mix(in srgb,var(--t1) 35%,transparent),inset 0 1px 0 rgba(255,255,255,.45)!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.15);animation:ti-float 6s ease-in-out infinite}
+.tool-identity .workspace-heading .stats{background:rgba(255,255,255,.72)!important;-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border:1px solid rgba(255,255,255,.8)!important;border-radius:18px!important;box-shadow:0 10px 30px color-mix(in srgb,var(--t1) 16%,transparent)!important}
+.tool-identity .workspace-heading .stats strong{background:var(--t-grad);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+@keyframes ti-rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes ti-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* ---------- Accents across the workspace ---------- */
+.tool-identity :is(.language-top,.prep-top,.arc-header,.system-bar)::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--t-grad);opacity:.85;pointer-events:none}
+.tool-identity .language-top>strong::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:9px;vertical-align:.06em;background:var(--t-grad);box-shadow:0 0 0 3px var(--t1-soft)}
+.tool-identity .dw-cite-open{background:var(--t1)!important}
+.tool-identity .dw-cite-open:hover{background:color-mix(in srgb,var(--t1) 85%,#000)!important}
+
+/* Primary buttons wear the tool's colours */
+.tool-identity :is(button.primary,a.primary,.tt-btns .primary,.button.primary,.guide-auto){
+  background:var(--t-grad)!important;background-size:140% 100%!important;border:0!important;color:#fff!important;border-radius:980px!important;
+  box-shadow:0 6px 18px color-mix(in srgb,var(--t1) 30%,transparent)!important;transition:background-position .4s ease,transform .2s ease,box-shadow .3s ease!important}
+.tool-identity :is(button.primary,a.primary,.tt-btns .primary,.button.primary,.guide-auto):hover{background-position:100% 0!important;box-shadow:0 10px 26px color-mix(in srgb,var(--t1) 38%,transparent)!important}
+.tool-identity :is(button.primary,a.primary):active{transform:scale(.97)}
+.tool-identity :is(button,a,input,select,textarea,summary):focus-visible{outline:3px solid color-mix(in srgb,var(--t1) 45%,transparent)!important;outline-offset:2px}
+.tool-identity :is(input[type=text],input[type=search],input[type=number],select,textarea):focus{border-color:var(--t1)!important;box-shadow:0 0 0 4px var(--t1-soft)!important}
+
+/* Step numbers, chips and active states */
+.tool-identity .language-steps article b,.tool-identity :is(.step-num,.prep-step b,.guide-step b){background:var(--t-grad);-webkit-background-clip:text;background-clip:text;color:transparent!important;font-weight:700}
+.tool-identity :is([aria-pressed=true],[aria-selected=true],.is-active,.active):not(.phone-slide){--_on:1}
+.tool-identity :is(.tt-btns,.segmented,.mode-switch,.tabs) :is([aria-pressed=true],[aria-selected=true]){background:var(--t1)!important;border-color:var(--t1)!important;color:#fff!important}
+.tool-identity .language-status,.tool-identity :is(.prep-status,.status){border-left:3px solid var(--t1)!important}
+.tool-identity :is(.language-panel,.prep-panel,.prep-sidebar,.workspace-guide)>h2:first-child,.tool-identity .language-panel>h2{color:var(--ag-ink,#1d1d1f)}
+.tool-identity :is(.language-panel,.prep-panel){box-shadow:0 2px 12px rgba(0,0,0,.05),0 18px 50px color-mix(in srgb,var(--t1) 7%,transparent),inset 0 1px 0 rgba(255,255,255,.75)!important}
+.tool-identity progress::-webkit-progress-value{background:var(--t-grad)}
+.tool-identity progress::-moz-progress-bar{background:var(--t-grad)}
+.tool-identity a:not([class]):not(.button){color:color-mix(in srgb,var(--t1) 85%,#000)}
+
+@media(prefers-reduced-motion:reduce){
+  .tool-identity :is(.language-title,.prep-title,.workspace-heading,section.intro),
+  .tool-identity :is(.language-glyph,.tool-glyph,.intro-glyph),
+  .tool-identity::after{animation:none!important}
+}
+@supports not (color:color-mix(in srgb,red 50%,transparent)){
+  .tool-identity{--t1-soft:rgba(0,113,227,.1);--t2-soft:rgba(100,210,255,.12);--t3-soft:rgba(94,92,230,.1)}
+}
+
+/* Guide steps pick up the tool colour */
+.tool-identity :is(.guide-step,.guide-steps>*,.workspace-guide article) :is(b,strong,.guide-num):first-child{color:var(--t1)}
+.tool-identity [data-guide-stage]:hover,.tool-identity .guide-top button:not(.guide-auto):hover{border-color:var(--t1)!important;color:var(--t1)!important}

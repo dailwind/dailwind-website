@@ -140,6 +140,8 @@ def add_site_glass(text,route):
  else:attrs=f' class="{cls}"'+attrs
  return text[:m.start()]+'<body'+attrs+'>'+text[m.end():]
 
+from tool_identity import add_identity,add_card_identity
+
 def apply_discovery(root):
  root=Path(root);catalog={}
  tools=cite_tools(root)
@@ -158,6 +160,8 @@ def apply_discovery(root):
   text=add_subtitle_support(text,route,app_slugs)
   text=add_apple_glass(text,route,app_slugs)
   text=add_site_glass(text,route)
+  text=add_identity(text,route,app_slugs)
+  text=add_card_identity(text,route)
   m=page_metadata(text,route);primary=canonical_route(m['url'])
   if primary in PAGES:
    title,description=PAGES[primary];text=re.sub(r'<title>.*?</title>','<title>'+escape(title)+'</title>',text,count=1,flags=re.S|re.I);text=setmeta(text,'description',description)
