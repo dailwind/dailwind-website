@@ -79,6 +79,11 @@
       b.querySelector('small').textContent = cfg.h[i];
       b.addEventListener('click', function () { go(i); });
       li.appendChild(b);
+      if (i === 0) {
+        var more = document.createElement('span');
+        more.className = 'dw-step-more';
+        li.appendChild(more);
+      }
       ol.appendChild(li);
       return li;
     });
@@ -109,7 +114,22 @@
     var d = Array.prototype.filter.call(document.querySelectorAll(cfg.end === 'dl' ? '.dl-btn' : (cfg.end === 'run' ? '#lab-results,[id$=results],[id$=result]' : cfg.end)), visible);
     return d.filter(function (x) { return !x.disabled; })[0] || d[0];
   }
+  function fileInput() {
+    return Array.prototype.filter.call(document.querySelectorAll('main input[type=file], #main input[type=file], body input[type=file]'), function (x) {
+      return !/restore|kappa|other-file|tgt-file|reference-file/.test(x.id) && !x.classList.contains('mf-folder-input');
+    })[0];
+  }
+  function openFiles() {
+    // The tool's own "Add files" button runs any set-up first (e.g. target corpus), then opens the browser.
+    var t = $('#add-target,#prep-add,#ocr-add,#pdf-open,#media-open,#meta-open');
+    if (t && !t.disabled) { t.click(); return true; }
+    var inp = fileInput();
+    if (!inp || inp.disabled) return false;
+    inp.click();
+    return true;
+  }
   function go(i) {
+    if (i === 0 && openFiles()) return;
     var el = target(i);
     if (!el) return;
     el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
@@ -141,6 +161,18 @@
     bar.dataset.step = String(cur + 1);
   }
 
+  // "or a folder" under step 1, wherever the tool has an Add folder button (computers only).
+  function folderLink() {
+    var holder = bar.querySelector('.dw-step-more');
+    var folder = document.querySelector('.mf-folder');
+    if (!holder || holder.firstChild || !folder) return;
+    var a = document.createElement('button');
+    a.type = 'button';
+    a.className = 'dw-step-folder';
+    a.textContent = 'or choose a whole folder';
+    a.addEventListener('click', function () { folder.click(); });
+    holder.appendChild(a);
+  }
   function hook() {
     document.addEventListener('change', function (e) {
       if (e.target && e.target.type === 'file' && e.target.files && e.target.files.length) { picked = true; render(); }
@@ -156,7 +188,8 @@
       setTimeout(render, 0);
       setTimeout(render, 900);
     }, true);
-    setInterval(function () { if (!document.hidden) render(); }, 1200);
+    setInterval(function () { if (!document.hidden) { render(); folderLink(); } }, 1200);
+    setTimeout(folderLink, 300);
   }
 
   function start() { build(); hook(); render(); }

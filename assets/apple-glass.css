@@ -386,3 +386,12 @@ body.ag-soft .footer{background:rgba(255,255,255,.5);-webkit-backdrop-filter:var
 .mf-dialog .mf-actions button.primary:disabled{opacity:.45!important;cursor:not-allowed}
 @media (max-width:640px){.mf-types label{grid-template-columns:auto auto 1fr;}.mf-count{grid-column:3}}
 .mf-types li{padding:0!important;min-height:0!important}.mf-types label{margin:0!important;padding:11px 14px!important;min-height:0!important;line-height:1.3!important}.mf-types input{margin:0!important}
+/* Step dots: the colour fills the whole circle (no square edges) */
+.dw-step-dot{background-origin:border-box!important;background-repeat:no-repeat!important;overflow:hidden}
+.dw-steps li.is-current .dw-step-dot,.dw-steps li.is-done .dw-step-dot{border:0!important}
+.dw-steps li .dw-step-dot i{background:none!important;border:0!important;outline:0!important;box-shadow:none!important}
+.dw-steps li:nth-of-type(1) button:not(#dw-a):not(#dw-b){cursor:pointer}
+.dw-step-more{display:flex;justify-content:center;margin-top:4px}
+.dw-steps .dw-step-folder:not(#dw-a):not(#dw-b):not(#dw-c){display:inline-flex!important;align-items:center;gap:6px;padding:3px 10px!important;min-height:0!important;margin:0!important;border:0!important;border-radius:980px!important;background:none!important;box-shadow:none!important;color:var(--t1,#0071e3)!important;font:500 12.5px/1.3 var(--ag-font,"SF Pro Text","Helvetica Neue",sans-serif)!important;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.dw-steps .dw-step-folder:not(#dw-a):not(#dw-b):not(#dw-c):hover{background:color-mix(in srgb,var(--t1,#0071e3) 8%,transparent)!important}
+@media (max-width:640px),(pointer:coarse){.dw-step-more{display:none}}
