@@ -176,3 +176,11 @@ body.reading-greek .header,.reading-greek .header{border:0!important;background:
 @media(prefers-reduced-motion:reduce){.header nav.open>a{animation:none}.menu-toggle::before,.menu-toggle::after{transition:none}}
 /* Home tiles reach both edges of the window, so no white strip shows at the sides when zoomed out */
 .home-product-grid{padding-left:0;padding-right:0}
+/* Desktop: a smaller logo mark pinned to the left corner; links stay centred (Apple-style). */
+@media(min-width:901px){
+ .header .header-row{display:grid!important;grid-template-columns:minmax(64px,1fr) minmax(0,920px) minmax(64px,1fr);max-width:none!important;width:100%!important;padding:0 20px!important;column-gap:16px}
+ .header .header-row>.brand{grid-column:1;justify-self:start;padding:0!important}
+ .header .header-row>nav{grid-column:2;margin:0!important;width:100%}
+ .header .header-row>.menu-toggle{display:none}
+ .header .brand-logo{height:22px!important;width:auto!important}
+}
