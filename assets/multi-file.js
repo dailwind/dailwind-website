@@ -78,6 +78,7 @@
     var files = Array.prototype.slice.call(el.files).sort(byName);
     // Subtitle files are turned into text first by the subtitle helper, which hands them back here.
     if (document.querySelector('script[src*="subtitle-support"]') && files.some(function (f) { return SUB.test(f.name); })) return;
+    if (document.querySelector('script[src*="odt-support"]') && files.some(function (f) { return /\.odt$/i.test(f.name); })) return;
     e.stopImmediatePropagation();
     say(el, 'Combining ' + files.length + ' files on this device…');
     files.reduce(function (p, f) {

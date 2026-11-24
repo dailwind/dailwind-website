@@ -128,6 +128,13 @@ def add_download_clarity(text,route,slugs):
  if route!=slug+'/index.html' or slug not in slugs or slug in {'pmc','mat-cleaner'} or 'download-clarity.js' in text:return text
  return text.replace('</head>','<script defer src="../assets/download-clarity.js"></script></head>',1)
 
+def add_odt_support(text,route,slugs):
+ # OpenDocument (.odt) files accepted wherever a tool reads text or Word files.
+ slug=route.split('/')[0]
+ if route!=slug+'/index.html' or slug not in slugs or slug in {'pmc','mat-cleaner'} or 'odt-support.js' in text:return text
+ if not re.search(r'<input[^>]*type="file"[^>]*accept="[^"]*(\.txt|\.docx|text/plain)',text):return text
+ return text.replace('</head>','<script defer src="../assets/odt-support.js"></script></head>',1)
+
 def add_apple_glass(text,route,slugs):
  # Apple-style frosted design on every tool workspace (loaded last so it wins).
  slug=route.split('/')[0]
@@ -171,6 +178,7 @@ def apply_discovery(root):
   text=add_citation(text,route,tools)
   text=add_app_embed(text,route,app_slugs)
   text=add_subtitle_support(text,route,app_slugs)
+  text=add_odt_support(text,route,app_slugs)
   text=add_multi_file(text,route,app_slugs)
   text=add_download_clarity(text,route,app_slugs)
   text=add_apple_glass(text,route,app_slugs)
