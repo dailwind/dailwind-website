@@ -135,10 +135,10 @@
   btn.innerHTML = '<span aria-hidden="true">&#10077;</span> Cite';
   btn.title = 'Cite this tool';
   btn.addEventListener('click', open);
-  var end = document.querySelector('.dw-site-header .dsh-end');
+  var end = document.querySelector('.dsh-local-end') || document.querySelector('.dw-site-header .dsh-end');
   var header = document.querySelector('body > header, header');
   if (end) {
-    end.insertBefore(btn, end.firstChild);
+    end.appendChild(btn);
   } else if (header) {
     header.appendChild(btn);
   } else {

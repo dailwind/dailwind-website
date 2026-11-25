@@ -166,8 +166,23 @@ def add_site_header(text,route,slugs):
       '<nav class="dsh-nav" id="dsh-nav" aria-label="Main navigation">'+links+'</nav>'
       '<div class="dsh-end"><button class="dsh-menu" type="button" aria-expanded="false" aria-controls="dsh-nav" aria-label="Menu"><span></span><span></span></button>'
       '<a class="dsh-close" href="../toolkits/" aria-label="Close this tool" title="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a></div></div></header>')
+ name=tool_name(text,slug)
+ local=('<div class="dsh-local"><div class="dsh-local-row"><h2 class="dsh-title">'+name+'</h2><div class="dsh-local-end"></div></div></div>')
  text=text.replace('</head>','<link rel="stylesheet" href="../assets/site-header.css"><script defer src="../assets/site-header.js"></script></head>',1)
- return re.sub(r'(<body\b[^>]*>)',lambda m:m[1]+bar,text,count=1,flags=re.I)
+ return re.sub(r'(<body\b[^>]*>)',lambda m:m[1]+bar+local,text,count=1,flags=re.I)
+
+TOOL_NAMES={'english-ocr':'English OCR','corpus-cleaner':'Corpus Cleaner','corpus-merger':'Corpus Merger','file-converter':'File Converter','image-tools':'Image Studio','metadata-studio':'Metadata Studio','pdf-tools':'PDF Tools'}
+def tool_name(text,slug):
+ # The tool's name, shown under the top bar (taken from the tool's own old title bar).
+ if slug in TOOL_NAMES:return TOOL_NAMES[slug]
+ for pat in [r'class="language-top[^"]*"[^>]*>.*?<strong[^>]*>(.*?)</strong>',r'class="prep-top[^"]*"[^>]*>.*?<strong[^>]*>(.*?)</strong>',r'class="system-bar[^"]*"[^>]*>.*?<strong[^>]*>(.*?)</strong>']:
+  m=re.search(pat,text,re.S)
+  if m:
+   n=re.sub(r'<[^>]+>','',m.group(1)).strip()
+   n=re.sub(r'^[^A-Za-z]+','',n)
+   if n.startswith('Dailwind '):return n[len('Dailwind '):]
+ t=re.search(r'<title>(.*?)</title>',text,re.S)
+ return re.sub(r'\s*[|·-].*$','',t.group(1)).strip() if t else slug.replace('-',' ').title()
 
 def add_apple_glass(text,route,slugs):
  # Apple-style frosted design on every tool workspace (loaded last so it wins).

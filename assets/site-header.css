@@ -43,3 +43,14 @@
 @media (min-width:901px){.dw-site-header .dsh-menu:not(#dsh-a):not(#dsh-b){display:none!important}}
 .dw-site-header .dsh-close:not(#dsh-a){box-shadow:none!important;border:0!important}
 .dw-site-header .dsh-menu span{width:20px!important;align-self:center;flex:none}
+/* The tool's name, under the top bar (like Apple's product bar) — with Cite on the right */
+.dsh-local{position:relative;z-index:20;background:rgba(255,255,255,.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.08);font-family:"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif}
+.dsh-local-row{max-width:1024px;margin:0 auto;min-height:52px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.dw-site-header+.dsh-local .dsh-title{margin:0!important;padding:0!important;font-size:21px!important;line-height:1.2!important;font-weight:600!important;letter-spacing:-.02em!important;color:#1d1d1f!important;background:none!important;-webkit-text-fill-color:#1d1d1f!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.dw-site-header+.dsh-local .dsh-title::before,.dw-site-header+.dsh-local .dsh-title::after{content:none!important}
+.dsh-local-end{flex:none;display:flex;align-items:center;gap:10px}
+.dsh-local .dw-cite-open{position:static!important;margin:0!important;min-height:30px!important;height:30px;padding:0 14px!important;font-size:12px!important;border-radius:980px!important}
+.dw-app .dsh-local{display:none!important}
+@media (max-width:900px){.dsh-local-row{min-height:48px;padding:0 16px}.dw-site-header+.dsh-local .dsh-title{font-size:18px!important}}
+/* One ✕ at a time: while the phone menu is open its own ✕ closes it, so the tool's ✕ steps aside */
+.dsh-menu[aria-expanded=true]~.dsh-close{display:none!important}
