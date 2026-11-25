@@ -38,12 +38,23 @@
     new MutationObserver(tip).observe(el, { attributes: true, attributeFilter: ['disabled', 'aria-disabled'] });
     group(el.parentElement);
   }
+  // Several download buttons side by side or stacked never touch: give their box a gap.
+  function space(box, cs) {
+    if (box.dataset.dlSpaced) return;
+    box.dataset.dlSpaced = '1';
+    if (cs.display === 'block' || cs.display === 'inline' || cs.display === 'inline-block') {
+      box.style.display = 'flex'; box.style.flexWrap = 'wrap'; box.style.alignItems = 'center'; box.style.gap = '8px';
+    } else if (/flex|grid/.test(cs.display) && (parseFloat(cs.rowGap) || 0) < 6 && (parseFloat(cs.columnGap) || 0) < 6) {
+      box.style.gap = '8px';
+    }
+  }
   function group(box) {
     if (!box || box.dataset.dlGroup || box.closest('dialog')) return;
     var n = 0;
     for (var i = 0; i < box.children.length; i++) if (box.children[i].classList.contains('dl-btn')) n++;
     if (n < 2) return;
     var cs = getComputedStyle(box);
+    space(box, cs);
     var flowing = cs.display === 'grid' || cs.display === 'inline-grid' || ((cs.display === 'flex' || cs.display === 'inline-flex') && cs.flexWrap !== 'nowrap' && cs.flexDirection.indexOf('row') === 0) || cs.display === 'block';
     if (!flowing) return;
     box.dataset.dlGroup = '1';
