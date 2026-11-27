@@ -1,7 +1,7 @@
 /* One control system for every Dailwind toolkit.
    Marks the toolkit's own buttons, upload buttons, drop-downs and text fields so that
    assets/tool-ui.css can give them the same height, text size, shape and alignment in
-   every tool (42px on computers, 46px on phones). Button groups get even spacing.
+   every tool (38px on computers, 42px on phones). Button groups get even spacing.
    Works for tools added later and for buttons a tool creates after a run. */
 (function () {
   'use strict';
@@ -118,8 +118,15 @@
       }
     });
   }
+  // iPhones zoom into any field whose text is under 16px; stop that zoom (pinch zoom still works there).
+  function noFocusZoom() {
+    if (!/iPhone|iPad|iPod/.test(navigator.userAgent)) return;
+    var m = document.querySelector('meta[name=viewport]');
+    if (m && !/maximum-scale/.test(m.content)) m.content += ', maximum-scale=1';
+  }
   function start() {
     document.body.classList.add('dw-ui');
+    noFocusZoom();
     scan(root);
     // a second pass once groups exist (groups need both buttons marked)
     root.querySelectorAll('.dw-btn').forEach(function (b) { group(b.parentElement); });
