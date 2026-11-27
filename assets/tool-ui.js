@@ -5,12 +5,26 @@
    Works for tools added later and for buttons a tool creates after a run. */
 (function () {
   'use strict';
-  var SKIP = '.dw-site-header,.dsh-local,.dw-steps,.desk-dock,dialog,.dw-activity,.mf-dialog,table,[role=tablist],[role=menu],[role=listbox],.dw-cite,.cite-dialog,[data-no-ui]';
+  var SKIP = '.dw-site-header,.dsh-local,.dw-steps,.desk-dock,dialog,nav,footer,.dw-activity,.mf-dialog,table,[role=tablist],[role=menu],[role=listbox],.dw-cite,.cite-dialog,[data-no-ui]';
   var BUTTONS = 'button,a.button,a.dl-btn,label.language-upload,label.file-button,input[type=submit],input[type=button],input[type=reset]';
   var FIELDS = 'select,input:not([type]),input[type=text],input[type=search],input[type=number],input[type=url],input[type=email],input[type=tel],input[type=date],input[type=password]';
-  var root = document.querySelector('main') || document.getElementById('main') || document.body;
+  var root = document.body;   // the whole tool: main area and side panels
 
   function label(el) { return (el.textContent || el.value || '').replace(/\s+/g, ' ').trim(); }
+  // Buttons that are really cards (a title, a number and a note stacked inside) keep their own layout.
+  function isCard(el) {
+    var own = getComputedStyle(el), flexish = /flex|grid/.test(own.display);
+    if (/flex/.test(own.display) && own.flexDirection.indexOf('column') === 0) return true;
+    var parts = 0;
+    for (var i = 0; i < el.children.length; i++) {
+      var k = el.children[i];
+      if (/^(SVG|IMG|I|INPUT)$/i.test(k.tagName) || !k.textContent.trim()) continue;
+      // inside a flex button every child counts as a block, so only plain buttons are judged by it
+      if (!flexish && /^(block|flex|grid|list-item|table)$/.test(getComputedStyle(k).display)) return true;
+      parts++;
+    }
+    return parts >= 2;
+  }
   function mark(el) {
     if (el.dataset.ui || el.closest(SKIP)) return;
     if (el.matches(FIELDS)) {
@@ -20,6 +34,7 @@
       return;
     }
     if (!el.matches(BUTTONS)) return;
+    if (isCard(el)) { el.dataset.ui = 'card'; return; }
     var t = label(el);
     // Icon-only buttons (×, ↑, ⋯) keep their own small size.
     if (t.length <= 2) { el.dataset.ui = 'icon'; return; }
@@ -36,9 +51,14 @@
       var h = parseFloat(getComputedStyle(document.body).getPropertyValue('--ui-h')) || 44;
       if (el.offsetHeight <= h + 2) return;
       var box = el.parentElement, cs = box && getComputedStyle(box);
-      if (!cs || !/flex/.test(cs.display) || cs.flexDirection.indexOf('row') !== 0) return;
-      el.style.flexBasis = 'auto';
-      if (cs.flexWrap === 'nowrap') box.style.flexWrap = 'wrap';
+      if (cs && /flex/.test(cs.display) && cs.flexDirection.indexOf('row') === 0) {
+        el.style.flexBasis = 'auto';
+        if (cs.flexWrap === 'nowrap') box.style.flexWrap = 'wrap';
+        if (el.offsetHeight <= h + 2) return;
+      }
+      // still on two lines (a narrow column or a two-part switch): use less side padding
+      el.style.setProperty('padding-left', '8px', 'important');
+      el.style.setProperty('padding-right', '8px', 'important');
     });
   }
   // A label and its field next to buttons ("Search [ ]  [Go]"): every control sits on one line.

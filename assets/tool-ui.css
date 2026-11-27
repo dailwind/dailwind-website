@@ -5,12 +5,12 @@
 body.dw-ui{--ui-h:36px;--ui-btn-fs:12.5px;--ui-field-fs:14px;--ui-pad:15px}
 @media (max-width:760px){body.dw-ui{--ui-h:40px;--ui-btn-fs:13px;--ui-field-fs:15px;--ui-pad:12px}}
 /* buttons and upload buttons */
-body.dw-ui .dw-btn:not(#ui-a):not(#ui-b):not(#ui-c){box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px;min-height:var(--ui-h)!important;height:auto!important;padding-top:6px!important;padding-bottom:6px!important;padding-left:var(--ui-pad)!important;padding-right:var(--ui-pad)!important;font-size:var(--ui-btn-fs)!important;line-height:1.25!important;margin-top:0!important;margin-bottom:0!important;vertical-align:middle!important;text-align:center;border-radius:980px!important;white-space:normal;max-width:100%}
+body.dw-ui .dw-btn:not(#ui-a):not(#ui-b):not(#ui-c){box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px;min-height:var(--ui-h)!important;height:auto!important;padding-top:6px!important;padding-bottom:6px!important;padding-left:var(--ui-pad)!important;padding-right:var(--ui-pad)!important;font-size:var(--ui-btn-fs)!important;line-height:1.25!important;vertical-align:middle!important;text-align:center;border-radius:980px!important;white-space:normal;max-width:100%}
 body.dw-ui label.dw-btn:not(#ui-a):not(#ui-b):not(#ui-c){cursor:pointer}
 /* drop-downs and one-line text fields */
-body.dw-ui .dw-field:not(#ui-a):not(#ui-b):not(#ui-c){box-sizing:border-box!important;height:var(--ui-h)!important;min-height:var(--ui-h)!important;max-height:var(--ui-h)!important;padding-top:0!important;padding-bottom:0!important;padding-left:14px!important;font-size:var(--ui-field-fs)!important;line-height:normal!important;border-radius:12px!important;margin-top:0!important;margin-bottom:0!important;vertical-align:middle!important}
+body.dw-ui .dw-field:not(#ui-a):not(#ui-b):not(#ui-c){box-sizing:border-box!important;height:var(--ui-h)!important;min-height:var(--ui-h)!important;max-height:var(--ui-h)!important;padding-top:0!important;padding-bottom:0!important;padding-left:14px!important;font-size:var(--ui-field-fs)!important;line-height:normal!important;border-radius:12px!important;vertical-align:middle!important}
 body.dw-ui input.dw-field:not(#ui-a):not(#ui-b):not(#ui-c){padding-right:14px!important}
-body.dw-ui select.dw-field:not(#ui-a):not(#ui-b):not(#ui-c){-webkit-appearance:none!important;appearance:none!important;padding-right:36px!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%236e6e73' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 13px center!important;background-size:11px 7px!important;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;cursor:pointer}
+body.dw-ui select.dw-field:not(#ui-a):not(#ui-b):not(#ui-c){-webkit-appearance:none!important;appearance:none!important;padding-right:36px!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%236e6e73' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 13px center!important;background-size:11px 7px!important;text-overflow:ellipsis;white-space:nowrap!important;overflow:hidden!important;cursor:pointer}
 body.dw-ui select.dw-field option{font-size:15px;font-weight:400}
 /* text boxes share the field text size */
 body.dw-ui main textarea:not(#ui-a):not(#ui-b),body.dw-ui #main textarea:not(#ui-a):not(#ui-b){font-size:var(--ui-field-fs)!important;line-height:1.55!important;border-radius:14px!important}
@@ -24,3 +24,23 @@ body.dw-ui .dw-field:not(#ui-a):not(#ui-b):not(#ui-c){max-width:100%!important;m
 @media (max-width:760px){body.dw-ui :is(.prep-panel,.language-panel,.panel){max-width:100%;min-width:0;box-sizing:border-box}body.dw-ui :is(.prep-panel,.language-panel,.panel) :is(table){max-width:none}}
 /* the 1-2-3 step bar always spans the full tool width */
 body.dw-ui .dw-steps{align-self:stretch!important;box-sizing:border-box}
+/* a hidden button or field stays hidden */
+body.dw-ui :is(.dw-btn,.dw-field)[hidden]:not(#ui-a):not(#ui-b):not(#ui-c):not(#ui-d){display:none!important}
+/* on phones every block of a tool spans the full width, in every toolkit */
+@media (max-width:800px){body.dw-ui .prep-layout{align-items:stretch!important}}
+/* an empty results table draws no stray line */
+body.dw-ui :is(.table-scroll,.chart):empty{border:0!important;margin:0!important;padding:0!important;min-height:0!important;box-shadow:none!important}
+/* an empty note never shows as a blank bar */
+body.dw-ui p:empty:not(#ui-a){display:none!important}
+/* result cards that are buttons (level counts, summaries) are cards, not pills */
+body.dw-ui button[data-ui=card]:not(#ui-a):not(#ui-b):not(#ui-c):not([data-f]){border-radius:16px!important;white-space:normal!important;overflow-wrap:normal!important;word-break:normal!important}
+/* controls that share a row sit on one line: no stray top or bottom margins there */
+body.dw-ui [data-ui-group]>:is(.dw-btn,.dw-field,.mf-folder):not(#ui-a):not(#ui-b):not(#ui-c),body.dw-ui [data-ui-row]>*:not(#ui-a):not(#ui-b):not(#ui-c){margin-top:0!important;margin-bottom:0!important}
+body.dw-ui :is(label.language-upload,label.file-button,.mf-folder):not(#ui-a):not(#ui-b):not(#ui-c){margin-top:0!important;margin-bottom:0!important}
+/* file lists: the name stays on one line (cut with … when long), the small ↑ ↓ × buttons stay small */
+body.dw-ui :is(.prep-file,.file-row,.file-item) .file-name:not(#ui-a){overflow-wrap:normal!important;word-break:normal!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+body.dw-ui :is(.prep-file,.file-row,.file-item) .file-name small{white-space:normal}
+body.dw-ui .file-buttons{gap:4px!important}
+body.dw-ui .file-buttons button[data-ui=icon]:not(#ui-a):not(#ui-b):not(#ui-c){width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;padding:0!important;font-size:13px!important;border-radius:50%!important;display:inline-grid!important;place-items:center}
+/* a chart's download button never touches the chart below it */
+body.dw-ui .chart-toolbar:not(#ui-a){margin-bottom:12px}

@@ -3,7 +3,7 @@
 Checks the built site: each tool page links both files, and (when Playwright is installed)
 every visible button, drop-down and one-line field has the same height on a phone and on a
 computer (40px phone, 36px computer), no tool page scrolls sideways on a phone and the
-1-2-3 step bar spans the full width.
+1-2-3 step bar spans the full width and no word is split across two lines.
 Usage: python3 publishing/tests/test_tool_ui.py [_site]
 """
 import sys, threading, functools, http.server
@@ -15,8 +15,12 @@ SITE = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / '_site'
 MEASURE = r"""(()=>{
 const vis=e=>{const r=e.getBoundingClientRect();const c=getComputedStyle(e);return r.width>0&&r.height>0&&c.visibility!=='hidden'&&!e.closest('details:not([open])')};
 const h=[...document.querySelectorAll('.dw-btn,.dw-field')].filter(vis).map(e=>Math.round(e.getBoundingClientRect().height));
+const broken=[];const tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
+while(n=tw.nextNode()){const el=n.parentElement;if(!el||el.offsetParent===null||el.closest('script,style,textarea,pre,code,svg,table,details:not([open])'))continue;
+ const re=/[A-Za-z0-9']{3,}/g;let m;while(m=re.exec(n.textContent)){const r=document.createRange();r.setStart(n,m.index);r.setEnd(n,m.index+m[0].length);
+ const tops=new Set([...r.getClientRects()].filter(x=>x.width>0).map(x=>Math.round(x.top)));if(tops.size>1)broken.push(m[0])}}
 const st=document.querySelector('.dw-steps'),main=st&&(st.parentElement.closest('main,.prep-layout,.language-main')||st.parentElement);
-return {h, tall:parseFloat(getComputedStyle(document.body).getPropertyValue('--ui-h')), wide:document.documentElement.scrollWidth>innerWidth+1,
+return {h, broken:broken.slice(0,5), tall:parseFloat(getComputedStyle(document.body).getPropertyValue('--ui-h')), wide:document.documentElement.scrollWidth>innerWidth+1,
  steps:st?Math.round(st.getBoundingClientRect().width):0}})()"""
 
 
@@ -57,6 +61,8 @@ def main():
                 # a label longer than the whole row may take two lines; anything else is a bug
                 if odd and any(x < tall or x > tall * 2 for x in odd):
                     bad.append((width, slug, odd))
+                if r['broken']:
+                    bad.append((width, slug, 'words split across lines: %s' % r['broken']))
                 if phone and r['wide']:
                     bad.append((width, slug, 'scrolls sideways'))
                 if phone and r['steps'] and r['steps'] < width - 40:
