@@ -1,9 +1,9 @@
 /* One control system for every Dailwind toolkit (see assets/tool-ui.js).
    Same height, text size, shape and alignment for buttons, upload buttons, drop-downs and
-   text fields in all tools: 38px on computers, 42px on phones. The :not(#…) parts only raise
+   text fields in all tools: 36px on computers, 40px on phones. The :not(#…) parts only raise
    priority above each tool's own theme. */
-body.dw-ui{--ui-h:38px;--ui-btn-fs:13px;--ui-field-fs:14px;--ui-pad:16px}
-@media (max-width:760px){body.dw-ui{--ui-h:42px;--ui-btn-fs:14px;--ui-field-fs:15px;--ui-pad:13px}}
+body.dw-ui{--ui-h:36px;--ui-btn-fs:12.5px;--ui-field-fs:14px;--ui-pad:15px}
+@media (max-width:760px){body.dw-ui{--ui-h:40px;--ui-btn-fs:13px;--ui-field-fs:15px;--ui-pad:12px}}
 /* buttons and upload buttons */
 body.dw-ui .dw-btn:not(#ui-a):not(#ui-b):not(#ui-c){box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px;min-height:var(--ui-h)!important;height:auto!important;padding-top:6px!important;padding-bottom:6px!important;padding-left:var(--ui-pad)!important;padding-right:var(--ui-pad)!important;font-size:var(--ui-btn-fs)!important;line-height:1.25!important;margin-top:0!important;margin-bottom:0!important;vertical-align:middle!important;text-align:center;border-radius:980px!important;white-space:normal;max-width:100%}
 body.dw-ui label.dw-btn:not(#ui-a):not(#ui-b):not(#ui-c){cursor:pointer}

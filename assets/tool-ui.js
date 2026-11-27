@@ -1,7 +1,7 @@
 /* One control system for every Dailwind toolkit.
    Marks the toolkit's own buttons, upload buttons, drop-downs and text fields so that
    assets/tool-ui.css can give them the same height, text size, shape and alignment in
-   every tool (38px on computers, 42px on phones). Button groups get even spacing.
+   every tool (36px on computers, 40px on phones). Button groups get even spacing.
    Works for tools added later and for buttons a tool creates after a run. */
 (function () {
   'use strict';
@@ -76,6 +76,12 @@
     }
     if ((parseFloat(cs.rowGap) || 0) < 8 || (parseFloat(cs.columnGap) || 0) < 8) box.style.gap = '10px';
     if (/flex/.test(box.style.display || cs.display) && cs.alignItems === 'stretch' && cs.flexDirection.indexOf('row') === 0) box.style.alignItems = 'center';
+    // when some buttons in a row stretch and others do not, they all stretch the same way
+    if (/flex/.test(box.style.display || cs.display)) {
+      var btns = ctl.filter(function (c) { return c.classList.contains('dw-btn'); });
+      var grow = Math.max.apply(null, btns.map(function (c) { return parseFloat(getComputedStyle(c).flexGrow) || 0; }));
+      if (grow > 0) btns.forEach(function (c) { if (!(parseFloat(getComputedStyle(c).flexGrow) > 0)) c.style.flexGrow = String(grow); });
+    }
   }
   function scan(r) {
     if (!r || !r.querySelectorAll) return;

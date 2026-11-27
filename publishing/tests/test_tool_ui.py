@@ -2,7 +2,7 @@
 
 Checks the built site: each tool page links both files, and (when Playwright is installed)
 every visible button, drop-down and one-line field has the same height on a phone and on a
-computer (42px phone, 38px computer), no tool page scrolls sideways on a phone and the
+computer (40px phone, 36px computer), no tool page scrolls sideways on a phone and the
 1-2-3 step bar spans the full width.
 Usage: python3 publishing/tests/test_tool_ui.py [_site]
 """
@@ -26,6 +26,7 @@ def main():
     for slug in pages:
         s = (SITE / slug / 'index.html').read_text()
         assert 'assets/tool-ui.css' in s and 'assets/tool-ui.js' in s, slug
+        assert 'dsh-menu' not in s and s.count('class="dsh-close"') == 1, slug + ': one close button only'
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
@@ -43,7 +44,7 @@ def main():
             srv.shutdown()
             print('tool ui: files linked; SKIP layout (no browser)')
             return 0
-        for width, phone, tall in ((390, True, 42), (1280, False, 38)):
+        for width, phone, tall in ((390, True, 40), (1280, False, 36)):
             pg = b.new_page(viewport={'width': width, 'height': 900}, is_mobile=phone, has_touch=phone)
             pg.route('**/*', lambda r: r.abort() if not r.request.url.startswith(base) else r.continue_())
             for slug in pages:

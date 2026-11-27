@@ -157,14 +157,14 @@ def add_progress_ui(text,route,slugs):
 
 SITE_NAV=[('../','Home'),('../toolkits/','Toolkits'),('../apps/','Apps'),('../pmc/','PMC'),('../articles/','Reading Room'),('../arslan-tahir/','About'),('../contact.html','Contact')]
 def add_site_header(text,route,slugs):
- # Every toolkit uses the website's own top bar: D logo, site menu, Cite and a close (✕) button.
+ # Every toolkit uses the website's own top bar: D logo, site links (computers), Cite and one close (✕) button.
  slug=route.split('/')[0]
  if route!=slug+'/index.html' or slug not in slugs or slug in {'pmc','mat-cleaner'} or 'dw-site-header' in text:return text
  if not re.search(r'class="(language-top|prep-top|system-bar|arc-header)',text):return text
  links=''.join('<a href="'+h+'"'+(' aria-current="page"' if h=='../toolkits/' else '')+'>'+n+'</a>' for h,n in SITE_NAV)
  bar=('<header class="dw-site-header"><div class="dsh-row"><a class="dsh-logo" href="../" aria-label="Dailwind App Studio home"><img src="../assets/dailwind-logo-v871.webp" width="37" height="40" alt="Dailwind App Studio"></a>'
       '<nav class="dsh-nav" id="dsh-nav" aria-label="Main navigation">'+links+'</nav>'
-      '<div class="dsh-end"><button class="dsh-menu" type="button" aria-expanded="false" aria-controls="dsh-nav" aria-label="Menu"><span></span><span></span></button>'
+      '<div class="dsh-end">'
       '<a class="dsh-close" href="../toolkits/" aria-label="Close this tool" title="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a></div></div></header>')
  name=tool_name(text,slug)
  local=('<div class="dsh-local"><div class="dsh-local-row"><h2 class="dsh-title">'+name+'</h2><div class="dsh-local-end"></div></div></div>')
