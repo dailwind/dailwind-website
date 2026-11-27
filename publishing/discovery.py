@@ -168,7 +168,7 @@ def add_site_header(text,route,slugs):
       '<a class="dsh-close" href="../toolkits/" aria-label="Close this tool" title="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a></div></div></header>')
  name=tool_name(text,slug)
  local=('<div class="dsh-local"><div class="dsh-local-row"><h2 class="dsh-title">'+name+'</h2><div class="dsh-local-end"></div></div></div>')
- text=text.replace('</head>','<link rel="stylesheet" href="../assets/site-header.css"><script defer src="../assets/site-header.js"></script></head>',1)
+ text=text.replace('</head>','<link rel="stylesheet" href="../assets/site-header.css"><script defer src="../assets/site-header.js"></script><link rel="stylesheet" href="../assets/tool-ui.css"><script defer src="../assets/tool-ui.js"></script></head>',1)
  return re.sub(r'(<body\b[^>]*>)',lambda m:m[1]+bar+local,text,count=1,flags=re.I)
 
 TOOL_NAMES={'english-ocr':'English OCR','corpus-cleaner':'Corpus Cleaner','corpus-merger':'Corpus Merger','file-converter':'File Converter','image-tools':'Image Studio','metadata-studio':'Metadata Studio','pdf-tools':'PDF Tools'}
