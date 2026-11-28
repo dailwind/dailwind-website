@@ -184,3 +184,56 @@ body.reading-greek .header,.reading-greek .header{border:0!important;background:
  .header .header-row>.menu-toggle{display:none}
  .header .brand-logo{height:22px!important;width:auto!important}
 }
+/* ===== Header v2 (Nov 2026): a floating rounded bar — logo on the left, main links in a white
+   pill in the middle, About + a Contact button on the right. Delete this block to go back. ===== */
+.header,.home-header,.apps-body .header,.reading-greek .header,body.reading-greek .header{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border:0!important;box-shadow:none!important;padding:12px 16px 0!important;pointer-events:none}
+.header .header-row{pointer-events:auto;position:relative;box-sizing:border-box;max-width:1240px!important;margin:0 auto!important;background:rgba(244,244,247,.84);-webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px);border:1px solid rgba(0,0,0,.06);border-radius:24px;box-shadow:0 12px 32px -16px rgba(20,20,45,.22)}
+.header .brand{opacity:1!important}
+@media(min-width:901px){
+ .header .header-row{display:grid!important;grid-template-columns:[brand] minmax(0,1fr) [pill-start] repeat(5,auto) [pill-end] minmax(0,1fr)!important;align-items:center!important;width:100%!important;height:72px!important;min-height:72px!important;padding:0 12px 0 22px!important;column-gap:0!important}
+ .header .header-row::before{content:"";grid-column:pill-start/pill-end;grid-row:1;align-self:center;height:50px;background:#fff;border-radius:999px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.045)}
+ .header .header-row>.brand{grid-column:1;grid-row:1;justify-self:start;height:auto!important;padding:0!important}
+ .header .brand-logo{height:30px!important}
+ .header .header-row>nav{display:contents!important}
+ .header nav>a,.header nav>a[aria-current]{grid-row:1;position:relative;z-index:1;display:inline-flex!important;align-items:center;justify-content:center;height:38px!important;min-height:38px!important;padding:0 17px!important;border-radius:999px;font-size:14px!important;font-weight:500!important;letter-spacing:-.01em!important;color:#3a3a40!important;white-space:nowrap;transition:background .2s,color .2s!important}
+ .header nav>a:hover{color:#111!important;background:#f2f2f6}
+ .header nav>a[aria-current]{color:#0b0b0f!important;font-weight:700!important}
+ .header nav>a:nth-child(1){grid-column:2;margin-left:6px!important}
+ .header nav>a:nth-child(2){grid-column:3}
+ .header nav>a:nth-child(3){grid-column:4}
+ .header nav>a:nth-child(4){grid-column:5}
+ .header nav>a:nth-child(5){grid-column:6;margin-right:6px!important}
+ /* right side: About as a plain link, Contact as an outlined button */
+ .header nav>a:nth-child(6){grid-column:7;justify-self:end;margin-right:134px!important;padding:0 6px!important;color:#1d1d1f!important}
+ .header nav>a:nth-child(6):hover{background:none;text-decoration:underline!important;text-underline-offset:4px}
+ .header nav>a:nth-child(7){grid-column:7;justify-self:end;width:122px;height:48px!important;min-height:48px!important;padding:0!important;background:#fff;border:1px solid #d4d4dc!important;color:#111!important;font-weight:600!important}
+ .header nav>a:nth-child(7):hover,.header nav>a:nth-child(7)[aria-current]{background:#111!important;border-color:#111!important;color:#fff!important}
+}
+@media(min-width:901px) and (max-width:1120px){
+ .header nav>a,.header nav>a[aria-current]{padding:0 12px!important;font-size:13.5px!important}
+ .header nav>a:nth-child(6){margin-right:118px!important}
+ .header nav>a:nth-child(7){width:106px}
+}
+@media(max-width:900px){
+ .header,.home-header,.apps-body .header,.reading-greek .header,body.reading-greek .header{padding:8px 10px 0!important}
+ .header:has(nav.open){background:transparent!important}
+ .header .header-row{width:100%!important;height:58px!important;min-height:58px!important;padding:0 7px 0 16px!important;border-radius:20px}
+ .header .brand{height:58px!important;padding:0!important}
+ .header .brand-logo{height:26px!important}
+ .menu-toggle{width:44px!important;min-width:44px!important;height:44px!important;min-height:44px!important;border-radius:50%!important;background:#fff!important;box-shadow:0 0 0 1px rgba(0,0,0,.06)!important}
+ .menu-toggle::before,.menu-toggle::after{left:13.5px!important}
+ .menu-toggle::before{top:18px!important}.menu-toggle::after{top:25px!important}
+ .menu-toggle[aria-expanded="true"]::before,.menu-toggle[aria-expanded="true"]::after{top:21.5px!important}
+ .header nav,.header nav.open{position:absolute!important;top:calc(100% + 8px)!important;left:0!important;right:0!important;height:auto!important;max-height:calc(100dvh - 96px);overflow-y:auto;background:#fff!important;border:1px solid rgba(0,0,0,.06)!important;border-radius:22px;box-shadow:0 24px 48px -18px rgba(20,20,45,.3)!important;padding:12px 26px 22px!important}
+ .header nav>a,.header nav>a[aria-current]{font-size:24px!important;padding:9px 0!important}
+ .header nav>a[aria-current]{color:#0b0b0f!important}
+ .header nav>a:last-child{align-self:flex-start;margin-top:12px!important;padding:12px 26px!important;font-size:17px!important;border:1px solid #d4d4dc!important;border-radius:999px}
+}
+/* Header v2: the full logo lockup (mark + DAILWIND / APP STUDIO) */
+.header .brand-stack .brand-word{display:flex!important}.header .brand-stack .brand-suffix{display:block!important}
+.header .brand{gap:9px!important}
+@media(min-width:901px){.header .brand-logo{height:32px!important}.header .brand>.brand-stack{height:32px!important}.header .brand-v1{--w:20px;--s:9.6px}.header .brand-stack .brand-word{height:20px!important;line-height:20px!important}.header .brand-stack .brand-suffix{height:12px!important;line-height:12px!important}}
+@media(max-width:900px){.header .brand-logo{height:28px!important}.header .brand>.brand-stack{height:28px!important}.header .brand-v1{--w:17.5px;--s:8.4px}.header .brand-stack .brand-word{height:17px!important;line-height:17px!important}.header .brand-stack .brand-suffix{height:11px!important;line-height:11px!important}}
+/* Header v2: things that stick under the bar leave room for it */
+html{scroll-padding-top:96px}
+.ag-site .legal-layout>aside{top:100px!important}

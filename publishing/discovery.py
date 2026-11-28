@@ -162,7 +162,7 @@ def add_site_header(text,route,slugs):
  if route!=slug+'/index.html' or slug not in slugs or slug in {'pmc','mat-cleaner'} or 'dw-site-header' in text:return text
  if not re.search(r'class="(language-top|prep-top|system-bar|arc-header)',text):return text
  links=''.join('<a href="'+h+'"'+(' aria-current="page"' if h=='../toolkits/' else '')+'>'+n+'</a>' for h,n in SITE_NAV)
- bar=('<header class="dw-site-header"><div class="dsh-row"><a class="dsh-logo" href="../" aria-label="Dailwind App Studio home"><img src="../assets/dailwind-logo-v871.webp" width="37" height="40" alt="Dailwind App Studio"></a>'
+ bar=('<header class="dw-site-header"><div class="dsh-row"><a class="dsh-logo" href="../" aria-label="Dailwind App Studio home"><img src="../assets/dailwind-logo-v871.webp" width="37" height="40" alt="Dailwind App Studio"><span class="dsh-word" aria-hidden="true"><b><i>D</i><i>A</i><i>I</i><i>L</i><i>W</i><i>I</i><i>N</i><i>D</i></b><span><i>A</i><i>P</i><i>P</i><i class="dsh-gap"></i><i>S</i><i>T</i><i>U</i><i>D</i><i>I</i><i>O</i></span></span></a>'
       '<nav class="dsh-nav" id="dsh-nav" aria-label="Main navigation">'+links+'</nav>'
       '<div class="dsh-end">'
       '<a class="dsh-close" href="../toolkits/" aria-label="Close this tool" title="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a></div></div></header>')
